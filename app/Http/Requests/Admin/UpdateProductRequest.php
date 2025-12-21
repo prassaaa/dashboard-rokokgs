@@ -20,7 +20,7 @@ class UpdateProductRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'sku' => ['required', 'string', 'max:100', Rule::unique('products')->ignore($productId)],
+            'code' => ['required', 'string', 'max:100', Rule::unique('products')->ignore($productId)],
             'product_category_id' => ['required', 'exists:product_categories,id'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],

@@ -17,7 +17,7 @@ class CreateProductRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'sku' => ['required', 'string', 'max:100', 'unique:products'],
+            'code' => ['required', 'string', 'max:100', 'unique:products'],
             'product_category_id' => ['required', 'exists:product_categories,id'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],

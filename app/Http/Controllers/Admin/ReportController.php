@@ -93,7 +93,7 @@ class ReportController extends Controller
             }
         });
 
-        $productStats = $query->with('product:id,name,sku')
+        $productStats = $query->with('product:id,name,code')
             ->select('product_id', DB::raw('SUM(quantity) as total_quantity'), DB::raw('SUM(subtotal) as total_revenue'))
             ->groupBy('product_id')
             ->orderByDesc('total_revenue')

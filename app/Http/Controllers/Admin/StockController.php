@@ -26,7 +26,7 @@ class StockController extends Controller
         $user = auth()->user();
         $isSuperAdmin = $user->hasRole('Super Admin');
 
-        $query = Stock::with(['product:id,name,sku', 'branch:id,name'])
+        $query = Stock::with(['product:id,name,code', 'branch:id,name'])
             ->orderBy('quantity');
 
         // Admin Cabang can only see their branch stocks
@@ -48,7 +48,7 @@ class StockController extends Controller
         if ($search = $request->input('search')) {
             $query->whereHas('product', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('sku', 'like', "%{$search}%");
+                    ->orWhere('code', 'like', "%{$search}%");
             });
         }
 
@@ -137,7 +137,7 @@ class StockController extends Controller
 
         $products = Product::where('is_active', true)
             ->orderBy('name')
-            ->get(['id', 'name', 'sku']);
+            ->get(['id', 'name', 'code']);
 
         $branches = $isSuperAdmin
             ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])

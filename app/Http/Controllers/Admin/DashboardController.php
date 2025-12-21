@@ -140,7 +140,7 @@ class DashboardController extends Controller
      */
     private function getLowStockAlerts(?int $branchId): array
     {
-        $query = Stock::with(['product:id,name,sku', 'branch:id,name'])
+        $query = Stock::with(['product:id,name,code', 'branch:id,name'])
             ->whereColumn('quantity', '<=', 'minimum_stock')
             ->orderBy('quantity')
             ->limit(10);
@@ -152,7 +152,7 @@ class DashboardController extends Controller
         return $query->get()->map(fn ($stock) => [
             'id' => $stock->id,
             'product_name' => $stock->product->name,
-            'product_sku' => $stock->product->sku,
+            'product_code' => $stock->product->code,
             'quantity' => $stock->quantity,
             'min_stock' => $stock->minimum_stock,
             'branch_name' => $stock->branch->name,

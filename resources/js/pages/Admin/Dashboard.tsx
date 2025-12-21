@@ -53,7 +53,7 @@ interface RecentTransaction {
 interface LowStockAlert {
     id: number;
     product_name: string;
-    product_sku: string;
+    product_code: string;
     quantity: number;
     min_stock: number;
     branch_name: string;
@@ -458,7 +458,7 @@ export default function AdminDashboard({
                                                 </p>
                                             </div>
                                             <p className="mt-1 text-sm text-red-700 dark:text-red-300">
-                                                SKU: {stock.product_sku}
+                                                code: {stock.product_code}
                                             </p>
                                             <p className="text-xs text-red-600 dark:text-red-400">
                                                 {stock.branch_name}

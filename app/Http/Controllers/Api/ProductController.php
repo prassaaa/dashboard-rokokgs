@@ -26,7 +26,7 @@ class ProductController extends BaseApiController
      *     @OA\Parameter(
      *         name="search",
      *         in="query",
-     *         description="Search by product name or SKU",
+     *         description="Search by product name or code",
      *         required=false,
      *         @OA\Schema(type="string", example="Sampoerna")
      *     ),
@@ -63,7 +63,7 @@ class ProductController extends BaseApiController
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Sampoerna Mild 16"),
-     *                     @OA\Property(property="sku", type="string", example="SM-16"),
+     *                     @OA\Property(property="code", type="string", example="SM-16"),
      *                     @OA\Property(property="price", type="number", format="float", example=25000),
      *                     @OA\Property(property="stock", type="integer", example=100)
      *                 )
@@ -140,7 +140,7 @@ class ProductController extends BaseApiController
      *                 type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="name", type="string", example="Sampoerna Mild 16"),
-     *                 @OA\Property(property="sku", type="string", example="SM-16"),
+     *                 @OA\Property(property="code", type="string", example="SM-16"),
      *                 @OA\Property(property="price", type="number", format="float", example=25000),
      *                 @OA\Property(property="stock", type="integer", example=100),
      *                 @OA\Property(
@@ -205,7 +205,7 @@ class ProductController extends BaseApiController
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Sampoerna Mild 16"),
-     *                     @OA\Property(property="sku", type="string", example="SM-16"),
+     *                     @OA\Property(property="code", type="string", example="SM-16"),
      *                     @OA\Property(property="price", type="number", format="float", example=25000)
      *                 )
      *             )

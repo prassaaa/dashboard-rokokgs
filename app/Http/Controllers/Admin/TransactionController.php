@@ -89,7 +89,7 @@ class TransactionController extends Controller
         $transaction = SalesTransaction::with([
             'sales:id,name,email',
             'branch:id,name',
-            'items.product:id,name,sku',
+            'items.product:id,name,code',
         ])->findOrFail($id);
 
         // Admin Cabang can only see their branch transactions

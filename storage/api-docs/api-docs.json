@@ -1020,7 +1020,7 @@
                     {
                         "name": "search",
                         "in": "query",
-                        "description": "Search by product name or SKU",
+                        "description": "Search by product name or code",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -1085,7 +1085,7 @@
                                                         "type": "string",
                                                         "example": "Sampoerna Mild 16"
                                                     },
-                                                    "sku": {
+                                                    "code": {
                                                         "type": "string",
                                                         "example": "SM-16"
                                                     },
@@ -1198,7 +1198,7 @@
                                                     "type": "string",
                                                     "example": "Sampoerna Mild 16"
                                                 },
-                                                "sku": {
+                                                "code": {
                                                     "type": "string",
                                                     "example": "SM-16"
                                                 },
@@ -1324,7 +1324,7 @@
                                                         "type": "string",
                                                         "example": "Sampoerna Mild 16"
                                                     },
-                                                    "sku": {
+                                                    "code": {
                                                         "type": "string",
                                                         "example": "SM-16"
                                                     },
