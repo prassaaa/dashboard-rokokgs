@@ -26,7 +26,7 @@ class TransactionController extends Controller
         $query = SalesTransaction::with(['sales:id,name', 'branch:id,name'])
             ->orderByDesc('created_at');
 
-        // Branch Manager can only see their branch transactions
+        // Admin Cabang can only see their branch transactions
         if (!$isSuperAdmin) {
             $query->where('branch_id', $user->branch_id);
         }
@@ -92,7 +92,7 @@ class TransactionController extends Controller
             'items.product:id,name,sku',
         ])->findOrFail($id);
 
-        // Branch Manager can only see their branch transactions
+        // Admin Cabang can only see their branch transactions
         if (!$user->hasRole('Super Admin') && $transaction->branch_id !== $user->branch_id) {
             abort(403, 'Unauthorized');
         }

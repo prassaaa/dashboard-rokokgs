@@ -26,7 +26,7 @@ class CommissionController extends Controller
         $query = Commission::with(['sales:id,name', 'salesTransaction'])
             ->orderByDesc('created_at');
 
-        // Branch Manager can only see their branch commissions
+        // Admin Cabang can only see their branch commissions
         if (!$isSuperAdmin) {
             $query->whereHas('salesTransaction', function ($q) use ($user) {
                 $q->where('branch_id', $user->branch_id);

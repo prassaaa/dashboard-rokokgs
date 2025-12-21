@@ -15,7 +15,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->hasAnyRole(['Super Admin', 'Branch Manager']);
+        return $this->user()->hasAnyRole(['Super Admin', 'Admin Cabang']);
     }
 
     /**
@@ -30,7 +30,7 @@ class CreateUserRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:20'],
             'branch_id' => ['required', 'exists:branches,id'],
             'roles' => ['required', 'array', 'min:1'],
-            'roles.*' => ['string', Rule::in(['Super Admin', 'Branch Manager', 'Sales'])],
+            'roles.*' => ['string', Rule::in(['Super Admin', 'Admin Cabang', 'Sales'])],
             'areas' => ['nullable', 'array'],
             'areas.*' => ['exists:areas,id'],
             'is_active' => ['boolean'],

@@ -35,7 +35,7 @@ class UserController extends Controller
         $query = User::with(['branch:id,name', 'roles', 'areas:id,name'])
             ->orderByDesc('created_at');
 
-        // Branch Manager can only see users in their branch
+        // Admin Cabang can only see users in their branch
         if (!$isSuperAdmin) {
             $query->where('branch_id', $user->branch_id);
         }
@@ -122,7 +122,7 @@ class UserController extends Controller
 
         $user = User::with(['branch', 'roles', 'areas'])->findOrFail($id);
 
-        // Branch Manager can only edit users in their branch
+        // Admin Cabang can only edit users in their branch
         if (!$isSuperAdmin && $user->branch_id !== $currentUser->branch_id) {
             abort(403, 'Unauthorized');
         }
@@ -188,7 +188,7 @@ class UserController extends Controller
                 ->with('error', 'Cannot delete your own account');
         }
 
-        // Branch Manager can only delete users in their branch
+        // Admin Cabang can only delete users in their branch
         if (!$currentUser->hasRole('Super Admin') && $userToDelete->branch_id !== $currentUser->branch_id) {
             abort(403, 'Unauthorized');
         }
@@ -243,9 +243,9 @@ class UserController extends Controller
     private function getAvailableRoles(bool $isSuperAdmin): array
     {
         if ($isSuperAdmin) {
-            return ['Super Admin', 'Branch Manager', 'Sales'];
+            return ['Super Admin', 'Admin Cabang', 'Sales'];
         }
 
-        return ['Sales']; // Branch Manager can only create Sales
+        return ['Sales']; // Admin Cabang can only create Sales
     }
 }

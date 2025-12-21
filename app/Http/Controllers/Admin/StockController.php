@@ -29,7 +29,7 @@ class StockController extends Controller
         $query = Stock::with(['product:id,name,sku', 'branch:id,name'])
             ->orderBy('quantity');
 
-        // Branch Manager can only see their branch stocks
+        // Admin Cabang can only see their branch stocks
         if (!$isSuperAdmin) {
             $query->where('branch_id', $user->branch_id);
         }
