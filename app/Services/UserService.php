@@ -221,6 +221,11 @@ class UserService extends BaseService
     {
         $currentUser = auth()->user();
 
+        // Fail secure: require authenticated user
+        if (!$currentUser) {
+            throw new UnauthorizedActionException('access this resource without authentication');
+        }
+
         // Super Admin can access all branches
         if ($currentUser->hasRole('Super Admin')) {
             return;

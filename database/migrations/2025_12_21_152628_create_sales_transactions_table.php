@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sales_transactions', function (Blueprint $table) {
             $table->id();
             $table->string('transaction_number')->unique();
+            $table->date('transaction_date');
             $table->foreignId('branch_id')->constrained('branches')->onDelete('cascade');
             $table->foreignId('sales_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('area_id')->nullable()->constrained('areas')->onDelete('set null');

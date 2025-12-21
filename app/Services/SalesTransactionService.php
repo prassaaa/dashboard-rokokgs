@@ -103,10 +103,11 @@ class SalesTransactionService extends BaseService
 
             // Create transaction
             $transaction = SalesTransaction::create([
-                'transaction_number' => $this->generateTransactionNumber(),
-                'transaction_date' => $dto->transaction_date ?? now(),
+                'transaction_number' => $dto->transaction_number ?? $this->generateTransactionNumber(),
+                'transaction_date' => today(),
                 'branch_id' => $dto->branch_id,
                 'sales_id' => $dto->sales_id,
+                'area_id' => $dto->area_id,
                 'customer_name' => $dto->customer_name,
                 'customer_phone' => $dto->customer_phone,
                 'customer_address' => $dto->customer_address,
@@ -114,10 +115,10 @@ class SalesTransactionService extends BaseService
                 'longitude' => $dto->longitude,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
+                'tax' => $dto->tax,
                 'total' => $total,
                 'payment_method' => $dto->payment_method,
-                'payment_status' => $dto->payment_status ?? 'pending',
-                'status' => 'pending',
+                'status' => $dto->status,
                 'notes' => $dto->notes,
             ]);
 
@@ -255,8 +256,8 @@ class SalesTransactionService extends BaseService
         $transactions = $this->getBySales($salesId, $startDate, $endDate);
 
         $totalTransactions = $transactions->count();
-        $totalSales = $transactions->where('status', 'approved')->sum('total');
-        $totalCommission = Commission::whereIn('sales_transaction_id', $transactions->pluck('id'))->sum('amount');
+        $totalSales = (float) $transactions->where('status', 'approved')->sum('total');
+        $totalCommission = (float) Commission::whereIn('sales_transaction_id', $transactions->pluck('id'))->sum('commission_amount');
 
         return [
             'sales_id' => $salesId,
@@ -304,10 +305,10 @@ class SalesTransactionService extends BaseService
         return Commission::create([
             'sales_transaction_id' => $transaction->id,
             'sales_id' => $transaction->sales_id,
-            'amount' => $commissionAmount,
-            'percentage' => $commissionRate * 100,
+            'transaction_amount' => $transaction->total,
+            'commission_percentage' => $commissionRate * 100,
+            'commission_amount' => $commissionAmount,
             'status' => 'pending',
-            'calculation_date' => now(),
         ]);
     }
 

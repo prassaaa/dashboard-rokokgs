@@ -18,6 +18,7 @@ class SalesTransaction extends Model
 
     protected $fillable = [
         'transaction_number',
+        'transaction_date',
         'branch_id',
         'sales_id',
         'area_id',
@@ -40,6 +41,7 @@ class SalesTransaction extends Model
     protected function casts(): array
     {
         return [
+            'transaction_date' => 'date',
             'subtotal' => 'decimal:2',
             'discount' => 'decimal:2',
             'tax' => 'decimal:2',

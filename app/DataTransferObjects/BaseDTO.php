@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
-abstract class BaseDTO
+abstract readonly class BaseDTO
 {
     /**
      * Convert DTO to array.

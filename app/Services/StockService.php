@@ -241,7 +241,7 @@ class StockService extends BaseService
     /**
      * Perform stock opname (physical stock check).
      */
-    public function stockOpname(int $branchId, array $stockData): Collection
+    public function stockOpname(int $branchId, array $stockData): \Illuminate\Support\Collection
     {
         return $this->executeInTransaction(function () use ($branchId, $stockData) {
             $adjustments = collect();

@@ -9,7 +9,7 @@ readonly class UserDTO extends BaseDTO
     public function __construct(
         public string $name,
         public string $email,
-        public string $password,
+        public ?string $password,
         public ?int $branch_id = null,
         public ?string $phone = null,
         public ?string $avatar = null,
