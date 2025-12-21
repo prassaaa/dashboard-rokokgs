@@ -60,6 +60,7 @@ class UserService extends BaseService
 
             $userData = $dto->toArray();
             unset($userData['roles']); // Handle roles separately
+            unset($userData['areas']); // Handle areas separately
 
             $userData['password'] = Hash::make($dto->password);
 
@@ -70,13 +71,18 @@ class UserService extends BaseService
                 $user->assignRole($dto->roles);
             }
 
+            // Sync areas if provided
+            if ($dto->areas) {
+                $user->areas()->sync($dto->areas);
+            }
+
             $this->logAction('User created', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'roles' => $dto->roles,
             ]);
 
-            return $user->load(['branch', 'roles']);
+            return $user->load(['branch', 'roles', 'areas']);
         });
     }
 
@@ -105,6 +111,7 @@ class UserService extends BaseService
 
             $userData = $dto->toArray();
             unset($userData['roles']); // Handle roles separately
+            unset($userData['areas']); // Handle areas separately
 
             // Only update password if provided
             if ($dto->password) {
@@ -120,12 +127,17 @@ class UserService extends BaseService
                 $user->syncRoles($dto->roles);
             }
 
+            // Sync areas if provided
+            if ($dto->areas !== null) {
+                $user->areas()->sync($dto->areas);
+            }
+
             $this->logAction('User updated', [
                 'user_id' => $user->id,
                 'email' => $user->email,
             ]);
 
-            return $user->fresh(['branch', 'roles']);
+            return $user->fresh(['branch', 'roles', 'areas']);
         });
     }
 

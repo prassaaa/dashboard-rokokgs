@@ -15,6 +15,7 @@ readonly class UserDTO extends BaseDTO
         public ?string $avatar = null,
         public bool $is_active = true,
         public ?array $roles = null,
+        public ?array $areas = null,
     ) {
     }
 }
