@@ -40,15 +40,15 @@ interface Props {
 
 // Form schema
 const productSchema = z.object({
-    name: z.string().min(3, 'Name must be at least 3 characters'),
-    code: z.string().min(3, 'Code must be at least 3 characters'),
+    name: z.string().min(3, 'Nama minimal 3 karakter'),
+    code: z.string().min(3, 'Kode minimal 3 karakter'),
     barcode: z.string().optional(),
-    product_category_id: z.string().min(1, 'Category is required'),
+    product_category_id: z.string().min(1, 'Kategori wajib dipilih'),
     description: z.string().optional(),
-    price: z.string().min(1, 'Selling price is required'),
+    price: z.string().min(1, 'Harga jual wajib diisi'),
     cost: z.string().optional(),
     unit: z.string().default('pack'),
-    items_per_carton: z.string().min(1, 'Items per carton is required'),
+    items_per_carton: z.string().min(1, 'Item per karton wajib diisi'),
     is_active: z.boolean().default(true),
 });
 
@@ -91,13 +91,13 @@ export default function Edit({ product, categories }: Props) {
         if (file) {
             // Check file size (max 2MB)
             if (file.size > 2 * 1024 * 1024) {
-                alert('Image size must be less than 2MB');
+                alert('Ukuran gambar maksimal 2MB');
                 return;
             }
 
             // Check file type
             if (!file.type.startsWith('image/')) {
-                alert('File must be an image');
+                alert('File harus berupa gambar');
                 return;
             }
 
@@ -188,11 +188,11 @@ export default function Edit({ product, categories }: Props) {
                                 <div className="grid gap-4 md:grid-cols-2">
                                     {/* Product Name */}
                                     <div className="space-y-2">
-                                    <Label htmlFor="name">Product Name *</Label>
+                                    <Label htmlFor="name">Nama Produk *</Label>
                                     <Input
                                         id="name"
                                         {...register('name')}
-                                        placeholder="e.g. Mineral Water 600ml"
+                                        placeholder="Contoh: Air Mineral 600ml"
                                     />
                                     {errors.name && (
                                         <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -201,11 +201,11 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Code */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="code">Product Code *</Label>
+                                    <Label htmlFor="code">Kode Produk *</Label>
                                     <Input
                                         id="code"
                                         {...register('code')}
-                                        placeholder="e.g. MW-600"
+                                        placeholder="Contoh: MW-600"
                                     />
                                     {errors.code && (
                                         <p className="text-sm text-destructive">{errors.code.message}</p>
@@ -218,7 +218,7 @@ export default function Edit({ product, categories }: Props) {
                                     <Input
                                         id="barcode"
                                         {...register('barcode')}
-                                        placeholder="e.g. 8991001234567"
+                                        placeholder="Contoh: 8991001234567"
                                     />
                                     {errors.barcode && (
                                         <p className="text-sm text-destructive">{errors.barcode.message}</p>
@@ -227,13 +227,13 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Category */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="product_category_id">Category *</Label>
+                                    <Label htmlFor="product_category_id">Kategori *</Label>
                                     <Select
                                         onValueChange={(value) => setValue('product_category_id', value)}
                                         defaultValue={product.product_category_id.toString()}
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select a category" />
+                                            <SelectValue placeholder="Pilih kategori" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {categories.map((category) => (
@@ -252,14 +252,14 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Selling Price */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="price">Selling Price (Rp) *</Label>
+                                    <Label htmlFor="price">Harga Jual (Rp) *</Label>
                                     <Input
                                         id="price"
                                         type="number"
                                         step="0.01"
                                         min="0"
                                         {...register('price')}
-                                        placeholder="e.g. 5000"
+                                        placeholder="Contoh: 5000"
                                     />
                                     {errors.price && (
                                         <p className="text-sm text-destructive">{errors.price.message}</p>
@@ -268,14 +268,14 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Cost Price */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="cost">Cost Price (Rp)</Label>
+                                    <Label htmlFor="cost">Harga Beli (Rp)</Label>
                                     <Input
                                         id="cost"
                                         type="number"
                                         step="0.01"
                                         min="0"
                                         {...register('cost')}
-                                        placeholder="e.g. 4000"
+                                        placeholder="Contoh: 4000"
                                     />
                                     {errors.cost && (
                                         <p className="text-sm text-destructive">{errors.cost.message}</p>
@@ -284,20 +284,20 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Unit */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="unit">Unit *</Label>
+                                    <Label htmlFor="unit">Satuan *</Label>
                                     <Select
                                         onValueChange={(value) => setValue('unit', value)}
                                         defaultValue={product.unit}
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select unit" />
+                                            <SelectValue placeholder="Pilih satuan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="pack">Pack</SelectItem>
-                                            <SelectItem value="box">Box</SelectItem>
-                                            <SelectItem value="carton">Carton</SelectItem>
-                                            <SelectItem value="pcs">Pieces</SelectItem>
-                                            <SelectItem value="bottle">Bottle</SelectItem>
+                                            <SelectItem value="pack">Pak</SelectItem>
+                                            <SelectItem value="box">Kotak</SelectItem>
+                                            <SelectItem value="carton">Karton</SelectItem>
+                                            <SelectItem value="pcs">Pcs</SelectItem>
+                                            <SelectItem value="bottle">Botol</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     {errors.unit && (
@@ -307,13 +307,13 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Items per Carton */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="items_per_carton">Items per Carton *</Label>
+                                    <Label htmlFor="items_per_carton">Item per Karton *</Label>
                                     <Input
                                         id="items_per_carton"
                                         type="number"
                                         min="1"
                                         {...register('items_per_carton')}
-                                        placeholder="e.g. 10"
+                                        placeholder="Contoh: 10"
                                     />
                                     {errors.items_per_carton && (
                                         <p className="text-sm text-destructive">
@@ -332,11 +332,11 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Description */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="description">Description</Label>
+                                    <Label htmlFor="description">Deskripsi</Label>
                                     <Textarea
                                         id="description"
                                         {...register('description')}
-                                        placeholder="Product description..."
+                                        placeholder="Deskripsi produk..."
                                         rows={4}
                                     />
                                     {errors.description && (
@@ -353,7 +353,7 @@ export default function Edit({ product, categories }: Props) {
 
                                 {/* Image Upload */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="image">Product Image</Label>
+                                    <Label htmlFor="image">Gambar Produk</Label>
                                     <div className="space-y-4">
                                         {imagePreview ? (
                                             <div className="relative inline-block">
@@ -379,10 +379,10 @@ export default function Edit({ product, categories }: Props) {
                                             >
                                                 <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                                                 <p className="text-sm text-muted-foreground mb-2">
-                                                    Click to upload product image
+                                                    Klik untuk upload gambar produk
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
-                                                    PNG, JPG up to 2MB
+                                                    PNG, JPG maksimal 2MB
                                                 </p>
                                             </div>
                                         )}
@@ -411,7 +411,7 @@ export default function Edit({ product, categories }: Props) {
                                         onCheckedChange={(checked) => setValue('is_active', !!checked)}
                                     />
                                     <Label htmlFor="is_active" className="cursor-pointer">
-                                        Active (product is available for sale)
+                                        Aktif (produk tersedia untuk dijual)
                                     </Label>
                                 </div>
                             </div>
@@ -424,10 +424,10 @@ export default function Edit({ product, categories }: Props) {
                                     onClick={() => router.visit('/admin/products')}
                                     disabled={isSubmitting}
                                 >
-                                    Cancel
+                                    Batal
                                 </Button>
                                 <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? 'Updating...' : 'Update Product'}
+                                    {isSubmitting ? 'Memperbarui...' : 'Perbarui Produk'}
                                 </Button>
                             </div>
                         </div>
