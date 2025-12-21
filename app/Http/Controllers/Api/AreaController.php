@@ -11,7 +11,39 @@ use Illuminate\Http\JsonResponse;
 class AreaController extends BaseApiController
 {
     /**
-     * Get all areas.
+     * @OA\Get(
+     *     path="/api/v1/areas",
+     *     tags={"Areas"},
+     *     summary="Get areas list",
+     *     description="Sales melihat area yang di-assign ke mereka, Admin/Manager melihat semua area",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Areas retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Areas retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Jakarta Selatan"),
+     *                     @OA\Property(property="code", type="string", example="JKT-S"),
+     *                     @OA\Property(property="description", type="string", example="Wilayah Jakarta Selatan"),
+     *                     @OA\Property(property="is_active", type="boolean", example=true)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
@@ -32,7 +64,52 @@ class AreaController extends BaseApiController
     }
 
     /**
-     * Get area by ID.
+     * @OA\Get(
+     *     path="/api/v1/areas/{id}",
+     *     tags={"Areas"},
+     *     summary="Get area by ID",
+     *     description="Mendapatkan detail area berdasarkan ID",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Area ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Area retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Area retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Jakarta Selatan"),
+     *                 @OA\Property(property="code", type="string", example="JKT-S"),
+     *                 @OA\Property(property="description", type="string", example="Wilayah Jakarta Selatan"),
+     *                 @OA\Property(property="is_active", type="boolean", example=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Area not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Area not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function show(int $id): JsonResponse
     {

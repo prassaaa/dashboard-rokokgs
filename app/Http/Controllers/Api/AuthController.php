@@ -22,7 +22,56 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * Login user and create token.
+     * @OA\Post(
+     *     path="/api/v1/auth/login",
+     *     tags={"Authentication"},
+     *     summary="Login user dan generate token",
+     *     description="Authenticate user dengan email dan password, return user data dan bearer token",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Login successful"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="user",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Admin User"),
+     *                     @OA\Property(property="email", type="string", example="admin@example.com")
+     *                 ),
+     *                 @OA\Property(property="token", type="string", example="1|xxxxxxxxxxxxxxxxxxx")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid credentials",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid credentials")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Account is inactive",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Account is inactive")
+     *         )
+     *     )
+     * )
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -51,7 +100,48 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * Register new user (Sales only via mobile).
+     * @OA\Post(
+     *     path="/api/v1/auth/register",
+     *     tags={"Authentication"},
+     *     summary="Register user baru (Sales only)",
+     *     description="Registrasi user baru untuk Sales melalui mobile app, memerlukan approval admin",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation","branch_id"},
+     *             @OA\Property(property="name", type="string", example="Sales User"),
+     *             @OA\Property(property="email", type="string", format="email", example="sales@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password123"),
+     *             @OA\Property(property="phone", type="string", example="081234567890"),
+     *             @OA\Property(property="branch_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Registration successful, waiting approval",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Registration successful. Please wait for admin approval."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=2),
+     *                 @OA\Property(property="name", type="string", example="Sales User"),
+     *                 @OA\Property(property="email", type="string", example="sales@example.com"),
+     *                 @OA\Property(property="is_active", type="boolean", example=false)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="The email has already been taken.")
+     *         )
+     *     )
+     * )
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -77,7 +167,48 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * Get authenticated user profile.
+     * @OA\Get(
+     *     path="/api/v1/auth/profile",
+     *     tags={"Authentication"},
+     *     summary="Get user profile",
+     *     description="Mendapatkan data profil user yang sedang login beserta branch, roles, dan areas",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Profile retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Admin User"),
+     *                 @OA\Property(property="email", type="string", example="admin@example.com"),
+     *                 @OA\Property(property="phone", type="string", example="081234567890"),
+     *                 @OA\Property(property="is_active", type="boolean", example=true),
+     *                 @OA\Property(
+     *                     property="branch",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Cabang Jakarta")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="roles",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Admin")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function profile(): JsonResponse
     {
@@ -90,7 +221,55 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * Update user profile.
+     * @OA\Put(
+     *     path="/api/v1/auth/profile",
+     *     tags={"Authentication"},
+     *     summary="Update user profile",
+     *     description="Update data profil user yang sedang login (nama, email, phone, password, avatar)",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email"},
+     *             @OA\Property(property="name", type="string", example="Updated Name"),
+     *             @OA\Property(property="email", type="string", format="email", example="newemail@example.com"),
+     *             @OA\Property(property="phone", type="string", example="081234567890"),
+     *             @OA\Property(property="password", type="string", format="password", example="newpassword123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123"),
+     *             @OA\Property(property="avatar", type="string", format="binary", description="Avatar image file")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Profile updated successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Updated Name"),
+     *                 @OA\Property(property="email", type="string", example="newemail@example.com")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="The email has already been taken.")
+     *         )
+     *     )
+     * )
      */
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
@@ -115,7 +294,29 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * Logout user and revoke token.
+     * @OA\Post(
+     *     path="/api/v1/auth/logout",
+     *     tags={"Authentication"},
+     *     summary="Logout user",
+     *     description="Logout user dan revoke token yang sedang digunakan",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Logout successful"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function logout(): JsonResponse
     {

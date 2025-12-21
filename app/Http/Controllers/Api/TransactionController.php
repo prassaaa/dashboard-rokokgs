@@ -19,7 +19,45 @@ class TransactionController extends BaseApiController
     }
 
     /**
-     * Get transactions for authenticated sales user.
+     * @OA\Get(
+     *     path="/api/v1/transactions",
+     *     tags={"Transactions"},
+     *     summary="Get transactions list",
+     *     description="Sales melihat transaksi sendiri, Admin/Manager melihat semua transaksi di cabangnya",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Transactions retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Transactions retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="customer_name", type="string", example="Toko Maju Jaya"),
+     *                     @OA\Property(property="total", type="number", format="float", example=500000),
+     *                     @OA\Property(property="status", type="string", example="completed")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function index(Request $request): JsonResponse
     {
@@ -45,7 +83,69 @@ class TransactionController extends BaseApiController
     }
 
     /**
-     * Create new transaction.
+     * @OA\Post(
+     *     path="/api/v1/transactions",
+     *     tags={"Transactions"},
+     *     summary="Create new transaction",
+     *     description="Sales membuat transaksi baru dengan items produk",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"customer_name","items","subtotal","total","payment_method"},
+     *             @OA\Property(property="customer_name", type="string", example="Toko Maju Jaya"),
+     *             @OA\Property(property="customer_phone", type="string", example="081234567890"),
+     *             @OA\Property(property="customer_address", type="string", example="Jl. Sudirman No. 123"),
+     *             @OA\Property(property="latitude", type="number", format="float", example=-6.200000),
+     *             @OA\Property(property="longitude", type="number", format="float", example=106.816666),
+     *             @OA\Property(
+     *                 property="items",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="product_id", type="integer", example=1),
+     *                     @OA\Property(property="quantity", type="integer", example=10),
+     *                     @OA\Property(property="price", type="number", format="float", example=25000)
+     *                 )
+     *             ),
+     *             @OA\Property(property="subtotal", type="number", format="float", example=250000),
+     *             @OA\Property(property="discount", type="number", format="float", example=0),
+     *             @OA\Property(property="tax", type="number", format="float", example=0),
+     *             @OA\Property(property="total", type="number", format="float", example=250000),
+     *             @OA\Property(property="payment_method", type="string", example="cash"),
+     *             @OA\Property(property="notes", type="string", example="Pengiriman segera")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Transaction created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Transaction created successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="customer_name", type="string", example="Toko Maju Jaya"),
+     *                 @OA\Property(property="total", type="number", format="float", example=250000)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error or insufficient stock",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Insufficient stock for product")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function store(CreateTransactionRequest $request): JsonResponse
     {
@@ -83,7 +183,67 @@ class TransactionController extends BaseApiController
     }
 
     /**
-     * Get transaction by ID.
+     * @OA\Get(
+     *     path="/api/v1/transactions/{id}",
+     *     tags={"Transactions"},
+     *     summary="Get transaction by ID",
+     *     description="Mendapatkan detail transaksi, Sales hanya bisa lihat transaksi sendiri",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Transaction ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Transaction retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Transaction retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="customer_name", type="string", example="Toko Maju Jaya"),
+     *                 @OA\Property(property="total", type="number", format="float", example=250000),
+     *                 @OA\Property(
+     *                     property="items",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="product_name", type="string", example="Sampoerna Mild 16"),
+     *                         @OA\Property(property="quantity", type="integer", example=10),
+     *                         @OA\Property(property="price", type="number", format="float", example=25000)
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Transaction not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Transaction not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function show(int $id): JsonResponse
     {
@@ -102,7 +262,52 @@ class TransactionController extends BaseApiController
     }
 
     /**
-     * Get transactions by sales ID.
+     * @OA\Get(
+     *     path="/api/v1/transactions/sales/{salesId}",
+     *     tags={"Transactions"},
+     *     summary="Get transactions by sales ID",
+     *     description="Mendapatkan semua transaksi dari sales tertentu, Sales hanya bisa lihat transaksinya sendiri",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="salesId",
+     *         in="path",
+     *         description="Sales User ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Transactions retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Transactions retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="customer_name", type="string", example="Toko Maju Jaya"),
+     *                     @OA\Property(property="total", type="number", format="float", example=250000)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function bySales(int $salesId): JsonResponse
     {

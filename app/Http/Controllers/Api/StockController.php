@@ -17,7 +17,43 @@ class StockController extends BaseApiController
     }
 
     /**
-     * Get stock list for current user's branch.
+     * @OA\Get(
+     *     path="/api/v1/stocks",
+     *     tags={"Stock"},
+     *     summary="Get stock list",
+     *     description="Mendapatkan daftar stock untuk cabang user yang sedang login",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Stock retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Stock retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(
+     *                         property="product",
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="Sampoerna Mild 16")
+     *                     ),
+     *                     @OA\Property(property="quantity", type="integer", example=100),
+     *                     @OA\Property(property="min_stock", type="integer", example=10)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function index(Request $request): JsonResponse
     {
@@ -31,7 +67,49 @@ class StockController extends BaseApiController
     }
 
     /**
-     * Get stock by product ID (for current branch).
+     * @OA\Get(
+     *     path="/api/v1/stocks/product/{productId}",
+     *     tags={"Stock"},
+     *     summary="Get stock by product",
+     *     description="Mendapatkan stock berdasarkan product ID untuk cabang user yang sedang login",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="productId",
+     *         in="path",
+     *         description="Product ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Stock retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Stock retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="quantity", type="integer", example=100)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Stock not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Stock not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function byProduct(int $productId): JsonResponse
     {
@@ -50,7 +128,42 @@ class StockController extends BaseApiController
     }
 
     /**
-     * Get low stock alerts for current branch.
+     * @OA\Get(
+     *     path="/api/v1/stocks/low-stock",
+     *     tags={"Stock"},
+     *     summary="Get low stock alerts",
+     *     description="Mendapatkan daftar produk dengan stock rendah (di bawah minimum) untuk cabang user",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Low stock alerts retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Low stock alerts retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(
+     *                         property="product",
+     *                         type="object",
+     *                         @OA\Property(property="name", type="string", example="Sampoerna Mild 16")
+     *                     ),
+     *                     @OA\Property(property="quantity", type="integer", example=5),
+     *                     @OA\Property(property="min_stock", type="integer", example=10)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function lowStock(): JsonResponse
     {
