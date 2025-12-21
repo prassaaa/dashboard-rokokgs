@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateCategoryRequest;
 use App\Http\Requests\Admin\UpdateCategoryRequest;
-use App\Models\Category;
+use App\Models\ProductCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,7 +20,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request): Response
     {
-        $query = Category::withCount('products')
+        $query = ProductCategory::withCount('products')
             ->orderBy('name');
 
         // Filter by status
@@ -57,7 +57,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
 
-        Category::create($validated);
+        ProductCategory::create($validated);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully');
@@ -68,7 +68,7 @@ class CategoryController extends Controller
      */
     public function edit(int $id): Response
     {
-        $category = Category::findOrFail($id);
+        $category = ProductCategory::findOrFail($id);
 
         return Inertia::render('Admin/Categories/Edit', [
             'category' => $category,
@@ -82,7 +82,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
 
-        $category = Category::findOrFail($id);
+        $category = ProductCategory::findOrFail($id);
         $category->update($validated);
 
         return redirect()->route('admin.categories.index')
@@ -94,7 +94,7 @@ class CategoryController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        $category = Category::findOrFail($id);
+        $category = ProductCategory::findOrFail($id);
 
         // Check if category has products
         if ($category->products()->exists()) {

@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateProductRequest;
 use App\Http\Requests\Admin\UpdateProductRequest;
-use App\Models\Category;
+use App\Models\ProductCategory;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,12 +21,12 @@ class ProductController extends Controller
      */
     public function index(Request $request): Response
     {
-        $query = Product::with('category:id,name')
+        $query = Product::with('productCategory:id,name')
             ->orderByDesc('created_at');
 
         // Filter by category
         if ($request->has('category_id')) {
-            $query->where('category_id', $request->input('category_id'));
+            $query->where('product_category_id', $request->input('category_id'));
         }
 
         // Filter by status
@@ -45,7 +45,7 @@ class ProductController extends Controller
 
         $products = $query->paginate(15);
 
-        $categories = Category::where('is_active', true)
+        $categories = ProductCategory::where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -61,7 +61,7 @@ class ProductController extends Controller
      */
     public function create(): Response
     {
-        $categories = Category::where('is_active', true)
+        $categories = ProductCategory::where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -93,9 +93,9 @@ class ProductController extends Controller
      */
     public function edit(int $id): Response
     {
-        $product = Product::with('category')->findOrFail($id);
+        $product = Product::with('productCategory')->findOrFail($id);
 
-        $categories = Category::where('is_active', true)
+        $categories = ProductCategory::where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -121,6 +121,12 @@ class ProductController extends Controller
                 \Storage::disk('public')->delete($product->image);
             }
             $validated['image'] = $request->file('image')->store('products', 'public');
+        } elseif ($request->input('remove_image') === '1') {
+            // Remove image if requested
+            if ($product->image) {
+                \Storage::disk('public')->delete($product->image);
+            }
+            $validated['image'] = null;
         }
 
         $product->update($validated);

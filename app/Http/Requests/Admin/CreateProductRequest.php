@@ -18,7 +18,7 @@ class CreateProductRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'sku' => ['required', 'string', 'max:100', 'unique:products'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'product_category_id' => ['required', 'exists:product_categories,id'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'commission_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -30,7 +30,7 @@ class CreateProductRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'category_id' => 'category',
+            'product_category_id' => 'category',
         ];
     }
 }
