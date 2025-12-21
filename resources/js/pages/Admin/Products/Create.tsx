@@ -1,5 +1,5 @@
 import { FormEventHandler, useRef, useState } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { ArrowLeft, Upload, X } from 'lucide-react';
 
 interface ProductCategory {
@@ -25,11 +25,14 @@ interface Props {
 // Form schema
 const productSchema = z.object({
     name: z.string().min(3, 'Name must be at least 3 characters'),
-    sku: z.string().min(3, 'SKU must be at least 3 characters'),
+    code: z.string().min(3, 'Code must be at least 3 characters'),
+    barcode: z.string().optional(),
     product_category_id: z.string().min(1, 'Category is required'),
     description: z.string().optional(),
-    price: z.string().min(1, 'Price is required'),
-    commission_percentage: z.string().min(0).max(100),
+    price: z.string().min(1, 'Selling price is required'),
+    cost: z.string().optional(),
+    unit: z.string().default('pack'),
+    items_per_carton: z.string().min(1, 'Items per carton is required'),
     is_active: z.boolean().default(true),
 });
 
@@ -50,11 +53,14 @@ export default function Create({ categories }: Props) {
         resolver: zodResolver(productSchema) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
         defaultValues: {
             name: '',
-            sku: '',
+            code: '',
+            barcode: '',
             product_category_id: '',
             description: '',
             price: '',
-            commission_percentage: '0',
+            cost: '',
+            unit: 'pack',
+            items_per_carton: '10',
             is_active: true,
         },
     });
@@ -102,11 +108,14 @@ export default function Create({ categories }: Props) {
 
             // Append form fields
             formData.append('name', data.name);
-            formData.append('sku', data.sku);
+            formData.append('code', data.code);
+            if (data.barcode) formData.append('barcode', data.barcode);
             formData.append('product_category_id', data.product_category_id);
             if (data.description) formData.append('description', data.description);
             formData.append('price', data.price);
-            formData.append('commission_percentage', data.commission_percentage);
+            if (data.cost) formData.append('cost', data.cost);
+            formData.append('unit', data.unit);
+            formData.append('items_per_carton', data.items_per_carton);
             formData.append('is_active', data.is_active ? '1' : '0');
 
             // Append image if exists
@@ -124,35 +133,35 @@ export default function Create({ categories }: Props) {
         <AppLayout>
             <Head title="Create Product" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.visit('/admin/products')}
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back
-                        </Button>
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">Create Product</h1>
-                            <p className="text-muted-foreground">Add a new product to the system</p>
-                        </div>
+                    <div>
+                        <h1 className="text-3xl font-bold">Tambah Produk Baru</h1>
+                        <p className="text-muted-foreground">
+                            Tambahkan produk baru ke sistem
+                        </p>
                     </div>
+                    <Button asChild variant="outline">
+                        <Link href="/admin/products">
+                            <ArrowLeft className="mr-2 size-4" />
+                            Kembali
+                        </Link>
+                    </Button>
                 </div>
 
                 {/* Form */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Product Information</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={onSubmit} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Product Name */}
-                                <div className="space-y-2">
+                <form onSubmit={onSubmit}>
+                    <Card className="p-6">
+                        <div className="space-y-6">
+                            {/* Product Information */}
+                            <div>
+                                <h2 className="mb-4 text-lg font-semibold">
+                                    Informasi Produk
+                                </h2>
+                                <div className="grid gap-4 md:grid-cols-2">
+                                    {/* Product Name */}
+                                    <div className="space-y-2">
                                     <Label htmlFor="name">Product Name *</Label>
                                     <Input
                                         id="name"
@@ -164,16 +173,29 @@ export default function Create({ categories }: Props) {
                                     )}
                                 </div>
 
-                                {/* SKU */}
+                                {/* Code */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="sku">SKU *</Label>
+                                    <Label htmlFor="code">Product Code *</Label>
                                     <Input
-                                        id="sku"
-                                        {...register('sku')}
+                                        id="code"
+                                        {...register('code')}
                                         placeholder="e.g. MW-600"
                                     />
-                                    {errors.sku && (
-                                        <p className="text-sm text-destructive">{errors.sku.message}</p>
+                                    {errors.code && (
+                                        <p className="text-sm text-destructive">{errors.code.message}</p>
+                                    )}
+                                </div>
+
+                                {/* Barcode */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="barcode">Barcode</Label>
+                                    <Input
+                                        id="barcode"
+                                        {...register('barcode')}
+                                        placeholder="e.g. 8991001234567"
+                                    />
+                                    {errors.barcode && (
+                                        <p className="text-sm text-destructive">{errors.barcode.message}</p>
                                     )}
                                 </div>
 
@@ -202,9 +224,9 @@ export default function Create({ categories }: Props) {
                                     )}
                                 </div>
 
-                                {/* Price */}
+                                {/* Selling Price */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="price">Price (Rp) *</Label>
+                                    <Label htmlFor="price">Selling Price (Rp) *</Label>
                                     <Input
                                         id="price"
                                         type="number"
@@ -218,95 +240,154 @@ export default function Create({ categories }: Props) {
                                     )}
                                 </div>
 
-                                {/* Commission Percentage */}
+                                {/* Cost Price */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="commission_percentage">Commission (%)</Label>
+                                    <Label htmlFor="cost">Cost Price (Rp)</Label>
                                     <Input
-                                        id="commission_percentage"
+                                        id="cost"
                                         type="number"
                                         step="0.01"
                                         min="0"
-                                        max="100"
-                                        {...register('commission_percentage')}
+                                        {...register('cost')}
+                                        placeholder="e.g. 4000"
+                                    />
+                                    {errors.cost && (
+                                        <p className="text-sm text-destructive">{errors.cost.message}</p>
+                                    )}
+                                </div>
+
+                                {/* Unit */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="unit">Unit *</Label>
+                                    <Select
+                                        onValueChange={(value) => setValue('unit', value)}
+                                        defaultValue="pack"
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select unit" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="pack">Pack</SelectItem>
+                                            <SelectItem value="box">Box</SelectItem>
+                                            <SelectItem value="carton">Carton</SelectItem>
+                                            <SelectItem value="pcs">Pieces</SelectItem>
+                                            <SelectItem value="bottle">Bottle</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.unit && (
+                                        <p className="text-sm text-destructive">{errors.unit.message}</p>
+                                    )}
+                                </div>
+
+                                {/* Items per Carton */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="items_per_carton">Items per Carton *</Label>
+                                    <Input
+                                        id="items_per_carton"
+                                        type="number"
+                                        min="1"
+                                        {...register('items_per_carton')}
                                         placeholder="e.g. 10"
                                     />
-                                    {errors.commission_percentage && (
+                                    {errors.items_per_carton && (
                                         <p className="text-sm text-destructive">
-                                            {errors.commission_percentage.message}
+                                            {errors.items_per_carton.message}
                                         </p>
                                     )}
                                 </div>
-                            </div>
-
-                            {/* Description */}
-                            <div className="space-y-2">
-                                <Label htmlFor="description">Description</Label>
-                                <Textarea
-                                    id="description"
-                                    {...register('description')}
-                                    placeholder="Product description..."
-                                    rows={4}
-                                />
-                                {errors.description && (
-                                    <p className="text-sm text-destructive">{errors.description.message}</p>
-                                )}
-                            </div>
-
-                            {/* Image Upload */}
-                            <div className="space-y-2">
-                                <Label htmlFor="image">Product Image</Label>
-                                <div className="space-y-4">
-                                    {imagePreview ? (
-                                        <div className="relative inline-block">
-                                            <img
-                                                src={imagePreview}
-                                                alt="Preview"
-                                                className="w-48 h-48 object-cover rounded-lg border"
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="icon"
-                                                className="absolute top-2 right-2"
-                                                onClick={handleRemoveImage}
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <div
-                                            className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors"
-                                            onClick={() => fileInputRef.current?.click()}
-                                        >
-                                            <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                                            <p className="text-sm text-muted-foreground mb-2">
-                                                Click to upload product image
-                                            </p>
-                                            <p className="text-xs text-muted-foreground">
-                                                PNG, JPG up to 2MB
-                                            </p>
-                                        </div>
-                                    )}
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="hidden"
-                                    />
                                 </div>
                             </div>
 
-                            {/* Is Active */}
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="is_active"
-                                    checked={isActive}
-                                    onCheckedChange={(checked) => setValue('is_active', !!checked)}
-                                />
-                                <Label htmlFor="is_active" className="cursor-pointer">
-                                    Active (product is available for sale)
-                                </Label>
+                            {/* Additional Information */}
+                            <div>
+                                <h2 className="mb-4 text-lg font-semibold">
+                                    Informasi Tambahan
+                                </h2>
+
+                                {/* Description */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="description">Description</Label>
+                                    <Textarea
+                                        id="description"
+                                        {...register('description')}
+                                        placeholder="Product description..."
+                                        rows={4}
+                                    />
+                                    {errors.description && (
+                                        <p className="text-sm text-destructive">{errors.description.message}</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Product Media */}
+                            <div>
+                                <h2 className="mb-4 text-lg font-semibold">
+                                    Media Produk
+                                </h2>
+
+                                {/* Image Upload */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="image">Product Image</Label>
+                                    <div className="space-y-4">
+                                        {imagePreview ? (
+                                            <div className="relative inline-block">
+                                                <img
+                                                    src={imagePreview}
+                                                    alt="Preview"
+                                                    className="w-48 h-48 object-cover rounded-lg border"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    className="absolute top-2 right-2"
+                                                    onClick={handleRemoveImage}
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+                                                onClick={() => fileInputRef.current?.click()}
+                                            >
+                                                <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                                                <p className="text-sm text-muted-foreground mb-2">
+                                                    Click to upload product image
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    PNG, JPG up to 2MB
+                                                </p>
+                                            </div>
+                                        )}
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="hidden"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Status */}
+                            <div>
+                                <h2 className="mb-4 text-lg font-semibold">
+                                    Status
+                                </h2>
+
+                                {/* Is Active */}
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id="is_active"
+                                        checked={isActive}
+                                        onCheckedChange={(checked) => setValue('is_active', !!checked)}
+                                    />
+                                    <Label htmlFor="is_active" className="cursor-pointer">
+                                        Active (product is available for sale)
+                                    </Label>
+                                </div>
                             </div>
 
                             {/* Submit Button */}
@@ -323,9 +404,9 @@ export default function Create({ categories }: Props) {
                                     {isSubmitting ? 'Creating...' : 'Create Product'}
                                 </Button>
                             </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                        </div>
+                    </Card>
+                </form>
             </div>
         </AppLayout>
     );

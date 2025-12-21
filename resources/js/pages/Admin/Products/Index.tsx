@@ -25,16 +25,16 @@ import { type FormEvent, useState } from 'react';
 
 interface Product {
     id: number;
-    sku: string;
+    code: string;
     name: string;
     product_category: {
         id: number;
         name: string;
     };
     unit: string;
-    base_price: number;
-    selling_price: number;
-    minimum_stock: number;
+    cost: number;
+    price: number;
+    items_per_carton: number;
     image: string | null;
     is_active: boolean;
 }
@@ -162,7 +162,7 @@ export default function Index({ products, categories, filters }: IndexProps) {
                             <div className="flex gap-2">
                                 <Input
                                     type="text"
-                                    placeholder="Nama atau SKU produk..."
+                                    placeholder="Nama atau Kode produk..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     className="flex-1"
@@ -255,7 +255,7 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                         Unit
                                     </th>
                                     <th className="p-4 text-left text-sm font-semibold">
-                                        Min. Stok
+                                        Item/Karton
                                     </th>
                                     <th className="p-4 text-left text-sm font-semibold">
                                         Status
@@ -290,7 +290,7 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                                             {product.name}
                                                         </p>
                                                         <p className="text-sm text-muted-foreground">
-                                                            {product.sku}
+                                                            {product.code}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -302,12 +302,12 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                             </td>
                                             <td className="p-4">
                                                 <p className="text-sm">
-                                                    {formatPrice(product.base_price)}
+                                                    {formatPrice(product.cost)}
                                                 </p>
                                             </td>
                                             <td className="p-4">
                                                 <p className="font-medium">
-                                                    {formatPrice(product.selling_price)}
+                                                    {formatPrice(product.price)}
                                                 </p>
                                             </td>
                                             <td className="p-4">
@@ -317,7 +317,7 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                             </td>
                                             <td className="p-4">
                                                 <Badge variant="secondary">
-                                                    {product.minimum_stock}
+                                                    {product.items_per_carton}
                                                 </Badge>
                                             </td>
                                             <td className="p-4">
