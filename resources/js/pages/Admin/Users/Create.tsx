@@ -65,7 +65,7 @@ const createUserSchema = z.object({
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Admin', href: '/admin/dashboard' },
-    { title: 'User Management', href: '/admin/users' },
+    { title: 'Manajemen User', href: '/admin/users' },
     { title: 'Tambah User', href: '/admin/users/create' },
 ];
 

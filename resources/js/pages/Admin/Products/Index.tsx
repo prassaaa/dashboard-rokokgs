@@ -69,7 +69,7 @@ interface IndexProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Admin', href: '/admin/dashboard' },
-    { title: 'Product Management', href: '/admin/products' },
+    { title: 'Manajemen Produk', href: '/admin/products' },
 ];
 
 export default function Index({ products, categories, filters }: IndexProps) {
@@ -130,14 +130,14 @@ export default function Index({ products, categories, filters }: IndexProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Product Management" />
+            <Head title="Manajemen Produk" />
 
             <div className="space-y-6 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold">
-                            Product Management
+                            Manajemen Produk
                         </h1>
                         <p className="text-muted-foreground">
                             Kelola produk dan stok

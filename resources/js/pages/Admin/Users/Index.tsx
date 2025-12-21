@@ -93,7 +93,7 @@ interface UsersIndexProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Admin', href: '/admin/dashboard' },
-    { title: 'User Management', href: '/admin/users' },
+    { title: 'Manajemen User', href: '/admin/users' },
 ];
 
 export default function UsersIndex({ users, filters }: UsersIndexProps) {
@@ -154,13 +154,13 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="User Management" />
+            <Head title="Manajemen User" />
 
             <div className="space-y-6 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold">User Management</h1>
+                        <h1 className="text-3xl font-bold">Manajemen User</h1>
                         <p className="text-muted-foreground">
                             Kelola pengguna sistem dan hak akses
                         </p>

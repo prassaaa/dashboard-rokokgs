@@ -33,7 +33,7 @@ const createBranchSchema = z.object({
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Admin', href: '/admin/dashboard' },
-    { title: 'Branch Management', href: '/admin/branches' },
+    { title: 'Manajemen Cabang', href: '/admin/branches' },
     { title: 'Tambah Cabang', href: '/admin/branches/create' },
 ];
 

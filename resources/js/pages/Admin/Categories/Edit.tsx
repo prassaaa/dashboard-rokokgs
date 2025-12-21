@@ -38,7 +38,7 @@ const editCategorySchema = z.object({
 export default function Edit({ category }: EditProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Admin', href: '/admin/dashboard' },
-        { title: 'Category Management', href: '/admin/categories' },
+        { title: 'Manajemen Kategori', href: '/admin/categories' },
         { title: 'Edit Kategori', href: `/admin/categories/${category.id}/edit` },
     ];
 

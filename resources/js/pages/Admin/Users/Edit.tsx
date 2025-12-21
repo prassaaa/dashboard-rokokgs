@@ -78,7 +78,7 @@ export default function EditUser({
 }: EditUserProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Admin', href: '/admin/dashboard' },
-        { title: 'User Management', href: '/admin/users' },
+        { title: 'Manajemen User', href: '/admin/users' },
         { title: `Edit ${user.name}`, href: `/admin/users/${user.id}/edit` },
     ];
 

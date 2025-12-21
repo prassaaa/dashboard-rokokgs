@@ -54,7 +54,7 @@ interface IndexProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Admin', href: '/admin/dashboard' },
-    { title: 'Category Management', href: '/admin/categories' },
+    { title: 'Manajemen Kategori', href: '/admin/categories' },
 ];
 
 export default function Index({ categories, filters }: IndexProps) {
@@ -103,14 +103,14 @@ export default function Index({ categories, filters }: IndexProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Category Management" />
+            <Head title="Manajemen Kategori" />
 
             <div className="space-y-6 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold">
-                            Category Management
+                            Manajemen Kategori
                         </h1>
                         <p className="text-muted-foreground">
                             Kelola kategori produk

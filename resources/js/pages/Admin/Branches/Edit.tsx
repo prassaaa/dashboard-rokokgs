@@ -48,7 +48,7 @@ const editBranchSchema = z.object({
 export default function Edit({ branch }: EditProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Admin', href: '/admin/dashboard' },
-        { title: 'Branch Management', href: '/admin/branches' },
+        { title: 'Manajemen Cabang', href: '/admin/branches' },
         { title: 'Edit Cabang', href: `/admin/branches/${branch.id}/edit` },
     ];
 

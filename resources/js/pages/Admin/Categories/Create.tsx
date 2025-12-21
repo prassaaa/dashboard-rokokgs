@@ -26,7 +26,7 @@ const createCategorySchema = z.object({
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Admin', href: '/admin/dashboard' },
-    { title: 'Category Management', href: '/admin/categories' },
+    { title: 'Manajemen Kategori', href: '/admin/categories' },
     { title: 'Tambah Kategori', href: '/admin/categories/create' },
 ];
 
