@@ -9,17 +9,54 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { LayoutGrid } from 'lucide-react';
+import {
+    LayoutGrid,
+    Users,
+    Building2,
+    Tags,
+    Package,
+    Warehouse,
+    Receipt,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: '/admin/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Users',
+        href: '/admin/users',
+        icon: Users,
+    },
+    {
+        title: 'Branches',
+        href: '/admin/branches',
+        icon: Building2,
+    },
+    {
+        title: 'Categories',
+        href: '/admin/categories',
+        icon: Tags,
+    },
+    {
+        title: 'Products',
+        href: '/admin/products',
+        icon: Package,
+    },
+    {
+        title: 'Stocks',
+        href: '/admin/stocks',
+        icon: Warehouse,
+    },
+    {
+        title: 'Transactions',
+        href: '/admin/transactions',
+        icon: Receipt,
     },
 ];
 
@@ -30,7 +67,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link href="/admin/dashboard" prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
