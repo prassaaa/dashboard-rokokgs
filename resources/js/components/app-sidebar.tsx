@@ -29,32 +29,32 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Users',
+        title: 'Pengguna',
         href: '/admin/users',
         icon: Users,
     },
     {
-        title: 'Branches',
+        title: 'Cabang',
         href: '/admin/branches',
         icon: Building2,
     },
     {
-        title: 'Categories',
+        title: 'Kategori',
         href: '/admin/categories',
         icon: Tags,
     },
     {
-        title: 'Products',
+        title: 'Produk',
         href: '/admin/products',
         icon: Package,
     },
     {
-        title: 'Stocks',
+        title: 'Stok',
         href: '/admin/stocks',
         icon: Warehouse,
     },
     {
-        title: 'Transactions',
+        title: 'Transaksi',
         href: '/admin/transactions',
         icon: Receipt,
     },
