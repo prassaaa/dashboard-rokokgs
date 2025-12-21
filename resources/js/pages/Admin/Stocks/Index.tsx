@@ -31,7 +31,7 @@ interface Stock {
     product: Product;
     branch: Branch;
     quantity: number;
-    min_stock: number;
+    minimum_stock: number;
 }
 
 interface PaginatedStocks {
@@ -85,7 +85,7 @@ export default function Index({ stocks, branches, filters }: IndexProps) {
         router.get(
             '/admin/stocks',
             {
-                search: filters.search,
+                ...filters,
                 [key]: value === 'all' ? undefined : value,
             },
             {
@@ -95,90 +95,109 @@ export default function Index({ stocks, branches, filters }: IndexProps) {
         );
     };
 
-    const isLowStock = (stock: Stock) => stock.quantity <= stock.min_stock;
+    const isLowStock = (stock: Stock) => stock.quantity <= stock.minimum_stock;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Stok" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">
-                            Manajemen Stok
-                        </h1>
-                        <p className="mt-2 text-muted-foreground">
+                        <h1 className="text-3xl font-bold">Manajemen Stok</h1>
+                        <p className="text-muted-foreground">
                             Kelola dan monitor stok produk di setiap cabang
                         </p>
                     </div>
-                    <Link href="/admin/stocks/initialize">
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
+                    <Button asChild>
+                        <Link href="/admin/stocks/initialize">
+                            <Plus className="mr-2 size-4" />
                             Inisialisasi Stok
-                        </Button>
-                    </Link>
+                        </Link>
+                    </Button>
                 </div>
 
                 {/* Filters */}
-                <Card className="p-6">
-                    <div className="grid gap-4 md:grid-cols-4">
-                        <form onSubmit={handleSearch} className="md:col-span-2">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Card className="p-4">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-end">
+                        {/* Search */}
+                        <form onSubmit={handleSearch} className="flex-1">
+                            <label className="mb-2 block text-sm font-medium">
+                                Cari Produk
+                            </label>
+                            <div className="flex gap-2">
                                 <Input
                                     type="text"
-                                    placeholder="Cari produk (nama atau code)..."
+                                    placeholder="Nama produk atau kode..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="pl-9"
+                                    className="flex-1"
                                 />
+                                <Button type="submit" variant="secondary">
+                                    <Search className="size-4" />
+                                </Button>
                             </div>
                         </form>
 
-                        <Select
-                            value={filters.branch_id || 'all'}
-                            onValueChange={(value) =>
-                                handleFilterChange('branch_id', value)
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Semua Cabang" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Semua Cabang</SelectItem>
-                                {branches.map((branch) => (
-                                    <SelectItem
-                                        key={branch.id}
-                                        value={branch.id.toString()}
-                                    >
-                                        {branch.name}
+                        {/* Branch Filter */}
+                        <div className="w-full md:w-48">
+                            <label className="mb-2 block text-sm font-medium">
+                                Cabang
+                            </label>
+                            <Select
+                                value={filters.branch_id || 'all'}
+                                onValueChange={(value) =>
+                                    handleFilterChange('branch_id', value)
+                                }
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Semua Cabang" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">
+                                        Semua Cabang
                                     </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                                    {branches.map((branch) => (
+                                        <SelectItem
+                                            key={branch.id}
+                                            value={branch.id.toString()}
+                                        >
+                                            {branch.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                        <Select
-                            value={
-                                filters.low_stock === true ? 'low' : 'all'
-                            }
-                            onValueChange={(value) =>
-                                handleFilterChange(
-                                    'low_stock',
-                                    value === 'low' ? true : false,
-                                )
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Status Stok" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Semua Status</SelectItem>
-                                <SelectItem value="low">
-                                    Stok Menipis
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                        {/* Status Filter */}
+                        <div className="w-full md:w-48">
+                            <label className="mb-2 block text-sm font-medium">
+                                Status Stok
+                            </label>
+                            <Select
+                                value={filters.low_stock ? 'low' : 'all'}
+                                onValueChange={(value) => {
+                                    if (value === 'low') {
+                                        handleFilterChange('low_stock', true);
+                                    } else {
+                                        handleFilterChange('low_stock', 'all');
+                                    }
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Semua Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">
+                                        Semua Status
+                                    </SelectItem>
+                                    <SelectItem value="low">
+                                        Stok Menipis
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 </Card>
 
@@ -192,7 +211,7 @@ export default function Index({ stocks, branches, filters }: IndexProps) {
                                         Produk
                                     </th>
                                     <th className="px-6 py-4 text-left text-sm font-semibold">
-                                        code
+                                        Kode
                                     </th>
                                     <th className="px-6 py-4 text-left text-sm font-semibold">
                                         Cabang
@@ -259,7 +278,7 @@ export default function Index({ stocks, branches, filters }: IndexProps) {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-center text-muted-foreground">
-                                                {stock.min_stock}
+                                                {stock.minimum_stock}
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 {isLowStock(stock) ? (

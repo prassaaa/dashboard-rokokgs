@@ -24,7 +24,7 @@ interface Stock {
     product: Product;
     branch: Branch;
     quantity: number;
-    min_stock: number;
+    minimum_stock: number;
 }
 
 interface User {
@@ -93,19 +93,19 @@ export default function Movements({ stock, movements }: MovementsProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Riwayat Pergerakan Stok" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 {/* Header */}
                 <div>
-                    <Link href="/admin/stocks">
-                        <Button variant="ghost" size="sm" className="mb-4">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
+                    <Button variant="ghost" size="sm" className="mb-4" asChild>
+                        <Link href="/admin/stocks">
+                            <ArrowLeft className="mr-2 size-4" />
                             Kembali
-                        </Button>
-                    </Link>
-                    <h1 className="text-3xl font-bold tracking-tight">
+                        </Link>
+                    </Button>
+                    <h1 className="text-3xl font-bold">
                         Riwayat Pergerakan Stok
                     </h1>
-                    <p className="mt-2 text-muted-foreground">
+                    <p className="text-muted-foreground">
                         Lihat semua aktivitas pergerakan stok produk
                     </p>
                 </div>
@@ -148,7 +148,7 @@ export default function Movements({ stock, movements }: MovementsProps) {
                                 Minimum Stok
                             </p>
                             <p className="mt-1 text-2xl font-bold">
-                                {stock.min_stock}
+                                {stock.minimum_stock}
                             </p>
                         </div>
                     </div>

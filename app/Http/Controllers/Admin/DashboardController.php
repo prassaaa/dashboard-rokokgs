@@ -154,7 +154,7 @@ class DashboardController extends Controller
             'product_name' => $stock->product->name,
             'product_code' => $stock->product->code,
             'quantity' => $stock->quantity,
-            'min_stock' => $stock->minimum_stock,
+            'minimum_stock' => $stock->minimum_stock,
             'branch_name' => $stock->branch->name,
         ])->toArray();
     }

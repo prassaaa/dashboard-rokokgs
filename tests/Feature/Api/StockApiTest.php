@@ -170,7 +170,7 @@ test('can get low stock alerts', function () {
             'message' => 'Low stock alerts retrieved successfully',
         ]);
 
-    // Should only return stock2 (quantity 5 < min_stock 10)
+    // Should only return stock2 (quantity 5 < minimum_stock 10)
     $data = $response->json('data');
     expect($data)->toHaveCount(1);
     expect($data[0]['id'])->toBe($this->stock2->id);

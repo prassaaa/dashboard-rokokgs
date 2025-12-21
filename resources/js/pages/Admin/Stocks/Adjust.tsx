@@ -27,7 +27,7 @@ interface Stock {
     product: Product;
     branch: Branch;
     quantity: number;
-    min_stock: number;
+    minimum_stock: number;
 }
 
 interface AdjustProps {
@@ -97,19 +97,19 @@ export default function Adjust({ stock }: AdjustProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Sesuaikan Stok" />
 
-            <div className="mx-auto max-w-3xl space-y-6">
+            <div className="space-y-6 p-6">
                 {/* Header */}
                 <div>
-                    <Link href="/admin/stocks">
-                        <Button variant="ghost" size="sm" className="mb-4">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
+                    <Button variant="ghost" size="sm" className="mb-4" asChild>
+                        <Link href="/admin/stocks">
+                            <ArrowLeft className="mr-2 size-4" />
                             Kembali
-                        </Button>
-                    </Link>
-                    <h1 className="text-3xl font-bold tracking-tight">
+                        </Link>
+                    </Button>
+                    <h1 className="text-3xl font-bold">
                         Sesuaikan Stok
                     </h1>
-                    <p className="mt-2 text-muted-foreground">
+                    <p className="text-muted-foreground">
                         Tambah atau kurangi jumlah stok produk
                     </p>
                 </div>
@@ -152,12 +152,12 @@ export default function Adjust({ stock }: AdjustProps) {
                                 Minimum Stok
                             </p>
                             <p className="mt-1 text-2xl font-bold">
-                                {stock.min_stock}
+                                {stock.minimum_stock}
                             </p>
                         </div>
                     </div>
 
-                    {stock.quantity <= stock.min_stock && (
+                    {stock.quantity <= stock.minimum_stock && (
                         <div className="mt-4 flex items-start gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
                             <AlertCircle className="h-5 w-5 text-destructive" />
                             <div>
@@ -307,7 +307,7 @@ export default function Adjust({ stock }: AdjustProps) {
                                             <p
                                                 className={`text-xl font-bold ${
                                                     newQuantity <=
-                                                    stock.min_stock
+                                                    stock.minimum_stock
                                                         ? 'text-destructive'
                                                         : ''
                                                 }`}
@@ -316,7 +316,7 @@ export default function Adjust({ stock }: AdjustProps) {
                                             </p>
                                         </div>
                                     </div>
-                                    {newQuantity <= stock.min_stock && (
+                                    {newQuantity <= stock.minimum_stock && (
                                         <p className="mt-2 text-sm text-destructive">
                                             ⚠️ Stok baru akan berada di bawah
                                             minimum stok

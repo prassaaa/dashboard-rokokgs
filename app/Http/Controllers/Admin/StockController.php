@@ -41,7 +41,7 @@ class StockController extends Controller
 
         // Filter low stock
         if ($request->boolean('low_stock')) {
-            $query->whereColumn('quantity', '<=', 'min_stock');
+            $query->whereColumn('quantity', '<=', 'minimum_stock');
         }
 
         // Search by product
@@ -158,7 +158,7 @@ class StockController extends Controller
             'product_id' => ['required', 'exists:products,id'],
             'branch_id' => ['required', 'exists:branches,id'],
             'quantity' => ['required', 'integer', 'min:0'],
-            'min_stock' => ['required', 'integer', 'min:0'],
+            'minimum_stock' => ['required', 'integer', 'min:0'],
         ]);
 
         // Check if stock already exists

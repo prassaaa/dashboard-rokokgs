@@ -55,7 +55,7 @@ interface LowStockAlert {
     product_name: string;
     product_code: string;
     quantity: number;
-    min_stock: number;
+    minimum_stock: number;
     branch_name: string;
 }
 
@@ -469,7 +469,7 @@ export default function AdminDashboard({
                                                 {stock.quantity}
                                             </p>
                                             <p className="text-xs text-red-600 dark:text-red-400">
-                                                Min: {stock.min_stock}
+                                                Min: {stock.minimum_stock}
                                             </p>
                                         </div>
                                     </div>

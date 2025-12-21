@@ -41,7 +41,7 @@ class StockController extends BaseApiController
      *                         @OA\Property(property="name", type="string", example="Sampoerna Mild 16")
      *                     ),
      *                     @OA\Property(property="quantity", type="integer", example=100),
-     *                     @OA\Property(property="min_stock", type="integer", example=10)
+     *                     @OA\Property(property="minimum_stock", type="integer", example=10)
      *                 )
      *             )
      *         )
@@ -151,7 +151,7 @@ class StockController extends BaseApiController
      *                         @OA\Property(property="name", type="string", example="Sampoerna Mild 16")
      *                     ),
      *                     @OA\Property(property="quantity", type="integer", example=5),
-     *                     @OA\Property(property="min_stock", type="integer", example=10)
+     *                     @OA\Property(property="minimum_stock", type="integer", example=10)
      *                 )
      *             )
      *         )

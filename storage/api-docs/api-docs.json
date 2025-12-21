@@ -1415,7 +1415,7 @@
                                                         "type": "integer",
                                                         "example": 100
                                                     },
-                                                    "min_stock": {
+                                                    "minimum_stock": {
                                                         "type": "integer",
                                                         "example": 10
                                                     }
@@ -1595,7 +1595,7 @@
                                                         "type": "integer",
                                                         "example": 5
                                                     },
-                                                    "min_stock": {
+                                                    "minimum_stock": {
                                                         "type": "integer",
                                                         "example": 10
                                                     }

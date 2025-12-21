@@ -48,7 +48,7 @@ const stockSchema = z.object({
         .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
             message: 'Jumlah stok harus 0 atau lebih',
         }),
-    min_stock: z
+    minimum_stock: z
         .string()
         .min(1, 'Minimum stok harus diisi')
         .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
@@ -71,7 +71,7 @@ export default function Initialize({ products, branches }: InitializeProps) {
             product_id: '',
             branch_id: '',
             quantity: '',
-            min_stock: '',
+            minimum_stock: '',
         },
     });
 
@@ -84,7 +84,7 @@ export default function Initialize({ products, branches }: InitializeProps) {
         formData.append('product_id', data.product_id);
         formData.append('branch_id', data.branch_id);
         formData.append('quantity', data.quantity);
-        formData.append('min_stock', data.min_stock);
+        formData.append('minimum_stock', data.minimum_stock);
 
         router.post('/admin/stocks/initialize', formData, {
             onError: (errors) => {
@@ -97,19 +97,19 @@ export default function Initialize({ products, branches }: InitializeProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Inisialisasi Stok" />
 
-            <div className="mx-auto max-w-3xl space-y-6">
+            <div className="space-y-6 p-6">
                 {/* Header */}
                 <div>
-                    <Link href="/admin/stocks">
-                        <Button variant="ghost" size="sm" className="mb-4">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
+                    <Button variant="ghost" size="sm" className="mb-4" asChild>
+                        <Link href="/admin/stocks">
+                            <ArrowLeft className="mr-2 size-4" />
                             Kembali
-                        </Button>
-                    </Link>
-                    <h1 className="text-3xl font-bold tracking-tight">
+                        </Link>
+                    </Button>
+                    <h1 className="text-3xl font-bold">
                         Inisialisasi Stok
                     </h1>
-                    <p className="mt-2 text-muted-foreground">
+                    <p className="text-muted-foreground">
                         Atur stok awal produk untuk cabang tertentu
                     </p>
                 </div>
@@ -238,24 +238,24 @@ export default function Initialize({ products, branches }: InitializeProps) {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="min_stock">
+                                        <Label htmlFor="minimum_stock">
                                             Minimum Stok *
                                         </Label>
                                         <Input
-                                            id="min_stock"
+                                            id="minimum_stock"
                                             type="number"
                                             min="0"
                                             placeholder="Contoh: 20"
-                                            {...register('min_stock')}
+                                            {...register('minimum_stock')}
                                             className={
-                                                errors.min_stock
+                                                errors.minimum_stock
                                                     ? 'border-destructive'
                                                     : ''
                                             }
                                         />
-                                        {errors.min_stock && (
+                                        {errors.minimum_stock && (
                                             <p className="text-sm text-destructive">
-                                                {errors.min_stock.message}
+                                                {errors.minimum_stock.message}
                                             </p>
                                         )}
                                         <p className="text-sm text-muted-foreground">
