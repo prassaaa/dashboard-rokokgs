@@ -19,6 +19,7 @@ import {
     Package,
     Warehouse,
     Receipt,
+    DollarSign,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -57,6 +58,11 @@ const mainNavItems: NavItem[] = [
         title: 'Transaksi',
         href: '/admin/transactions',
         icon: Receipt,
+    },
+    {
+        title: 'Komisi',
+        href: '/admin/commissions',
+        icon: DollarSign,
     },
 ];
 
