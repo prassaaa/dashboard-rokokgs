@@ -1,0 +1,147 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Branch;
+use App\Models\SalesTransaction;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class TransactionController extends Controller
+{
+    /**
+     * Display transactions list.
+     */
+    public function index(Request $request): Response
+    {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('Super Admin');
+
+        $query = SalesTransaction::with(['sales:id,name', 'branch:id,name'])
+            ->orderByDesc('created_at');
+
+        // Branch Manager can only see their branch transactions
+        if (!$isSuperAdmin) {
+            $query->where('branch_id', $user->branch_id);
+        }
+
+        // Filter by branch
+        if ($request->has('branch_id')) {
+            $query->where('branch_id', $request->input('branch_id'));
+        }
+
+        // Filter by sales
+        if ($request->has('sales_id')) {
+            $query->where('sales_id', $request->input('sales_id'));
+        }
+
+        // Filter by status
+        if ($request->has('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Filter by date range
+        if ($request->has('start_date')) {
+            $query->whereDate('created_at', '>=', $request->input('start_date'));
+        }
+        if ($request->has('end_date')) {
+            $query->whereDate('created_at', '<=', $request->input('end_date'));
+        }
+
+        // Search by customer name
+        if ($search = $request->input('search')) {
+            $query->where('customer_name', 'like', "%{$search}%");
+        }
+
+        $transactions = $query->paginate(20);
+
+        // Get filter options
+        $branches = $isSuperAdmin
+            ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])
+            : Branch::where('id', $user->branch_id)->get(['id', 'name']);
+
+        $salesUsers = User::role('Sales')
+            ->when(!$isSuperAdmin, fn ($q) => $q->where('branch_id', $user->branch_id))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return Inertia::render('Admin/Transactions/Index', [
+            'transactions' => $transactions,
+            'branches' => $branches,
+            'salesUsers' => $salesUsers,
+            'filters' => $request->only(['branch_id', 'sales_id', 'status', 'start_date', 'end_date', 'search']),
+        ]);
+    }
+
+    /**
+     * Show transaction detail.
+     */
+    public function show(int $id): Response
+    {
+        $user = auth()->user();
+
+        $transaction = SalesTransaction::with([
+            'sales:id,name,email',
+            'branch:id,name',
+            'items.product:id,name,sku',
+        ])->findOrFail($id);
+
+        // Branch Manager can only see their branch transactions
+        if (!$user->hasRole('Super Admin') && $transaction->branch_id !== $user->branch_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        return Inertia::render('Admin/Transactions/Show', [
+            'transaction' => $transaction,
+        ]);
+    }
+
+    /**
+     * Approve transaction.
+     */
+    public function approve(int $id): RedirectResponse
+    {
+        $transaction = SalesTransaction::findOrFail($id);
+
+        if ($transaction->status !== 'pending') {
+            return redirect()->back()
+                ->with('error', 'Only pending transactions can be approved');
+        }
+
+        $transaction->update(['status' => 'completed']);
+
+        return redirect()->back()
+            ->with('success', 'Transaction approved successfully');
+    }
+
+    /**
+     * Reject transaction.
+     */
+    public function reject(Request $request, int $id): RedirectResponse
+    {
+        $request->validate([
+            'rejection_reason' => ['required', 'string', 'max:255'],
+        ]);
+
+        $transaction = SalesTransaction::findOrFail($id);
+
+        if ($transaction->status !== 'pending') {
+            return redirect()->back()
+                ->with('error', 'Only pending transactions can be rejected');
+        }
+
+        $transaction->update([
+            'status' => 'cancelled',
+            'notes' => ($transaction->notes ? $transaction->notes.' | ' : '').'Rejected: '.$request->input('rejection_reason'),
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Transaction rejected successfully');
+    }
+}

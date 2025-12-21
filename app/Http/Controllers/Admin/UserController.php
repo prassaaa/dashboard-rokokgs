@@ -1,0 +1,251 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Admin;
+
+use App\DataTransferObjects\UserDTO;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CreateUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Models\Area;
+use App\Models\Branch;
+use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class UserController extends Controller
+{
+    public function __construct(
+        private readonly UserService $userService
+    ) {
+    }
+
+    /**
+     * Display users list.
+     */
+    public function index(Request $request): Response
+    {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('Super Admin');
+
+        $query = User::with(['branch:id,name', 'roles', 'areas:id,name'])
+            ->orderByDesc('created_at');
+
+        // Branch Manager can only see users in their branch
+        if (!$isSuperAdmin) {
+            $query->where('branch_id', $user->branch_id);
+        }
+
+        // Filter by status
+        if ($request->has('status')) {
+            $isActive = $request->input('status') === 'active';
+            $query->where('is_active', $isActive);
+        }
+
+        // Filter by role
+        if ($request->has('role')) {
+            $query->role($request->input('role'));
+        }
+
+        // Search by name or email
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->paginate(15);
+
+        return Inertia::render('Admin/Users/Index', [
+            'users' => $users,
+            'filters' => $request->only(['status', 'role', 'search']),
+        ]);
+    }
+
+    /**
+     * Show create user form.
+     */
+    public function create(): Response
+    {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('Super Admin');
+
+        $branches = $isSuperAdmin
+            ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])
+            : Branch::where('id', $user->branch_id)->get(['id', 'name']);
+
+        $areas = Area::where('is_active', true)->orderBy('name')->get(['id', 'name', 'code']);
+
+        return Inertia::render('Admin/Users/Create', [
+            'branches' => $branches,
+            'areas' => $areas,
+            'availableRoles' => $this->getAvailableRoles($isSuperAdmin),
+        ]);
+    }
+
+    /**
+     * Store new user.
+     */
+    public function store(CreateUserRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $dto = new UserDTO(
+            name: $validated['name'],
+            email: $validated['email'],
+            password: $validated['password'],
+            phone: $validated['phone'] ?? null,
+            branch_id: $validated['branch_id'],
+            roles: $validated['roles'],
+            areas: $validated['areas'] ?? [],
+            is_active: $validated['is_active'] ?? true,
+        );
+
+        $user = $this->userService->create($dto);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User created successfully');
+    }
+
+    /**
+     * Show edit user form.
+     */
+    public function edit(int $id): Response
+    {
+        $currentUser = auth()->user();
+        $isSuperAdmin = $currentUser->hasRole('Super Admin');
+
+        $user = User::with(['branch', 'roles', 'areas'])->findOrFail($id);
+
+        // Branch Manager can only edit users in their branch
+        if (!$isSuperAdmin && $user->branch_id !== $currentUser->branch_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $branches = $isSuperAdmin
+            ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])
+            : Branch::where('id', $currentUser->branch_id)->get(['id', 'name']);
+
+        $areas = Area::where('is_active', true)->orderBy('name')->get(['id', 'name', 'code']);
+
+        return Inertia::render('Admin/Users/Edit', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'branch_id' => $user->branch_id,
+                'is_active' => $user->is_active,
+                'roles' => $user->roles->pluck('name')->toArray(),
+                'areas' => $user->areas->pluck('id')->toArray(),
+            ],
+            'branches' => $branches,
+            'areas' => $areas,
+            'availableRoles' => $this->getAvailableRoles($isSuperAdmin),
+        ]);
+    }
+
+    /**
+     * Update user.
+     */
+    public function update(UpdateUserRequest $request, int $id): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $dto = new UserDTO(
+            name: $validated['name'],
+            email: $validated['email'],
+            password: $validated['password'] ?? null,
+            phone: $validated['phone'] ?? null,
+            branch_id: $validated['branch_id'],
+            roles: $validated['roles'] ?? null,
+            areas: $validated['areas'] ?? null,
+            is_active: $validated['is_active'] ?? null,
+        );
+
+        $this->userService->update($id, $dto);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User updated successfully');
+    }
+
+    /**
+     * Delete user.
+     */
+    public function destroy(int $id): RedirectResponse
+    {
+        $currentUser = auth()->user();
+        $userToDelete = User::findOrFail($id);
+
+        // Cannot delete self
+        if ($userToDelete->id === $currentUser->id) {
+            return redirect()->back()
+                ->with('error', 'Cannot delete your own account');
+        }
+
+        // Branch Manager can only delete users in their branch
+        if (!$currentUser->hasRole('Super Admin') && $userToDelete->branch_id !== $currentUser->branch_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $this->userService->delete($id);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User deleted successfully');
+    }
+
+    /**
+     * Approve pending user registration.
+     */
+    public function approve(int $id): RedirectResponse
+    {
+        $user = User::findOrFail($id);
+
+        $dto = new UserDTO(
+            name: $user->name,
+            email: $user->email,
+            phone: $user->phone,
+            branch_id: $user->branch_id,
+            is_active: true,
+        );
+
+        $this->userService->update($id, $dto);
+
+        return redirect()->back()
+            ->with('success', 'User approved successfully');
+    }
+
+    /**
+     * Assign areas to user.
+     */
+    public function assignAreas(Request $request, int $id): RedirectResponse
+    {
+        $request->validate([
+            'areas' => 'required|array',
+            'areas.*' => 'exists:areas,id',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->areas()->sync($request->input('areas'));
+
+        return redirect()->back()
+            ->with('success', 'Areas assigned successfully');
+    }
+
+    /**
+     * Get available roles based on user permissions.
+     */
+    private function getAvailableRoles(bool $isSuperAdmin): array
+    {
+        if ($isSuperAdmin) {
+            return ['Super Admin', 'Branch Manager', 'Sales'];
+        }
+
+        return ['Sales']; // Branch Manager can only create Sales
+    }
+}
