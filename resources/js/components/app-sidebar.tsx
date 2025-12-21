@@ -20,15 +20,22 @@ import {
     Warehouse,
     Receipt,
     DollarSign,
+    TrendingUp,
+    Award,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+// Dashboard
+const dashboardNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: '/admin/dashboard',
         icon: LayoutGrid,
     },
+];
+
+// Master Data - Pengelolaan Data Dasar
+const masterDataNavItems: NavItem[] = [
     {
         title: 'Pengguna',
         href: '/admin/users',
@@ -39,6 +46,10 @@ const mainNavItems: NavItem[] = [
         href: '/admin/branches',
         icon: Building2,
     },
+];
+
+// Produk & Inventori
+const inventoryNavItems: NavItem[] = [
     {
         title: 'Kategori',
         href: '/admin/categories',
@@ -54,6 +65,10 @@ const mainNavItems: NavItem[] = [
         href: '/admin/stocks',
         icon: Warehouse,
     },
+];
+
+// Transaksi & Keuangan
+const transactionNavItems: NavItem[] = [
     {
         title: 'Transaksi',
         href: '/admin/transactions',
@@ -62,6 +77,30 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Komisi',
         href: '/admin/commissions',
+        icon: DollarSign,
+    },
+];
+
+// Laporan
+const reportsNavItems: NavItem[] = [
+    {
+        title: 'Penjualan',
+        href: '/admin/reports/sales',
+        icon: TrendingUp,
+    },
+    {
+        title: 'Produk',
+        href: '/admin/reports/products',
+        icon: Package,
+    },
+    {
+        title: 'Performa Sales',
+        href: '/admin/reports/sales-performance',
+        icon: Award,
+    },
+    {
+        title: 'Komisi',
+        href: '/admin/reports/commissions',
         icon: DollarSign,
     },
 ];
@@ -82,7 +121,23 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={dashboardNavItems} />
+                <NavMain
+                    items={masterDataNavItems}
+                    title="Master Data"
+                />
+                <NavMain
+                    items={inventoryNavItems}
+                    title="Produk & Inventori"
+                />
+                <NavMain
+                    items={transactionNavItems}
+                    title="Transaksi & Keuangan"
+                />
+                <NavMain
+                    items={reportsNavItems}
+                    title="Laporan"
+                />
             </SidebarContent>
 
             <SidebarFooter>
