@@ -183,82 +183,82 @@ export default function Sales({
                 </Card>
 
                 {/* Summary Cards */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                     <Card className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex-1">
                                 <p className="text-sm text-muted-foreground">
                                     Total Transaksi
                                 </p>
-                                <p className="mt-2 text-2xl font-bold">
+                                <p className="mt-2 text-xl font-bold lg:text-2xl">
                                     {summary.total_transactions}
                                 </p>
                             </div>
-                            <div className="rounded-full bg-primary/10 p-3">
+                            <div className="shrink-0 rounded-full bg-primary/10 p-3">
                                 <Receipt className="size-6 text-primary" />
                             </div>
                         </div>
                     </Card>
 
                     <Card className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex-1">
                                 <p className="text-sm text-muted-foreground">
                                     Total Pendapatan
                                 </p>
-                                <p className="mt-2 text-2xl font-bold">
+                                <p className="mt-2 text-lg font-bold xl:text-xl">
                                     {formatCurrency(summary.total_revenue)}
                                 </p>
                             </div>
-                            <div className="rounded-full bg-green-500/10 p-3">
+                            <div className="shrink-0 rounded-full bg-green-500/10 p-3">
                                 <DollarSign className="size-6 text-green-600" />
                             </div>
                         </div>
                     </Card>
 
                     <Card className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex-1">
                                 <p className="text-sm text-muted-foreground">
                                     Rata-rata Transaksi
                                 </p>
-                                <p className="mt-2 text-2xl font-bold">
+                                <p className="mt-2 text-lg font-bold xl:text-xl">
                                     {formatCurrency(summary.average_transaction)}
                                 </p>
                             </div>
-                            <div className="rounded-full bg-blue-500/10 p-3">
+                            <div className="shrink-0 rounded-full bg-blue-500/10 p-3">
                                 <ShoppingCart className="size-6 text-blue-600" />
                             </div>
                         </div>
                     </Card>
 
                     <Card className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex-1">
                                 <p className="text-sm text-muted-foreground">
                                     Total Diskon
                                 </p>
-                                <p className="mt-2 text-2xl font-bold">
+                                <p className="mt-2 text-lg font-bold xl:text-xl">
                                     {formatCurrency(summary.total_discount)}
                                 </p>
                             </div>
-                            <div className="rounded-full bg-orange-500/10 p-3">
+                            <div className="shrink-0 rounded-full bg-orange-500/10 p-3">
                                 <Percent className="size-6 text-orange-600" />
                             </div>
                         </div>
                     </Card>
 
                     <Card className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex-1">
                                 <p className="text-sm text-muted-foreground">
                                     Total Pajak
                                 </p>
-                                <p className="mt-2 text-2xl font-bold">
+                                <p className="mt-2 text-lg font-bold xl:text-xl">
                                     {formatCurrency(summary.total_tax)}
                                 </p>
                             </div>
-                            <div className="rounded-full bg-purple-500/10 p-3">
+                            <div className="shrink-0 rounded-full bg-purple-500/10 p-3">
                                 <TrendingUp className="size-6 text-purple-600" />
                             </div>
                         </div>
