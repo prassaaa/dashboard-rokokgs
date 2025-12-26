@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,6 +126,8 @@ export default function Create({ categories }: Props) {
 
             router.post('/admin/products', formData, {
                 preserveScroll: true,
+                onSuccess: () => toast.success('Produk berhasil ditambahkan'),
+                onError: () => toast.error('Gagal menambahkan produk'),
             });
         })(e);
     };

@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import {
     Select,
     SelectContent,
@@ -79,7 +80,10 @@ export default function Edit({ area, branches }: EditProps) {
 
     const onSubmit = (data: EditAreaForm) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        router.put(`/admin/areas/${area.id}`, data as any);
+        router.put(`/admin/areas/${area.id}`, data as any, {
+            onSuccess: () => toast.success('Area berhasil diperbarui'),
+            onError: () => toast.error('Gagal memperbarui area'),
+        });
     };
 
     return (

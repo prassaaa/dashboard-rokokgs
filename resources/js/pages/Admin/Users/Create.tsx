@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import {
     Select,
     SelectContent,
@@ -92,7 +93,10 @@ export default function CreateUser({
 
     const onSubmit = (data: CreateUserForm) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        router.post('/admin/users', data as any);
+        router.post('/admin/users', data as any, {
+            onSuccess: () => toast.success('User berhasil ditambahkan'),
+            onError: () => toast.error('Gagal menambahkan user'),
+        });
     };
 
     return (

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
+import { toast } from 'sonner';
 import { type BreadcrumbItem } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, Link, router } from '@inertiajs/react';
@@ -52,7 +53,10 @@ export default function Create() {
 
     const onSubmit = (data: CreateBranchForm) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        router.post('/admin/branches', data as any);
+        router.post('/admin/branches', data as any, {
+            onSuccess: () => toast.success('Cabang berhasil ditambahkan'),
+            onError: () => toast.error('Gagal menambahkan cabang'),
+        });
     };
 
     return (

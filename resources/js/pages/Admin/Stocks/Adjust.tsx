@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
+import { toast } from 'sonner';
 import { type BreadcrumbItem } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, Link, router } from '@inertiajs/react';
@@ -81,8 +82,10 @@ export default function Adjust({ stock }: AdjustProps) {
         }
 
         router.post(`/admin/stocks/${stock.id}/adjust`, formData, {
+            onSuccess: () => toast.success('Stok berhasil disesuaikan'),
             onError: (errors) => {
                 console.error('Validation errors:', errors);
+                toast.error('Gagal menyesuaikan stok');
             },
         });
     };

@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Can } from '@/components/Can';
+import { toast } from 'sonner';
 import {
     Dialog,
     DialogContent,
@@ -133,12 +134,15 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                 `/admin/users/${approveDialog.userId}/approve`,
                 {},
                 {
-                    onSuccess: () =>
+                    onSuccess: () => {
                         setApproveDialog({
                             open: false,
                             userId: null,
                             userName: '',
-                        }),
+                        });
+                        toast.success('User berhasil diaktifkan');
+                    },
+                    onError: () => toast.error('Gagal mengaktifkan user'),
                 },
             );
         }
@@ -147,8 +151,11 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
     const handleDelete = () => {
         if (deleteDialog.userId) {
             router.delete(`/admin/users/${deleteDialog.userId}`, {
-                onSuccess: () =>
-                    setDeleteDialog({ open: false, userId: null, userName: '' }),
+                onSuccess: () => {
+                    setDeleteDialog({ open: false, userId: null, userName: '' });
+                    toast.success('User berhasil dihapus');
+                },
+                onError: () => toast.error('Gagal menghapus user'),
             });
         }
     };

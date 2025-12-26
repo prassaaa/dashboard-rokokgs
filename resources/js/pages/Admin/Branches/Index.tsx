@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Can } from '@/components/Can';
+import { toast } from 'sonner';
 import {
     Dialog,
     DialogContent,
@@ -99,8 +100,11 @@ export default function Index({ branches, filters }: IndexProps) {
         if (!deleteDialog.branchId) return;
 
         router.delete(`/admin/branches/${deleteDialog.branchId}`, {
-            onSuccess: () =>
-                setDeleteDialog({ open: false, branchId: null, branchName: '' }),
+            onSuccess: () => {
+                setDeleteDialog({ open: false, branchId: null, branchName: '' });
+                toast.success('Cabang berhasil dihapus');
+            },
+            onError: () => toast.error('Gagal menghapus cabang'),
         });
     };
 

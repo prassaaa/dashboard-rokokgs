@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Can } from '@/components/Can';
+import { toast } from 'sonner';
 import {
     Dialog,
     DialogContent,
@@ -93,12 +94,15 @@ export default function Index({ categories, filters }: IndexProps) {
         if (!deleteDialog.categoryId) return;
 
         router.delete(`/admin/categories/${deleteDialog.categoryId}`, {
-            onSuccess: () =>
+            onSuccess: () => {
                 setDeleteDialog({
                     open: false,
                     categoryId: null,
                     categoryName: '',
-                }),
+                });
+                toast.success('Kategori berhasil dihapus');
+            },
+            onError: () => toast.error('Gagal menghapus kategori'),
         });
     };
 

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Can } from '@/components/Can';
 import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
 import {
     Dialog,
     DialogContent,
@@ -171,7 +172,9 @@ export default function Index({
                 onSuccess: () => {
                     setBatchApproveDialog(false);
                     setSelectedIds([]);
+                    toast.success(`${selectedIds.length} komisi berhasil disetujui`);
                 },
+                onError: () => toast.error('Gagal menyetujui komisi'),
             },
         );
     };
@@ -184,7 +187,9 @@ export default function Index({
                 onSuccess: () => {
                     setBatchPayDialog(false);
                     setSelectedIds([]);
+                    toast.success(`${selectedIds.length} komisi berhasil dibayar`);
                 },
+                onError: () => toast.error('Gagal membayar komisi'),
             },
         );
     };
@@ -197,10 +202,16 @@ export default function Index({
                 ? `/admin/commissions/${singleActionDialog.id}/approve`
                 : `/admin/commissions/${singleActionDialog.id}/pay`;
 
+        const successMessage = singleActionDialog.type === 'approve'
+            ? 'Komisi berhasil disetujui'
+            : 'Komisi berhasil dibayar';
+
         router.post(endpoint, {}, {
             onSuccess: () => {
                 setSingleActionDialog({ open: false, type: null, id: null });
+                toast.success(successMessage);
             },
+            onError: () => toast.error(`Gagal ${singleActionDialog.type === 'approve' ? 'menyetujui' : 'membayar'} komisi`),
         });
     };
 

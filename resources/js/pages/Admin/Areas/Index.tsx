@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Can } from '@/components/Can';
+import { toast } from 'sonner';
 import {
     Dialog,
     DialogContent,
@@ -102,8 +103,11 @@ export default function Index({ areas, branches, filters }: IndexProps) {
         if (!deleteDialog.areaId) return;
 
         router.delete(`/admin/areas/${deleteDialog.areaId}`, {
-            onSuccess: () =>
-                setDeleteDialog({ open: false, areaId: null, areaName: '' }),
+            onSuccess: () => {
+                setDeleteDialog({ open: false, areaId: null, areaName: '' });
+                toast.success('Area berhasil dihapus');
+            },
+            onError: () => toast.error('Gagal menghapus area'),
         });
     };
 

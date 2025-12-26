@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Can } from '@/components/Can';
+import { toast } from 'sonner';
 import {
     Dialog,
     DialogContent,
@@ -155,8 +156,11 @@ export default function Index({
             `/admin/transactions/${approveDialog.transactionId}/approve`,
             {},
             {
-                onSuccess: () =>
-                    setApproveDialog({ open: false, transactionId: null }),
+                onSuccess: () => {
+                    setApproveDialog({ open: false, transactionId: null });
+                    toast.success('Transaksi berhasil disetujui');
+                },
+                onError: () => toast.error('Gagal menyetujui transaksi'),
             },
         );
     };
@@ -168,12 +172,15 @@ export default function Index({
             `/admin/transactions/${rejectDialog.transactionId}/reject`,
             { rejection_reason: rejectDialog.reason },
             {
-                onSuccess: () =>
+                onSuccess: () => {
                     setRejectDialog({
                         open: false,
                         transactionId: null,
                         reason: '',
-                    }),
+                    });
+                    toast.success('Transaksi berhasil ditolak');
+                },
+                onError: () => toast.error('Gagal menolak transaksi'),
             },
         );
     };

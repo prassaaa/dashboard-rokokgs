@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Can } from '@/components/Can';
+import { toast } from 'sonner';
 import {
     Dialog,
     DialogContent,
@@ -134,7 +135,11 @@ export default function Index({
         if (!deleteDialog.targetId) return;
 
         router.delete(`/admin/targets/${deleteDialog.targetId}`, {
-            onSuccess: () => setDeleteDialog({ open: false, targetId: null }),
+            onSuccess: () => {
+                setDeleteDialog({ open: false, targetId: null });
+                toast.success('Target berhasil dihapus');
+            },
+            onError: () => toast.error('Gagal menghapus target'),
         });
     };
 

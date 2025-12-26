@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import {
     Select,
     SelectContent,
@@ -120,7 +121,10 @@ export default function Edit({ target, branches, salesUsers }: EditProps) {
 
     const onSubmit = (data: EditTargetForm) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        router.put(`/admin/targets/${target.id}`, data as any);
+        router.put(`/admin/targets/${target.id}`, data as any, {
+            onSuccess: () => toast.success('Target berhasil diperbarui'),
+            onError: () => toast.error('Gagal memperbarui target'),
+        });
     };
 
     const years = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);

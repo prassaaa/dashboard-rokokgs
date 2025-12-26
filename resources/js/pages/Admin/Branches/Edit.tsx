@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
+import { toast } from 'sonner';
 import { type BreadcrumbItem } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, Link, router } from '@inertiajs/react';
@@ -71,7 +72,10 @@ export default function Edit({ branch }: EditProps) {
 
     const onSubmit = (data: EditBranchForm) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        router.put(`/admin/branches/${branch.id}`, data as any);
+        router.put(`/admin/branches/${branch.id}`, data as any, {
+            onSuccess: () => toast.success('Cabang berhasil diperbarui'),
+            onError: () => toast.error('Gagal memperbarui cabang'),
+        });
     };
 
     return (

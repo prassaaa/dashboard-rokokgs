@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import {
     Select,
     SelectContent,
@@ -87,8 +88,10 @@ export default function Initialize({ products, branches }: InitializeProps) {
         formData.append('minimum_stock', data.minimum_stock);
 
         router.post('/admin/stocks/initialize', formData, {
+            onSuccess: () => toast.success('Stok berhasil diinisialisasi'),
             onError: (errors) => {
                 console.error('Validation errors:', errors);
+                toast.error('Gagal menginisialisasi stok');
             },
         });
     };

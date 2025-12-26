@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import {
     Select,
     SelectContent,
@@ -109,7 +110,10 @@ export default function EditUser({
             delete data.password_confirmation;
         }
 
-        router.put(`/admin/users/${user.id}`, data);
+        router.put(`/admin/users/${user.id}`, data, {
+            onSuccess: () => toast.success('User berhasil diperbarui'),
+            onError: () => toast.error('Gagal memperbarui user'),
+        });
     };
 
     return (
