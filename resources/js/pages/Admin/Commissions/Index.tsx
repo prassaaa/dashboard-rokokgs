@@ -35,6 +35,7 @@ interface Sales {
 
 interface SalesTransaction {
     id: number;
+    transaction_number: string;
     customer_name: string;
     total: number;
 }
@@ -42,8 +43,10 @@ interface SalesTransaction {
 interface Commission {
     id: number;
     sales: Sales;
-    salesTransaction: SalesTransaction;
-    amount: number;
+    sales_transaction: SalesTransaction;
+    commission_amount: number;
+    commission_percentage: number;
+    transaction_amount: number;
     status: 'pending' | 'approved' | 'paid';
     paid_at: string | null;
     created_at: string;
@@ -451,29 +454,29 @@ export default function Index({
                                         <td className="p-4">
                                             <div>
                                                 <p className="font-medium">
-                                                    {commission.sales.name}
+                                                    {commission.sales?.name ?? '-'}
                                                 </p>
                                             </div>
                                         </td>
                                         <td className="p-4">
                                             <Link
-                                                href={`/admin/transactions/${commission.salesTransaction.id}`}
+                                                href={`/admin/transactions/${commission.sales_transaction?.id}`}
                                                 className="hover:underline"
                                             >
                                                 {
-                                                    commission.salesTransaction
-                                                        .customer_name
+                                                    commission.sales_transaction
+                                                        ?.customer_name ?? '-'
                                                 }
                                             </Link>
                                         </td>
                                         <td className="p-4 text-right">
                                             {formatCurrency(
-                                                commission.salesTransaction
-                                                    .total,
+                                                commission.sales_transaction
+                                                    ?.total ?? 0,
                                             )}
                                         </td>
                                         <td className="p-4 text-right font-medium">
-                                            {formatCurrency(commission.amount)}
+                                            {formatCurrency(commission.commission_amount)}
                                         </td>
                                         <td className="p-4 text-center">
                                             <Badge
