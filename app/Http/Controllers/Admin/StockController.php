@@ -116,7 +116,11 @@ class StockController extends Controller
     {
         $stock = Stock::with(['product', 'branch'])->findOrFail($id);
 
-        $movements = StockMovement::where('stock_id', $id)
+        $movements = StockMovement::where('product_id', $stock->product_id)
+            ->where(function ($query) use ($stock) {
+                $query->where('from_branch_id', $stock->branch_id)
+                    ->orWhere('to_branch_id', $stock->branch_id);
+            })
             ->with('createdBy:id,name')
             ->orderByDesc('created_at')
             ->paginate(20);
