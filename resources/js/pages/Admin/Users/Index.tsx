@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Can } from '@/components/Can';
 import {
     Dialog,
     DialogContent,
@@ -165,12 +166,14 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                             Kelola pengguna sistem dan hak akses
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href="/admin/users/create">
-                            <Plus className="mr-2 size-4" />
-                            Tambah User
-                        </Link>
-                    </Button>
+                    <Can permission="create-users">
+                        <Button asChild>
+                            <Link href="/admin/users/create">
+                                <Plus className="mr-2 size-4" />
+                                Tambah User
+                            </Link>
+                        </Button>
+                    </Can>
                 </div>
 
                 {/* Filters */}
@@ -375,16 +378,63 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex justify-center gap-2">
-                                                    {!user.is_active && (
+                                                    <Can permission="edit-users">
+                                                        {!user.is_active && (
+                                                            <Tooltip>
+                                                                <TooltipTrigger
+                                                                    asChild
+                                                                >
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="outline"
+                                                                        onClick={() =>
+                                                                            setApproveDialog(
+                                                                                {
+                                                                                    open: true,
+                                                                                    userId: user.id,
+                                                                                    userName:
+                                                                                        user.name,
+                                                                                },
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <UserCheck className="size-4" />
+                                                                    </Button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    Approve User
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        )}
+                                                    </Can>
+                                                    <Can permission="edit-users">
                                                         <Tooltip>
-                                                            <TooltipTrigger
-                                                                asChild
-                                                            >
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    asChild
+                                                                    size="sm"
+                                                                    variant="outline"
+                                                                >
+                                                                    <Link
+                                                                        href={`/admin/users/${user.id}/edit`}
+                                                                    >
+                                                                        <Edit className="size-4" />
+                                                                    </Link>
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                Edit User
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </Can>
+                                                    <Can permission="delete-users">
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
                                                                 <Button
                                                                     size="sm"
                                                                     variant="outline"
                                                                     onClick={() =>
-                                                                        setApproveDialog(
+                                                                        setDeleteDialog(
                                                                             {
                                                                                 open: true,
                                                                                 userId: user.id,
@@ -393,57 +443,16 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                                                                             },
                                                                         )
                                                                     }
+                                                                    className="text-destructive hover:bg-destructive hover:text-white"
                                                                 >
-                                                                    <UserCheck className="size-4" />
+                                                                    <Trash2 className="size-4" />
                                                                 </Button>
                                                             </TooltipTrigger>
                                                             <TooltipContent>
-                                                                Approve User
+                                                                Hapus User
                                                             </TooltipContent>
                                                         </Tooltip>
-                                                    )}
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Button
-                                                                asChild
-                                                                size="sm"
-                                                                variant="outline"
-                                                            >
-                                                                <Link
-                                                                    href={`/admin/users/${user.id}/edit`}
-                                                                >
-                                                                    <Edit className="size-4" />
-                                                                </Link>
-                                                            </Button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            Edit User
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                onClick={() =>
-                                                                    setDeleteDialog(
-                                                                        {
-                                                                            open: true,
-                                                                            userId: user.id,
-                                                                            userName:
-                                                                                user.name,
-                                                                        },
-                                                                    )
-                                                                }
-                                                                className="text-destructive hover:bg-destructive hover:text-white"
-                                                            >
-                                                                <Trash2 className="size-4" />
-                                                            </Button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            Hapus User
-                                                        </TooltipContent>
-                                                    </Tooltip>
+                                                    </Can>
                                                 </div>
                                             </td>
                                         </tr>

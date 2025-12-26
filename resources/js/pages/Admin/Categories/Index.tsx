@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Can } from '@/components/Can';
 import {
     Dialog,
     DialogContent,
@@ -116,12 +117,14 @@ export default function Index({ categories, filters }: IndexProps) {
                             Kelola kategori produk
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href="/admin/categories/create">
-                            <Plus className="mr-2 size-4" />
-                            Tambah Kategori
-                        </Link>
-                    </Button>
+                    <Can permission="create-products">
+                        <Button asChild>
+                            <Link href="/admin/categories/create">
+                                <Plus className="mr-2 size-4" />
+                                Tambah Kategori
+                            </Link>
+                        </Button>
+                    </Can>
                 </div>
 
                 {/* Filters */}
@@ -216,33 +219,37 @@ export default function Index({ categories, filters }: IndexProps) {
                                 </div>
 
                                 <div className="mt-4 flex gap-2 border-t pt-4">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="flex-1"
-                                        asChild
-                                    >
-                                        <Link
-                                            href={`/admin/categories/${category.id}/edit`}
+                                    <Can permission="edit-products">
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="flex-1"
+                                            asChild
                                         >
-                                            <Edit className="mr-2 size-4" />
-                                            Edit
-                                        </Link>
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() =>
-                                            setDeleteDialog({
-                                                open: true,
-                                                categoryId: category.id,
-                                                categoryName: category.name,
-                                            })
-                                        }
-                                        className="text-destructive hover:bg-destructive hover:text-white"
-                                    >
-                                        <Trash2 className="size-4" />
-                                    </Button>
+                                            <Link
+                                                href={`/admin/categories/${category.id}/edit`}
+                                            >
+                                                <Edit className="mr-2 size-4" />
+                                                Edit
+                                            </Link>
+                                        </Button>
+                                    </Can>
+                                    <Can permission="delete-products">
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() =>
+                                                setDeleteDialog({
+                                                    open: true,
+                                                    categoryId: category.id,
+                                                    categoryName: category.name,
+                                                })
+                                            }
+                                            className="text-destructive hover:bg-destructive hover:text-white"
+                                        >
+                                            <Trash2 className="size-4" />
+                                        </Button>
+                                    </Can>
                                 </div>
                             </Card>
                         ))

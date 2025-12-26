@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Can } from '@/components/Can';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
     Dialog,
@@ -234,21 +235,25 @@ export default function Index({
                     <div className="flex gap-2">
                         {selectedIds.length > 0 && (
                             <>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setBatchApproveDialog(true)}
-                                    disabled={!canBatchApprove}
-                                >
-                                    <CheckCircle className="mr-2 size-4" />
-                                    Setujui ({selectedIds.length})
-                                </Button>
-                                <Button
-                                    onClick={() => setBatchPayDialog(true)}
-                                    disabled={!canBatchPay}
-                                >
-                                    <DollarSign className="mr-2 size-4" />
-                                    Bayar ({selectedIds.length})
-                                </Button>
+                                <Can permission="approve-commissions">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setBatchApproveDialog(true)}
+                                        disabled={!canBatchApprove}
+                                    >
+                                        <CheckCircle className="mr-2 size-4" />
+                                        Setujui ({selectedIds.length})
+                                    </Button>
+                                </Can>
+                                <Can permission="pay-commissions">
+                                    <Button
+                                        onClick={() => setBatchPayDialog(true)}
+                                        disabled={!canBatchPay}
+                                    >
+                                        <DollarSign className="mr-2 size-4" />
+                                        Bayar ({selectedIds.length})
+                                    </Button>
+                                </Can>
                             </>
                         )}
                     </div>
@@ -516,40 +521,44 @@ export default function Index({
                                             <div className="flex justify-center gap-2">
                                                 {commission.status ===
                                                     'pending' && (
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        onClick={() =>
-                                                            setSingleActionDialog(
-                                                                {
-                                                                    open: true,
-                                                                    type: 'approve',
-                                                                    id: commission.id,
-                                                                },
-                                                            )
-                                                        }
-                                                    >
-                                                        <CheckCircle className="mr-2 size-4" />
-                                                        Setujui
-                                                    </Button>
+                                                    <Can permission="approve-commissions">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() =>
+                                                                setSingleActionDialog(
+                                                                    {
+                                                                        open: true,
+                                                                        type: 'approve',
+                                                                        id: commission.id,
+                                                                    },
+                                                                )
+                                                            }
+                                                        >
+                                                            <CheckCircle className="mr-2 size-4" />
+                                                            Setujui
+                                                        </Button>
+                                                    </Can>
                                                 )}
                                                 {commission.status ===
                                                     'approved' && (
-                                                    <Button
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            setSingleActionDialog(
-                                                                {
-                                                                    open: true,
-                                                                    type: 'pay',
-                                                                    id: commission.id,
-                                                                },
-                                                            )
-                                                        }
-                                                    >
-                                                        <DollarSign className="mr-2 size-4" />
-                                                        Bayar
-                                                    </Button>
+                                                    <Can permission="pay-commissions">
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                setSingleActionDialog(
+                                                                    {
+                                                                        open: true,
+                                                                        type: 'pay',
+                                                                        id: commission.id,
+                                                                    },
+                                                                )
+                                                            }
+                                                        >
+                                                            <DollarSign className="mr-2 size-4" />
+                                                            Bayar
+                                                        </Button>
+                                                    </Can>
                                                 )}
                                             </div>
                                         </td>

@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Can } from '@/components/Can';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -110,12 +111,14 @@ export default function Index({ stocks, branches, filters }: IndexProps) {
                             Kelola dan monitor stok produk di setiap cabang
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href="/admin/stocks/initialize">
-                            <Plus className="mr-2 size-4" />
-                            Inisialisasi Stok
-                        </Link>
-                    </Button>
+                    <Can permission="create-stocks">
+                        <Button asChild>
+                            <Link href="/admin/stocks/initialize">
+                                <Plus className="mr-2 size-4" />
+                                Inisialisasi Stok
+                            </Link>
+                        </Button>
+                    </Can>
                 </div>
 
                 {/* Filters */}
@@ -297,17 +300,19 @@ export default function Index({ stocks, branches, filters }: IndexProps) {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center justify-center gap-2">
-                                                    <Link
-                                                        href={`/admin/stocks/${stock.id}/adjust`}
-                                                    >
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
+                                                    <Can permission="stock-opname">
+                                                        <Link
+                                                            href={`/admin/stocks/${stock.id}/adjust`}
                                                         >
-                                                            <Edit className="mr-1 h-3 w-3" />
-                                                            Sesuaikan
-                                                        </Button>
-                                                    </Link>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                            >
+                                                                <Edit className="mr-1 h-3 w-3" />
+                                                                Sesuaikan
+                                                            </Button>
+                                                        </Link>
+                                                    </Can>
                                                     <Link
                                                         href={`/admin/stocks/${stock.id}/movements`}
                                                     >

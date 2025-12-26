@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Can } from '@/components/Can';
 import {
     Dialog,
     DialogContent,
@@ -433,7 +434,7 @@ export default function Index({
                                                     </Button>
                                                     {transaction.status ===
                                                         'pending' && (
-                                                        <>
+                                                        <Can permission="approve-sales-transactions">
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
@@ -467,7 +468,7 @@ export default function Index({
                                                                 <XCircle className="mr-1 h-3 w-3" />
                                                                 Tolak
                                                             </Button>
-                                                        </>
+                                                        </Can>
                                                     )}
                                                 </div>
                                             </td>

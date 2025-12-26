@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Can } from '@/components/Can';
 import {
     Dialog,
     DialogContent,
@@ -143,12 +144,14 @@ export default function Index({ products, categories, filters }: IndexProps) {
                             Kelola produk dan stok
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href="/admin/products/create">
-                            <Plus className="mr-2 size-4" />
-                            Tambah Produk
-                        </Link>
-                    </Button>
+                    <Can permission="create-products">
+                        <Button asChild>
+                            <Link href="/admin/products/create">
+                                <Plus className="mr-2 size-4" />
+                                Tambah Produk
+                            </Link>
+                        </Button>
+                    </Can>
                 </div>
 
                 {/* Filters */}
@@ -335,33 +338,37 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex gap-2">
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        asChild
-                                                    >
-                                                        <Link
-                                                            href={`/admin/products/${product.id}/edit`}
+                                                    <Can permission="edit-products">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            asChild
                                                         >
-                                                            <Edit className="size-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        onClick={() =>
-                                                            setDeleteDialog({
-                                                                open: true,
-                                                                productId:
-                                                                    product.id,
-                                                                productName:
-                                                                    product.name,
-                                                            })
-                                                        }
-                                                        className="text-destructive hover:bg-destructive hover:text-white"
-                                                    >
-                                                        <Trash2 className="size-4" />
-                                                    </Button>
+                                                            <Link
+                                                                href={`/admin/products/${product.id}/edit`}
+                                                            >
+                                                                <Edit className="size-4" />
+                                                            </Link>
+                                                        </Button>
+                                                    </Can>
+                                                    <Can permission="delete-products">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() =>
+                                                                setDeleteDialog({
+                                                                    open: true,
+                                                                    productId:
+                                                                        product.id,
+                                                                    productName:
+                                                                        product.name,
+                                                                })
+                                                            }
+                                                            className="text-destructive hover:bg-destructive hover:text-white"
+                                                        >
+                                                            <Trash2 className="size-4" />
+                                                        </Button>
+                                                    </Can>
                                                 </div>
                                             </td>
                                         </tr>
