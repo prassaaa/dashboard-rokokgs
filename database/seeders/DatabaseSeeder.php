@@ -19,6 +19,12 @@ class DatabaseSeeder extends Seeder
             ProductCategorySeeder::class,
             ProductSeeder::class,
             UserSeeder::class,
+            AreaSeeder::class,
+            AreaUserSeeder::class,
+            StockSeeder::class,
+            TargetSeeder::class,
+            SalesTransactionSeeder::class,
+            CommissionSeeder::class,
         ]);
     }
 }

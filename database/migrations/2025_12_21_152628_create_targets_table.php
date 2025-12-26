@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('branch_id')->nullable()->constrained('branches')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->enum('type', ['branch', 'sales']);
-            $table->decimal('amount', 15, 2);
-            $table->integer('quantity')->nullable();
-            $table->string('period_type')->default('monthly');
+            $table->enum('type', ['revenue', 'quantity'])->comment('Target type: revenue for amount target, quantity for unit target');
+            $table->decimal('amount', 15, 2)->nullable()->comment('Target amount in IDR');
+            $table->integer('quantity')->nullable()->comment('Target quantity in units');
+            $table->string('period_type')->default('monthly')->comment('Period: monthly, quarterly, yearly, custom');
             $table->integer('year');
             $table->integer('month')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }
