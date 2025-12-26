@@ -30,6 +30,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Branch Management (Super Admin Only)
     Route::resource('branches', \App\Http\Controllers\Admin\BranchController::class);
 
+    // Area Management
+    Route::resource('areas', \App\Http\Controllers\Admin\AreaController::class);
+
     // Category & Product Management
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
@@ -41,6 +44,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('stocks/{stock}/adjust', [\App\Http\Controllers\Admin\StockController::class, 'adjust'])->name('stocks.adjust');
     Route::post('stocks/{stock}/adjust', [\App\Http\Controllers\Admin\StockController::class, 'processAdjustment'])->name('stocks.process-adjustment');
     Route::get('stocks/{stock}/movements', [\App\Http\Controllers\Admin\StockController::class, 'movements'])->name('stocks.movements');
+
+    // Target Management
+    Route::resource('targets', \App\Http\Controllers\Admin\TargetController::class);
 
     // Transaction Management
     Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');
