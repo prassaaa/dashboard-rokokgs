@@ -107,7 +107,7 @@ class DashboardController extends Controller
             'total_transactions' => $transactions->count(),
             'total_revenue' => $transactions->sum('total'),
             'average_transaction' => $transactions->avg('total') ?? 0,
-            'completed_transactions' => $transactions->where('status', 'completed')->count(),
+            'completed_transactions' => $transactions->where('status', 'approved')->count(),
         ];
     }
 
