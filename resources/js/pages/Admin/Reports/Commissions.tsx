@@ -114,7 +114,7 @@ export default function Commissions({
                 <Card className="p-4">
                     <form onSubmit={handleApplyFilters}>
                         <div className="space-y-4">
-                            <div className="grid gap-4 md:grid-cols-4">
+                            <div className="grid gap-4 md:grid-cols-3">
                                 <div className="space-y-2">
                                     <Label>Tanggal Mulai</Label>
                                     <Input
@@ -167,11 +167,11 @@ export default function Commissions({
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <div className="flex items-end">
-                                    <Button type="submit" className="w-full">
-                                        Tampilkan Laporan
-                                    </Button>
-                                </div>
+                            </div>
+                            <div className="flex justify-end">
+                                <Button type="submit">
+                                    Tampilkan Laporan
+                                </Button>
                             </div>
                         </div>
                     </form>
