@@ -85,24 +85,24 @@ export default function SalesPerformance({
         );
     };
 
-    const formatCurrency = (amount: number) => {
+    const formatCurrency = (amount: number | string | null | undefined) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
             currency: 'IDR',
             minimumFractionDigits: 0,
-        }).format(amount);
+        }).format(Number(amount) || 0);
     };
 
     const totalTransactions = salesStats.reduce(
-        (sum, stat) => sum + stat.total_transactions,
+        (sum, stat) => sum + (Number(stat.total_transactions) || 0),
         0,
     );
     const totalRevenue = salesStats.reduce(
-        (sum, stat) => sum + stat.total_revenue,
+        (sum, stat) => sum + (Number(stat.total_revenue) || 0),
         0,
     );
     const totalCommission = salesStats.reduce(
-        (sum, stat) => sum + stat.total_commission,
+        (sum, stat) => sum + (Number(stat.total_commission) || 0),
         0,
     );
 
