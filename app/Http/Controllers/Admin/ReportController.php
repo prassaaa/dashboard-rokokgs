@@ -31,7 +31,7 @@ class ReportController extends Controller
         $branchId = $request->input('branch_id');
 
         $query = SalesTransaction::whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'completed');
+            ->where('status', 'approved');
 
         if (!$isSuperAdmin) {
             $query->where('branch_id', $user->branch_id);
@@ -84,7 +84,7 @@ class ReportController extends Controller
 
         $query = SalesTransactionItem::whereHas('salesTransaction', function ($q) use ($startDate, $endDate, $isSuperAdmin, $user, $branchId) {
             $q->whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', 'completed');
+                ->where('status', 'approved');
 
             if (!$isSuperAdmin) {
                 $q->where('branch_id', $user->branch_id);
@@ -124,7 +124,7 @@ class ReportController extends Controller
         $branchId = $request->input('branch_id');
 
         $query = SalesTransaction::whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'completed');
+            ->where('status', 'approved');
 
         if (!$isSuperAdmin) {
             $query->where('branch_id', $user->branch_id);
