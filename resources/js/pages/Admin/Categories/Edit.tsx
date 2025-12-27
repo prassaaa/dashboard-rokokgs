@@ -16,6 +16,7 @@ import { z } from 'zod';
 interface Category {
     id: number;
     name: string;
+    slug: string;
     description: string | null;
     is_active: boolean;
 }
@@ -26,12 +27,14 @@ interface EditProps {
 
 interface EditCategoryForm {
     name: string;
+    slug: string;
     description?: string;
     is_active: boolean;
 }
 
 const editCategorySchema = z.object({
     name: z.string().min(3, 'Nama kategori minimal 3 karakter'),
+    slug: z.string().min(3, 'Slug minimal 3 karakter').regex(/^[a-z0-9-]+$/, 'Slug hanya boleh huruf kecil, angka, dan strip'),
     description: z.string().optional(),
     is_active: z.boolean(),
 });
@@ -52,6 +55,7 @@ export default function Edit({ category }: EditProps) {
         resolver: zodResolver(editCategorySchema) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
         defaultValues: {
             name: category.name,
+            slug: category.slug,
             description: category.description || '',
             is_active: category.is_active,
         },
@@ -103,6 +107,24 @@ export default function Edit({ category }: EditProps) {
                                         {errors.name.message}
                                     </p>
                                 )}
+                            </div>
+
+                            <div>
+                                <Label htmlFor="slug">Slug *</Label>
+                                <Input
+                                    id="slug"
+                                    {...register('slug')}
+                                    placeholder="rokok-filter"
+                                    className="mt-2"
+                                />
+                                {errors.slug && (
+                                    <p className="mt-1 text-sm text-destructive">
+                                        {errors.slug.message}
+                                    </p>
+                                )}
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    URL-friendly identifier (huruf kecil, angka, strip)
+                                </p>
                             </div>
 
                             <div>

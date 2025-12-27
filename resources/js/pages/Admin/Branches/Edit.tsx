@@ -17,7 +17,9 @@ interface Branch {
     id: number;
     name: string;
     code: string;
-    address: string;
+    address: string | null;
+    city: string | null;
+    province: string | null;
     phone: string | null;
     email: string | null;
     is_active: boolean;
@@ -31,7 +33,9 @@ interface EditProps {
 interface EditBranchForm {
     name: string;
     code: string;
-    address: string;
+    address?: string;
+    city?: string;
+    province?: string;
     phone?: string;
     email?: string;
     is_active: boolean;
@@ -40,7 +44,9 @@ interface EditBranchForm {
 const editBranchSchema = z.object({
     name: z.string().min(3, 'Nama cabang minimal 3 karakter'),
     code: z.string().min(2, 'Kode cabang minimal 2 karakter'),
-    address: z.string().min(10, 'Alamat minimal 10 karakter'),
+    address: z.string().max(500, 'Alamat maksimal 500 karakter').optional().or(z.literal('')),
+    city: z.string().max(100, 'Nama kota maksimal 100 karakter').optional().or(z.literal('')),
+    province: z.string().max(100, 'Nama provinsi maksimal 100 karakter').optional().or(z.literal('')),
     phone: z.string().optional(),
     email: z.string().email('Email tidak valid').optional().or(z.literal('')),
     is_active: z.boolean(),
@@ -63,7 +69,9 @@ export default function Edit({ branch }: EditProps) {
         defaultValues: {
             name: branch.name,
             code: branch.code,
-            address: branch.address,
+            address: branch.address || '',
+            city: branch.city || '',
+            province: branch.province || '',
             phone: branch.phone || '',
             email: branch.email || '',
             is_active: branch.is_active,
@@ -145,18 +153,48 @@ export default function Edit({ branch }: EditProps) {
 
                                     <div className="md:col-span-2">
                                         <Label htmlFor="address">
-                                            Alamat Lengkap *
+                                            Alamat Lengkap
                                         </Label>
                                         <Textarea
                                             id="address"
                                             {...register('address')}
-                                            placeholder="Jl. Contoh No. 123, Kota, Provinsi"
+                                            placeholder="Jl. Contoh No. 123"
                                             className="mt-2"
                                             rows={3}
                                         />
                                         {errors.address && (
                                             <p className="mt-1 text-sm text-destructive">
                                                 {errors.address.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label htmlFor="city">Kota</Label>
+                                        <Input
+                                            id="city"
+                                            {...register('city')}
+                                            placeholder="Jakarta Selatan"
+                                            className="mt-2"
+                                        />
+                                        {errors.city && (
+                                            <p className="mt-1 text-sm text-destructive">
+                                                {errors.city.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label htmlFor="province">Provinsi</Label>
+                                        <Input
+                                            id="province"
+                                            {...register('province')}
+                                            placeholder="DKI Jakarta"
+                                            className="mt-2"
+                                        />
+                                        {errors.province && (
+                                            <p className="mt-1 text-sm text-destructive">
+                                                {errors.province.message}
                                             </p>
                                         )}
                                     </div>

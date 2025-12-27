@@ -28,6 +28,7 @@ import { type FormEvent, useState } from 'react';
 interface Category {
     id: number;
     name: string;
+    slug: string;
     description: string | null;
     is_active: boolean;
     products_count: number;

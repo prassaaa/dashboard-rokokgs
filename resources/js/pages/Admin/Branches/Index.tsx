@@ -31,7 +31,9 @@ interface Branch {
     id: number;
     name: string;
     code: string;
-    address: string;
+    address: string | null;
+    city: string | null;
+    province: string | null;
     phone: string | null;
     is_active: boolean;
     created_at: string;
