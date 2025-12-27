@@ -24,7 +24,9 @@ class CreateBranchRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:50', 'unique:branches'],
-            'address' => ['required', 'string'],
+            'address' => ['nullable', 'string'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'province' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'email' => ['nullable', 'email', 'max:255'],
             'is_active' => ['boolean'],

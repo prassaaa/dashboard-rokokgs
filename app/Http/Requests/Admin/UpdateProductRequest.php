@@ -22,9 +22,12 @@ class UpdateProductRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:100', Rule::unique('products')->ignore($productId)],
             'product_category_id' => ['required', 'exists:product_categories,id'],
+            'barcode' => ['nullable', 'string', 'max:255', Rule::unique('products')->ignore($productId)],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
-            'commission_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
+            'cost' => ['nullable', 'numeric', 'min:0'],
+            'unit' => ['nullable', 'string', 'max:50'],
+            'items_per_carton' => ['nullable', 'integer', 'min:1'],
             'image' => ['nullable', 'image', 'max:2048'],
             'is_active' => ['boolean'],
         ];
