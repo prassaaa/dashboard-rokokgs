@@ -23,7 +23,7 @@ class AuthController extends BaseApiController
 
     /**
      * @OA\Post(
-     *     path="/api/v1/auth/login",
+     *     path="/api/v1/login",
      *     tags={"Authentication"},
      *     summary="Login user dan generate token",
      *     description="Authenticate user dengan email dan password, return user data dan bearer token",
@@ -101,7 +101,7 @@ class AuthController extends BaseApiController
 
     /**
      * @OA\Post(
-     *     path="/api/v1/auth/register",
+     *     path="/api/v1/register",
      *     tags={"Authentication"},
      *     summary="Register user baru (Sales only)",
      *     description="Registrasi user baru untuk Sales melalui mobile app, memerlukan approval admin",
@@ -168,7 +168,7 @@ class AuthController extends BaseApiController
 
     /**
      * @OA\Get(
-     *     path="/api/v1/auth/profile",
+     *     path="/api/v1/profile",
      *     tags={"Authentication"},
      *     summary="Get user profile",
      *     description="Mendapatkan data profil user yang sedang login beserta branch, roles, dan areas",
@@ -222,7 +222,7 @@ class AuthController extends BaseApiController
 
     /**
      * @OA\Put(
-     *     path="/api/v1/auth/profile",
+     *     path="/api/v1/profile",
      *     tags={"Authentication"},
      *     summary="Update user profile",
      *     description="Update data profil user yang sedang login (nama, email, phone, password, avatar)",
@@ -295,7 +295,7 @@ class AuthController extends BaseApiController
 
     /**
      * @OA\Post(
-     *     path="/api/v1/auth/logout",
+     *     path="/api/v1/logout",
      *     tags={"Authentication"},
      *     summary="Logout user",
      *     description="Logout user dan revoke token yang sedang digunakan",

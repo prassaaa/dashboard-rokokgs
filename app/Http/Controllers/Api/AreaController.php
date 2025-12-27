@@ -108,12 +108,33 @@ class AreaController extends BaseApiController
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Unauthenticated.")
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized - Sales cannot access this area",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
      *     )
      * )
      */
     public function show(int $id): JsonResponse
     {
-        $area = Area::findOrFail($id);
+        $user = auth()->user();
+        $area = Area::find($id);
+
+        if (!$area) {
+            return $this->errorResponse('Area not found', 404);
+        }
+
+        // Sales can only view their assigned areas
+        if ($user->hasRole('Sales')) {
+            $assignedAreaIds = $user->areas->pluck('id')->toArray();
+            if (!in_array($id, $assignedAreaIds)) {
+                return $this->errorResponse('Unauthorized', 403);
+            }
+        }
 
         return $this->successResponse(
             new AreaResource($area),

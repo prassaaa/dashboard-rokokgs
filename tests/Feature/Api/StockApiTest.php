@@ -78,7 +78,7 @@ beforeEach(function () {
 
 test('can get stock list for current branch', function () {
     $response = $this->actingAs($this->user, 'sanctum')
-        ->getJson('/api/v1/stock');
+        ->getJson('/api/v1/stocks');
 
     $response->assertOk()
         ->assertJsonStructure([
@@ -102,6 +102,14 @@ test('can get stock list for current branch', function () {
                     ],
                 ],
             ],
+            'meta' => [
+                'current_page',
+                'from',
+                'last_page',
+                'per_page',
+                'to',
+                'total',
+            ],
         ])
         ->assertJson([
             'success' => true,
@@ -118,7 +126,7 @@ test('can get stock list for current branch', function () {
 
 test('can get stock by product id', function () {
     $response = $this->actingAs($this->user, 'sanctum')
-        ->getJson("/api/v1/stock/product/{$this->product1->id}");
+        ->getJson("/api/v1/stocks/product/{$this->product1->id}");
 
     $response->assertOk()
         ->assertJson([
@@ -151,7 +159,7 @@ test('returns 404 when stock not found for product', function () {
     ]);
 
     $response = $this->actingAs($this->user, 'sanctum')
-        ->getJson("/api/v1/stock/product/{$productWithoutStock->id}");
+        ->getJson("/api/v1/stocks/product/{$productWithoutStock->id}");
 
     $response->assertStatus(404)
         ->assertJson([
@@ -162,7 +170,7 @@ test('returns 404 when stock not found for product', function () {
 
 test('can get low stock alerts', function () {
     $response = $this->actingAs($this->user, 'sanctum')
-        ->getJson('/api/v1/stock/low-stock');
+        ->getJson('/api/v1/stocks/low-stock');
 
     $response->assertOk()
         ->assertJson([
@@ -181,7 +189,7 @@ test('can get low stock alerts', function () {
 
 test('low stock indicator is correct', function () {
     $response = $this->actingAs($this->user, 'sanctum')
-        ->getJson('/api/v1/stock');
+        ->getJson('/api/v1/stocks');
 
     $stocks = collect($response->json('data'));
 
@@ -197,7 +205,7 @@ test('low stock indicator is correct', function () {
 test('users can only see stock from their own branch', function () {
     // User from branch 1
     $response = $this->actingAs($this->user, 'sanctum')
-        ->getJson('/api/v1/stock');
+        ->getJson('/api/v1/stocks');
 
     $stockIds = collect($response->json('data'))->pluck('id')->toArray();
 
@@ -210,19 +218,19 @@ test('users can only see stock from their own branch', function () {
 });
 
 test('cannot access stock without authentication', function () {
-    $response = $this->getJson('/api/v1/stock');
+    $response = $this->getJson('/api/v1/stocks');
 
     $response->assertStatus(401);
 });
 
 test('cannot access stock by product without authentication', function () {
-    $response = $this->getJson("/api/v1/stock/product/{$this->product1->id}");
+    $response = $this->getJson("/api/v1/stocks/product/{$this->product1->id}");
 
     $response->assertStatus(401);
 });
 
 test('cannot access low stock alerts without authentication', function () {
-    $response = $this->getJson('/api/v1/stock/low-stock');
+    $response = $this->getJson('/api/v1/stocks/low-stock');
 
     $response->assertStatus(401);
 });

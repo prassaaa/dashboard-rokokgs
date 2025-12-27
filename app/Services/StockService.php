@@ -37,6 +37,28 @@ class StockService extends BaseService
     }
 
     /**
+     * Get stock by product and branch (optimized single query).
+     */
+    public function getByProductAndBranch(int $productId, int $branchId): ?Stock
+    {
+        return Stock::with(['product', 'branch'])
+            ->where('product_id', $productId)
+            ->where('branch_id', $branchId)
+            ->first();
+    }
+
+    /**
+     * Get paginated stock by branch.
+     */
+    public function getPaginatedByBranch(int $branchId, int $perPage = 15): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return Stock::with(['product.productCategory', 'branch'])
+            ->where('branch_id', $branchId)
+            ->orderBy('quantity', 'asc')
+            ->paginate($perPage);
+    }
+
+    /**
      * Get or create stock record.
      */
     public function getOrCreate(int $productId, int $branchId): Stock

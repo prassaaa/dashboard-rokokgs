@@ -58,10 +58,11 @@ class StockController extends BaseApiController
     public function index(Request $request): JsonResponse
     {
         $branchId = auth()->user()->branch_id;
-        $stocks = $this->stockService->getByBranch($branchId);
+        $stocks = $this->stockService->getPaginatedByBranch($branchId);
 
-        return $this->successResponse(
-            StockResource::collection($stocks->load(['product', 'branch'])),
+        return $this->paginatedResponse(
+            $stocks,
+            StockResource::class,
             'Stock retrieved successfully'
         );
     }
@@ -114,15 +115,14 @@ class StockController extends BaseApiController
     public function byProduct(int $productId): JsonResponse
     {
         $branchId = auth()->user()->branch_id;
-        $stocks = $this->stockService->getByProduct($productId);
-        $stock = $stocks->where('branch_id', $branchId)->first();
+        $stock = $this->stockService->getByProductAndBranch($productId, $branchId);
 
         if (!$stock) {
             return $this->errorResponse('Stock not found', 404);
         }
 
         return $this->successResponse(
-            new StockResource($stock->load(['product', 'branch'])),
+            new StockResource($stock),
             'Stock retrieved successfully'
         );
     }

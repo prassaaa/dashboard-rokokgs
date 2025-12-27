@@ -8,6 +8,7 @@ use App\DataTransferObjects\SalesTransactionDTO;
 use App\Http\Requests\Api\CreateTransactionRequest;
 use App\Http\Resources\SalesTransactionResource;
 use App\Services\SalesTransactionService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -158,8 +159,8 @@ class TransactionController extends BaseApiController
             customer_name: $validated['customer_name'],
             customer_phone: $validated['customer_phone'] ?? null,
             customer_address: $validated['customer_address'] ?? null,
-            latitude: $validated['latitude'] ?? null,
-            longitude: $validated['longitude'] ?? null,
+            latitude: isset($validated['latitude']) ? (float) $validated['latitude'] : null,
+            longitude: isset($validated['longitude']) ? (float) $validated['longitude'] : null,
             items: $validated['items'],
             subtotal: $validated['subtotal'],
             discount: $validated['discount'] ?? 0,
@@ -247,7 +248,12 @@ class TransactionController extends BaseApiController
      */
     public function show(int $id): JsonResponse
     {
-        $transaction = $this->transactionService->getById($id);
+        try {
+            $transaction = $this->transactionService->getById($id);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Transaction not found', 404);
+        }
+
         $user = auth()->user();
 
         // Sales can only view their own transactions
@@ -318,10 +324,11 @@ class TransactionController extends BaseApiController
             return $this->errorResponse('Unauthorized', 403);
         }
 
-        $transactions = $this->transactionService->getBySales($salesId);
+        $transactions = $this->transactionService->getPaginatedBySales($salesId);
 
-        return $this->successResponse(
-            SalesTransactionResource::collection($transactions),
+        return $this->paginatedResponse(
+            $transactions,
+            SalesTransactionResource::class,
             'Transactions retrieved successfully'
         );
     }

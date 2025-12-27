@@ -249,6 +249,25 @@ class SalesTransactionService extends BaseService
     }
 
     /**
+     * Get paginated transactions by sales person.
+     */
+    public function getPaginatedBySales(int $salesId, int $perPage = 15, ?string $startDate = null, ?string $endDate = null): LengthAwarePaginator
+    {
+        $query = SalesTransaction::with(['branch', 'items.product'])
+            ->where('sales_id', $salesId);
+
+        if ($startDate) {
+            $query->whereDate('transaction_date', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->whereDate('transaction_date', '<=', $endDate);
+        }
+
+        return $query->orderBy('transaction_date', 'desc')->paginate($perPage);
+    }
+
+    /**
      * Get sales summary by sales person.
      */
     public function getSalesSummary(int $salesId, ?string $startDate = null, ?string $endDate = null): array

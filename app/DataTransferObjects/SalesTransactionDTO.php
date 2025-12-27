@@ -22,8 +22,8 @@ readonly class SalesTransactionDTO extends BaseDTO
         public float $tax = 0,
         public string $status = 'pending',
         public ?string $notes = null,
-        public ?string $latitude = null,
-        public ?string $longitude = null,
+        public ?float $latitude = null,
+        public ?float $longitude = null,
     ) {
     }
 }

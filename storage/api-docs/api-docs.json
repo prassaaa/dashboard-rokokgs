@@ -201,6 +201,26 @@
                                 }
                             }
                         }
+                    },
+                    "403": {
+                        "description": "Unauthorized - Sales cannot access this area",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -210,14 +230,14 @@
                 ]
             }
         },
-        "/api/v1/auth/login": {
+        "/api/v1/login": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Login user dan generate token",
                 "description": "Authenticate user dengan email dan password, return user data dan bearer token",
-                "operationId": "fb66b153966d9fac2e999136ef0ade67",
+                "operationId": "b9b760991d94b179960cd7ddc93eedf2",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -334,14 +354,14 @@
                 }
             }
         },
-        "/api/v1/auth/register": {
+        "/api/v1/register": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Register user baru (Sales only)",
                 "description": "Registrasi user baru untuk Sales melalui mobile app, memerlukan approval admin",
-                "operationId": "fb835c97347e657e2a627790c4c5817a",
+                "operationId": "38e3071463848ba373dfeae5623cdfa4",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -453,14 +473,14 @@
                 }
             }
         },
-        "/api/v1/auth/profile": {
+        "/api/v1/profile": {
             "get": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Get user profile",
                 "description": "Mendapatkan data profil user yang sedang login beserta branch, roles, dan areas",
-                "operationId": "33a380ba85de3058a2d95991ac43793f",
+                "operationId": "daa8885644f031e9e48c1457dff266f0",
                 "responses": {
                     "200": {
                         "description": "Profile retrieved successfully",
@@ -556,7 +576,7 @@
                 ],
                 "summary": "Update user profile",
                 "description": "Update data profil user yang sedang login (nama, email, phone, password, avatar)",
-                "operationId": "32a305c2e99ed9b86688eb4b7670922d",
+                "operationId": "6d255c691abf88d993b6ab831ccec25d",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -683,14 +703,14 @@
                 ]
             }
         },
-        "/api/v1/auth/logout": {
+        "/api/v1/logout": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Logout user",
                 "description": "Logout user dan revoke token yang sedang digunakan",
-                "operationId": "307ed0512855922b2280792376bb2095",
+                "operationId": "b66dd8a7864f561822c01bc8339363fb",
                 "responses": {
                     "200": {
                         "description": "Logout successful",
