@@ -22,6 +22,10 @@ class UserSeeder extends Seeder
         $bandung = Branch::where('code', 'BDG-01')->first();
         $surabaya = Branch::where('code', 'SBY-01')->first();
 
+        $this->command->info('');
+        $this->command->info('👤 Creating Users...');
+        $this->command->info('================================');
+
         // Create Super Admin
         $superAdmin = User::create([
             'branch_id' => $pusat->id,
@@ -32,6 +36,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $superAdmin->assignRole('Super Admin');
+        $this->command->line("  ✓ Super Admin: admin@rokokgs.com");
 
         // Create Admin Cabang Jakarta
         $adminJakarta = User::create([
@@ -43,6 +48,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $adminJakarta->assignRole('Admin Cabang');
+        $this->command->line("  ✓ Admin Cabang: admin.jakarta@rokokgs.com");
 
         // Create Admin Cabang Bandung
         $adminBandung = User::create([
@@ -54,6 +60,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $adminBandung->assignRole('Admin Cabang');
+        $this->command->line("  ✓ Admin Cabang: admin.bandung@rokokgs.com");
 
         // Create Admin Cabang Surabaya
         $adminSurabaya = User::create([
@@ -65,6 +72,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $adminSurabaya->assignRole('Admin Cabang');
+        $this->command->line("  ✓ Admin Cabang: admin.surabaya@rokokgs.com");
 
         // Create Sales for Jakarta
         $sales1 = User::create([
@@ -76,6 +84,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $sales1->assignRole('Sales');
+        $this->command->line("  ✓ Sales (JKT): budi.sales@rokokgs.com");
 
         $sales2 = User::create([
             'branch_id' => $jakarta->id,
@@ -86,6 +95,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $sales2->assignRole('Sales');
+        $this->command->line("  ✓ Sales (JKT): andi.sales@rokokgs.com");
 
         // Create Sales for Bandung
         $sales3 = User::create([
@@ -97,6 +107,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $sales3->assignRole('Sales');
+        $this->command->line("  ✓ Sales (BDG): dedi.sales@rokokgs.com");
 
         $sales4 = User::create([
             'branch_id' => $bandung->id,
@@ -107,6 +118,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $sales4->assignRole('Sales');
+        $this->command->line("  ✓ Sales (BDG): eka.sales@rokokgs.com");
 
         // Create Sales for Surabaya
         $sales5 = User::create([
@@ -118,6 +130,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $sales5->assignRole('Sales');
+        $this->command->line("  ✓ Sales (SBY): fajar.sales@rokokgs.com");
 
         $sales6 = User::create([
             'branch_id' => $surabaya->id,
@@ -128,5 +141,10 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ]);
         $sales6->assignRole('Sales');
+        $this->command->line("  ✓ Sales (SBY): gita.sales@rokokgs.com");
+
+        $this->command->info('');
+        $this->command->info('🔑 Default Password: password');
+        $this->command->info('================================');
     }
 }
