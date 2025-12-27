@@ -39,6 +39,13 @@ class SalesTransactionResource extends JsonResource
                     'name' => $this->sales->name,
                 ];
             }),
+            'area' => $this->whenLoaded('area', function () {
+                return [
+                    'id' => $this->area->id,
+                    'name' => $this->area->name,
+                    'code' => $this->area->code,
+                ];
+            }),
             'items' => $this->whenLoaded('items', function () {
                 return $this->items->map(function ($item) {
                     return [

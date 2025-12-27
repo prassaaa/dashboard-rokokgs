@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
                 return [
                     'id' => $this->productCategory->id,
                     'name' => $this->productCategory->name,
-                    'code' => $this->productCategory->code,
+                    'slug' => $this->productCategory->slug,
                 ];
             }),
             'stock' => $this->when(isset($this->stock_quantity), function () {

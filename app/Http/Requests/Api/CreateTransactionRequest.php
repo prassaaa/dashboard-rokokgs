@@ -16,6 +16,7 @@ class CreateTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'area_id' => ['nullable', 'exists:areas,id'],
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_phone' => ['nullable', 'string', 'max:20'],
             'customer_address' => ['nullable', 'string', 'max:500'],

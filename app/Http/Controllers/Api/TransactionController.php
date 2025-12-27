@@ -94,6 +94,7 @@ class TransactionController extends BaseApiController
      *         required=true,
      *         @OA\JsonContent(
      *             required={"customer_name","items","subtotal","total","payment_method"},
+     *             @OA\Property(property="area_id", type="integer", example=1, description="Area ID where transaction occurs"),
      *             @OA\Property(property="customer_name", type="string", example="Toko Maju Jaya"),
      *             @OA\Property(property="customer_phone", type="string", example="081234567890"),
      *             @OA\Property(property="customer_address", type="string", example="Jl. Sudirman No. 123"),
@@ -168,13 +169,14 @@ class TransactionController extends BaseApiController
             total: $validated['total'],
             payment_method: $validated['payment_method'],
             notes: $validated['notes'] ?? null,
+            area_id: $validated['area_id'] ?? null,
         );
 
         try {
             $transaction = $this->transactionService->create($dto);
 
             return $this->successResponse(
-                new SalesTransactionResource($transaction->load(['branch', 'sales', 'items'])),
+                new SalesTransactionResource($transaction->load(['branch', 'sales', 'area', 'items'])),
                 'Transaction created successfully',
                 201
             );

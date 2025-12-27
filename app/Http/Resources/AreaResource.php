@@ -16,6 +16,14 @@ class AreaResource extends JsonResource
             'name' => $this->name,
             'code' => $this->code,
             'description' => $this->description,
+            'is_active' => $this->is_active,
+            'branch' => $this->whenLoaded('branch', function () {
+                return [
+                    'id' => $this->branch->id,
+                    'name' => $this->branch->name,
+                    'code' => $this->branch->code,
+                ];
+            }),
         ];
     }
 }

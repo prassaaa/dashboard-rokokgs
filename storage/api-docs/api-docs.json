@@ -1762,6 +1762,11 @@
                                     "payment_method"
                                 ],
                                 "properties": {
+                                    "area_id": {
+                                        "description": "Area ID where transaction occurs",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
                                     "customer_name": {
                                         "type": "string",
                                         "example": "Toko Maju Jaya"
