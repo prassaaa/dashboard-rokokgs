@@ -72,6 +72,8 @@ class SalesTransactionSeeder extends Seeder
                     'payment_method' => ['cash', 'transfer', 'credit'][array_rand(['cash', 'transfer', 'credit'])],
                     'status' => $status,
                     'notes' => rand(0, 1) ? 'Catatan transaksi #' . ($i + 1) : null,
+                    'latitude' => rand(0, 1) ? (string) (rand(-6000, -7000) / 1000) : null, // Jakarta area approx -6.2
+                    'longitude' => rand(0, 1) ? (string) (rand(106000, 107000) / 1000) : null, // Jakarta area approx 106.8
                     'created_at' => $date,
                     'updated_at' => $date,
                 ]);
