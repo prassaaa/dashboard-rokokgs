@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             AreaUserSeeder::class,
             StockSeeder::class,
+            StockMovementSeeder::class,
             TargetSeeder::class,
             SalesTransactionSeeder::class,
             CommissionSeeder::class,

@@ -23,36 +23,42 @@ class TargetSeeder extends Seeder
         $currentMonth = (int) date('m');
 
         foreach ($salesUsers as $sales) {
-            $startDate = Carbon::create($currentYear, $currentMonth, 1);
-            $endDate = $startDate->copy()->endOfMonth();
+            // Create targets for last 3 months + current month
+            for ($monthOffset = 3; $monthOffset >= 0; $monthOffset--) {
+                $targetDate = Carbon::now()->subMonths($monthOffset);
+                $year = (int) $targetDate->format('Y');
+                $month = (int) $targetDate->format('m');
+                $startDate = Carbon::create($year, $month, 1);
+                $endDate = $startDate->copy()->endOfMonth();
 
-            // Create monthly revenue target for current month
-            Target::create([
-                'branch_id' => $sales->branch_id,
-                'user_id' => $sales->id,
-                'type' => 'revenue',
-                'amount' => rand(10, 50) * 1000000, // 10-50 juta
-                'quantity' => null,
-                'period_type' => 'monthly',
-                'year' => $currentYear,
-                'month' => $currentMonth,
-                'start_date' => $startDate->format('Y-m-d'),
-                'end_date' => $endDate->format('Y-m-d'),
-            ]);
+                // Create monthly revenue target
+                Target::create([
+                    'branch_id' => $sales->branch_id,
+                    'user_id' => $sales->id,
+                    'type' => 'revenue',
+                    'amount' => rand(10, 50) * 1000000, // 10-50 juta
+                    'quantity' => null,
+                    'period_type' => 'monthly',
+                    'year' => $year,
+                    'month' => $month,
+                    'start_date' => $startDate->format('Y-m-d'),
+                    'end_date' => $endDate->format('Y-m-d'),
+                ]);
 
-            // Create monthly quantity target for current month
-            Target::create([
-                'branch_id' => $sales->branch_id,
-                'user_id' => $sales->id,
-                'type' => 'quantity',
-                'amount' => null,
-                'quantity' => rand(100, 500), // 100-500 unit
-                'period_type' => 'monthly',
-                'year' => $currentYear,
-                'month' => $currentMonth,
-                'start_date' => $startDate->format('Y-m-d'),
-                'end_date' => $endDate->format('Y-m-d'),
-            ]);
+                // Create monthly quantity target
+                Target::create([
+                    'branch_id' => $sales->branch_id,
+                    'user_id' => $sales->id,
+                    'type' => 'quantity',
+                    'amount' => null,
+                    'quantity' => rand(100, 500), // 100-500 unit
+                    'period_type' => 'monthly',
+                    'year' => $year,
+                    'month' => $month,
+                    'start_date' => $startDate->format('Y-m-d'),
+                    'end_date' => $endDate->format('Y-m-d'),
+                ]);
+            }
 
             // Create yearly revenue target
             Target::create([

@@ -45,12 +45,12 @@ class SalesTransactionSeeder extends Seeder
         $statuses = ['pending', 'approved', 'approved', 'approved', 'cancelled'];
 
         foreach ($salesUsers as $sales) {
-            // Create 5-15 transactions per sales
-            $transactionCount = rand(5, 15);
+            // Create 15-30 transactions per sales for better data
+            $transactionCount = rand(15, 30);
 
             for ($i = 0; $i < $transactionCount; $i++) {
-                // Random date in the last 30 days
-                $date = Carbon::now()->subDays(rand(0, 30));
+                // Random date in the last 90 days for trend analysis
+                $date = Carbon::now()->subDays(rand(0, 90));
                 $status = $statuses[array_rand($statuses)];
 
                 // Get area if available
