@@ -24,7 +24,7 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $isSuperAdmin = $user->hasRole('Super Admin');
-        $branchId = $isSuperAdmin ? null : $user->branch_id;
+        $branchId = $isSuperAdmin ? null : (int) $user->branch_id;
 
         // Base statistics
         $stats = [
