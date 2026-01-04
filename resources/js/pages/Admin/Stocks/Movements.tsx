@@ -36,7 +36,6 @@ interface StockMovement {
     id: number;
     type: 'in' | 'out';
     quantity: number;
-    reference_type: string;
     reference_id: number | null;
     notes: string | null;
     created_at: string;
@@ -66,15 +65,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manajemen Stok', href: '/admin/stocks' },
     { title: 'Riwayat Pergerakan', href: '#' },
 ];
-
-const referenceTypeLabels: Record<string, string> = {
-    initial: 'Stok Awal',
-    adjustment: 'Penyesuaian',
-    sale: 'Penjualan',
-    return: 'Retur',
-    transfer_in: 'Transfer Masuk',
-    transfer_out: 'Transfer Keluar',
-};
 
 export default function Movements({ stock, movements }: MovementsProps) {
     const getMovementTypeLabel = (type: 'in' | 'out') => {
@@ -224,16 +214,6 @@ export default function Movements({ stock, movements }: MovementsProps) {
                                                     </div>
 
                                                     <div className="mt-2 space-y-1 text-sm">
-                                                        <p className="text-muted-foreground">
-                                                            <span className="font-medium text-foreground">
-                                                                Jenis:
-                                                            </span>{' '}
-                                                            {referenceTypeLabels[
-                                                                movement
-                                                                    .reference_type
-                                                            ] ||
-                                                                movement.reference_type}
-                                                        </p>
                                                         {movement.notes && (
                                                             <p className="text-muted-foreground">
                                                                 <span className="font-medium text-foreground">
