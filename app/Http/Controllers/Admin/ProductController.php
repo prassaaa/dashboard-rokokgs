@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\UpdateProductRequest;
 use App\Models\Branch;
 use App\Models\ProductCategory;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -118,9 +119,23 @@ class ProductController extends Controller
 
         $product = Product::create($validated);
 
-        // Sync branches if branch_ids provided
+        // Sync branches and auto-create stock records
         if (!empty($branchIds)) {
             $product->branches()->sync($branchIds);
+
+            // Auto-create stock record for each branch
+            foreach ($branchIds as $branchId) {
+                Stock::firstOrCreate(
+                    [
+                        'product_id' => $product->id,
+                        'branch_id' => $branchId,
+                    ],
+                    [
+                        'quantity' => 0,
+                        'minimum_stock' => 10, // Default minimum stock
+                    ]
+                );
+            }
         }
 
         return redirect()->route('admin.products.index')
@@ -179,9 +194,38 @@ class ProductController extends Controller
 
         $product->update($validated);
 
-        // Sync branches if branch_ids provided
+        // Get old branch IDs before sync
+        $oldBranchIds = $product->branches()->pluck('branches.id')->toArray();
+
+        // Sync branches
         if (!empty($branchIds)) {
             $product->branches()->sync($branchIds);
+
+            // Find new branches (added)
+            $newBranchIds = array_diff($branchIds, $oldBranchIds);
+
+            // Auto-create stock record for new branches
+            foreach ($newBranchIds as $branchId) {
+                Stock::firstOrCreate(
+                    [
+                        'product_id' => $product->id,
+                        'branch_id' => $branchId,
+                    ],
+                    [
+                        'quantity' => 0,
+                        'minimum_stock' => 20, // Default minimum stock
+                    ]
+                );
+            }
+
+            // Find removed branches
+            $removedBranchIds = array_diff($oldBranchIds, $branchIds);
+
+            // Optional: Delete stock records for removed branches
+            // Stock::where('product_id', $product->id)
+            //     ->whereIn('branch_id', $removedBranchIds)
+            //     ->delete();
+
         } else {
             $product->branches()->detach();
         }

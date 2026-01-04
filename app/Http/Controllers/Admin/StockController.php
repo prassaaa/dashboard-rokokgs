@@ -87,21 +87,31 @@ class StockController extends Controller
 
         DB::transaction(function () use ($stock, $validated) {
             $oldQuantity = $stock->quantity;
-            $newQuantity = $oldQuantity + $validated['quantity_change'];
+            $quantityChange = (int) $validated['quantity_change'];
+            $newQuantity = $oldQuantity + $quantityChange;
 
             // Update stock
             $stock->update([
                 'quantity' => max(0, $newQuantity), // Ensure non-negative
             ]);
 
+            // Generate reference number
+            $prefix = 'STK';
+            $date = now()->format('Ymd');
+            $random = strtoupper(substr(md5(uniqid((string) mt_rand(), true)), 0, 6));
+            $referenceNumber = "{$prefix}-{$date}-{$random}";
+
             // Record movement
             StockMovement::create([
-                'stock_id' => $stock->id,
-                'type' => $validated['quantity_change'] > 0 ? 'in' : 'out',
-                'quantity' => abs($validated['quantity_change']),
-                'reference_type' => 'adjustment',
+                'reference_number' => $referenceNumber,
+                'product_id' => $stock->product_id,
+                'type' => $quantityChange > 0 ? 'in' : 'out',
+                'quantity' => abs($quantityChange),
                 'notes' => $validated['notes'] ?? 'Manual adjustment',
                 'created_by' => auth()->id(),
+                // Set appropriate branch based on type
+                'to_branch_id' => $quantityChange > 0 ? $stock->branch_id : null,
+                'from_branch_id' => $quantityChange < 0 ? $stock->branch_id : null,
             ]);
         });
 
@@ -180,11 +190,18 @@ class StockController extends Controller
 
             // Record initial movement
             if ($validated['quantity'] > 0) {
+                // Generate reference number
+                $prefix = 'STK';
+                $date = now()->format('Ymd');
+                $random = strtoupper(substr(md5(uniqid((string) mt_rand(), true)), 0, 6));
+                $referenceNumber = "{$prefix}-{$date}-{$random}";
+
                 StockMovement::create([
-                    'stock_id' => $stock->id,
+                    'reference_number' => $referenceNumber,
+                    'product_id' => $stock->product_id,
+                    'to_branch_id' => $stock->branch_id,
                     'type' => 'in',
                     'quantity' => $validated['quantity'],
-                    'reference_type' => 'initial',
                     'notes' => 'Initial stock',
                     'created_by' => auth()->id(),
                 ]);
