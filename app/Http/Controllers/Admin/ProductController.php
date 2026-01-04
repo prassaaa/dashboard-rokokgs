@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateProductRequest;
 use App\Http\Requests\Admin\UpdateProductRequest;
+use App\Models\Branch;
 use App\Models\ProductCategory;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
@@ -21,8 +22,19 @@ class ProductController extends Controller
      */
     public function index(Request $request): Response
     {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('Super Admin');
+        $branchId = $isSuperAdmin ? null : (int) $user->branch_id;
+
         $query = Product::with('productCategory:id,name')
             ->orderByDesc('created_at');
+
+        // Filter by branch for non-Super Admin
+        if (!$isSuperAdmin && $branchId) {
+            $query->whereHas('branches', function ($q) use ($branchId) {
+                $q->where('branches.id', $branchId);
+            })->orWhereDoesntHave('branches');
+        }
 
         // Filter by category
         if ($request->has('category_id')) {
@@ -65,8 +77,13 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $branches = Branch::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         return Inertia::render('Admin/Products/Create', [
             'categories' => $categories,
+            'branches' => $branches,
         ]);
     }
 
@@ -82,7 +99,16 @@ class ProductController extends Controller
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        Product::create($validated);
+        // Separate branch_ids from product data
+        $branchIds = $validated['branch_ids'] ?? [];
+        unset($validated['branch_ids']);
+
+        $product = Product::create($validated);
+
+        // Sync branches if branch_ids provided
+        if (!empty($branchIds)) {
+            $product->branches()->sync($branchIds);
+        }
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Product created successfully');
@@ -93,15 +119,20 @@ class ProductController extends Controller
      */
     public function edit(int $id): Response
     {
-        $product = Product::with('productCategory')->findOrFail($id);
+        $product = Product::with(['productCategory', 'branches:id'])->findOrFail($id);
 
         $categories = ProductCategory::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $branches = Branch::where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
 
         return Inertia::render('Admin/Products/Edit', [
             'product' => $product,
             'categories' => $categories,
+            'branches' => $branches,
         ]);
     }
 
@@ -129,7 +160,18 @@ class ProductController extends Controller
             $validated['image'] = null;
         }
 
+        // Separate branch_ids from product data
+        $branchIds = $validated['branch_ids'] ?? [];
+        unset($validated['branch_ids']);
+
         $product->update($validated);
+
+        // Sync branches if branch_ids provided
+        if (!empty($branchIds)) {
+            $product->branches()->sync($branchIds);
+        } else {
+            $product->branches()->detach();
+        }
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Product updated successfully');

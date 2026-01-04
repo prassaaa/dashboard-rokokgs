@@ -1,5 +1,5 @@
 import { FormEventHandler, useRef, useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,8 +19,14 @@ interface ProductCategory {
     name: string;
 }
 
+interface Branch {
+    id: number;
+    name: string;
+}
+
 interface Props {
     categories: ProductCategory[];
+    branches: Branch[];
 }
 
 // Form schema
@@ -35,13 +41,18 @@ const productSchema = z.object({
     unit: z.string().default('pack'),
     items_per_carton: z.string().min(1, 'Item per karton wajib diisi'),
     is_active: z.boolean().default(true),
+    branch_ids: z.array(z.number()).optional(),
 });
 
 type CreateProductForm = z.infer<typeof productSchema>;
 
-export default function Create({ categories }: Props) {
+export default function Create({ categories, branches }: Props) {
+    const { auth } = usePage<{ auth: { user: { roles: string[] } } }>().props;
+    const isSuperAdmin = auth?.user?.roles?.includes('Super Admin');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
+    const [applyToAllBranches, setApplyToAllBranches] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const {
@@ -122,6 +133,16 @@ export default function Create({ categories }: Props) {
             // Append image if exists
             if (imageFile) {
                 formData.append('image', imageFile);
+            }
+
+            // Append branch_ids if Super Admin
+            if (isSuperAdmin) {
+                const branchesToSync = applyToAllBranches 
+                    ? branches.map(b => b.id) 
+                    : selectedBranches;
+                branchesToSync.forEach(id => {
+                    formData.append('branch_ids[]', id.toString());
+                });
             }
 
             router.post('/admin/products', formData, {
@@ -373,6 +394,63 @@ export default function Create({ categories }: Props) {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Branch Selection - Super Admin Only */}
+                            {isSuperAdmin && (
+                                <div>
+                                    <h2 className="mb-4 text-lg font-semibold">
+                                        Cabang
+                                    </h2>
+
+                                    <div className="space-y-4">
+                                        {/* Apply to all branches checkbox */}
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id="apply_all_branches"
+                                                checked={applyToAllBranches}
+                                                onCheckedChange={(checked) => {
+                                                    setApplyToAllBranches(!!checked);
+                                                    if (checked) {
+                                                        setSelectedBranches([]);
+                                                    }
+                                                }}
+                                            />
+                                            <Label htmlFor="apply_all_branches" className="cursor-pointer">
+                                                Terapkan ke semua cabang
+                                            </Label>
+                                        </div>
+
+                                        {/* Branch selection checkboxes */}
+                                        {!applyToAllBranches && (
+                                            <div className="space-y-2 border rounded-lg p-4">
+                                                <p className="text-sm font-medium mb-2">
+                                                    Pilih cabang (kosongkan jika tidak ada):
+                                                </p>
+                                                {branches.map((branch) => (
+                                                    <div key={branch.id} className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id={`branch-${branch.id}`}
+                                                            checked={selectedBranches.includes(branch.id)}
+                                                            onCheckedChange={(checked) => {
+                                                                if (checked) {
+                                                                    setSelectedBranches([...selectedBranches, branch.id]);
+                                                                } else {
+                                                                    setSelectedBranches(
+                                                                        selectedBranches.filter((id) => id !== branch.id)
+                                                                    );
+                                                                }
+                                                            }}
+                                                        />
+                                                        <Label htmlFor={`branch-${branch.id}`} className="cursor-pointer">
+                                                            {branch.name}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Status */}
                             <div>

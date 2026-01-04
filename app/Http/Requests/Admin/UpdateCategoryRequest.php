@@ -23,6 +23,8 @@ class UpdateCategoryRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', Rule::unique('product_categories')->ignore($categoryId)],
             'description' => ['nullable', 'string'],
             'is_active' => ['boolean'],
+            'branch_ids' => ['nullable', 'array'],
+            'branch_ids.*' => ['exists:branches,id'],
         ];
     }
 }

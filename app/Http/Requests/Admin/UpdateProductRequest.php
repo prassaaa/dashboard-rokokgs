@@ -30,6 +30,8 @@ class UpdateProductRequest extends FormRequest
             'items_per_carton' => ['nullable', 'integer', 'min:1'],
             'image' => ['nullable', 'image', 'max:2048'],
             'is_active' => ['boolean'],
+            'branch_ids' => ['nullable', 'array'],
+            'branch_ids.*' => ['exists:branches,id'],
         ];
     }
 

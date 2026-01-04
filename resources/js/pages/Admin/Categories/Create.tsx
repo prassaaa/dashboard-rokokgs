@@ -8,16 +8,27 @@ import AppLayout from '@/layouts/app-layout';
 import { toast } from 'sonner';
 import { type BreadcrumbItem } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { z } from 'zod';
+
+interface Branch {
+    id: number;
+    name: string;
+}
+
+interface Props {
+    branches: Branch[];
+}
 
 interface CreateCategoryForm {
     name: string;
     slug: string;
     description?: string;
     is_active: boolean;
+    branch_ids?: number[];
 }
 
 const createCategorySchema = z.object({
@@ -25,6 +36,7 @@ const createCategorySchema = z.object({
     slug: z.string().min(3, 'Slug minimal 3 karakter').regex(/^[a-z0-9-]+$/, 'Slug hanya boleh huruf kecil, angka, dan strip'),
     description: z.string().optional(),
     is_active: z.boolean().default(true),
+    branch_ids: z.array(z.number()).optional(),
 });
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -33,7 +45,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Tambah Kategori', href: '/admin/categories/create' },
 ];
 
-export default function Create() {
+export default function Create({ branches }: Props) {
+    const { auth } = usePage<{ auth: { user: { roles: string[] } } }>().props;
+    const isSuperAdmin = auth?.user?.roles?.includes('Super Admin');
+    const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
+    const [applyToAllBranches, setApplyToAllBranches] = useState(false);
+
     const {
         register,
         control,
@@ -47,8 +64,14 @@ export default function Create() {
     });
 
     const onSubmit = (data: CreateCategoryForm) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        router.post('/admin/categories', data as any, {
+        const submitData = {
+            ...data,
+            branch_ids: isSuperAdmin 
+                ? (applyToAllBranches ? branches.map(b => b.id) : selectedBranches)
+                : undefined,
+        };
+
+        router.post('/admin/categories', submitData, {
             onSuccess: () => toast.success('Kategori berhasil ditambahkan'),
             onError: () => toast.error('Gagal menambahkan kategori'),
         });
@@ -96,6 +119,63 @@ export default function Create() {
                                 )}
                             </div>
 
+                            {/* Branch Selection - Super Admin Only */}
+                            {isSuperAdmin && (
+                                <div>
+                                    <h2 className="mb-4 text-lg font-semibold">
+                                        Cabang
+                                    </h2>
+
+                                    <div className="space-y-4">
+                                        {/* Apply to all branches checkbox */}
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id="apply_all_branches"
+                                                checked={applyToAllBranches}
+                                                onCheckedChange={(checked) => {
+                                                    setApplyToAllBranches(!!checked);
+                                                    if (checked) {
+                                                        setSelectedBranches([]);
+                                                    }
+                                                }}
+                                            />
+                                            <Label htmlFor="apply_all_branches" className="cursor-pointer">
+                                                Terapkan ke semua cabang
+                                            </Label>
+                                        </div>
+
+                                        {/* Branch selection checkboxes */}
+                                        {!applyToAllBranches && (
+                                            <div className="space-y-2 border rounded-lg p-4">
+                                                <p className="text-sm font-medium mb-2">
+                                                    Pilih cabang (kosongkan jika tidak ada):
+                                                </p>
+                                                {branches.map((branch) => (
+                                                    <div key={branch.id} className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id={`branch-${branch.id}`}
+                                                            checked={selectedBranches.includes(branch.id)}
+                                                            onCheckedChange={(checked) => {
+                                                                if (checked) {
+                                                                    setSelectedBranches([...selectedBranches, branch.id]);
+                                                                } else {
+                                                                    setSelectedBranches(
+                                                                        selectedBranches.filter((id) => id !== branch.id)
+                                                                    );
+                                                                }
+                                                            }}
+                                                        />
+                                                        <Label htmlFor={`branch-${branch.id}`} className="cursor-pointer">
+                                                            {branch.name}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             <div>
                                 <Label htmlFor="slug">Slug *</Label>
                                 <Input
@@ -114,6 +194,63 @@ export default function Create() {
                                 </p>
                             </div>
 
+                            {/* Branch Selection - Super Admin Only */}
+                            {isSuperAdmin && (
+                                <div>
+                                    <h2 className="mb-4 text-lg font-semibold">
+                                        Cabang
+                                    </h2>
+
+                                    <div className="space-y-4">
+                                        {/* Apply to all branches checkbox */}
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id="apply_all_branches"
+                                                checked={applyToAllBranches}
+                                                onCheckedChange={(checked) => {
+                                                    setApplyToAllBranches(!!checked);
+                                                    if (checked) {
+                                                        setSelectedBranches([]);
+                                                    }
+                                                }}
+                                            />
+                                            <Label htmlFor="apply_all_branches" className="cursor-pointer">
+                                                Terapkan ke semua cabang
+                                            </Label>
+                                        </div>
+
+                                        {/* Branch selection checkboxes */}
+                                        {!applyToAllBranches && (
+                                            <div className="space-y-2 border rounded-lg p-4">
+                                                <p className="text-sm font-medium mb-2">
+                                                    Pilih cabang (kosongkan jika tidak ada):
+                                                </p>
+                                                {branches.map((branch) => (
+                                                    <div key={branch.id} className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id={`branch-${branch.id}`}
+                                                            checked={selectedBranches.includes(branch.id)}
+                                                            onCheckedChange={(checked) => {
+                                                                if (checked) {
+                                                                    setSelectedBranches([...selectedBranches, branch.id]);
+                                                                } else {
+                                                                    setSelectedBranches(
+                                                                        selectedBranches.filter((id) => id !== branch.id)
+                                                                    );
+                                                                }
+                                                            }}
+                                                        />
+                                                        <Label htmlFor={`branch-${branch.id}`} className="cursor-pointer">
+                                                            {branch.name}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             <div>
                                 <Label htmlFor="description">Deskripsi</Label>
                                 <Textarea
@@ -129,6 +266,63 @@ export default function Create() {
                                     </p>
                                 )}
                             </div>
+
+                            {/* Branch Selection - Super Admin Only */}
+                            {isSuperAdmin && (
+                                <div>
+                                    <h2 className="mb-4 text-lg font-semibold">
+                                        Cabang
+                                    </h2>
+
+                                    <div className="space-y-4">
+                                        {/* Apply to all branches checkbox */}
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id="apply_all_branches"
+                                                checked={applyToAllBranches}
+                                                onCheckedChange={(checked) => {
+                                                    setApplyToAllBranches(!!checked);
+                                                    if (checked) {
+                                                        setSelectedBranches([]);
+                                                    }
+                                                }}
+                                            />
+                                            <Label htmlFor="apply_all_branches" className="cursor-pointer">
+                                                Terapkan ke semua cabang
+                                            </Label>
+                                        </div>
+
+                                        {/* Branch selection checkboxes */}
+                                        {!applyToAllBranches && (
+                                            <div className="space-y-2 border rounded-lg p-4">
+                                                <p className="text-sm font-medium mb-2">
+                                                    Pilih cabang (kosongkan jika tidak ada):
+                                                </p>
+                                                {branches.map((branch) => (
+                                                    <div key={branch.id} className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id={`branch-${branch.id}`}
+                                                            checked={selectedBranches.includes(branch.id)}
+                                                            onCheckedChange={(checked) => {
+                                                                if (checked) {
+                                                                    setSelectedBranches([...selectedBranches, branch.id]);
+                                                                } else {
+                                                                    setSelectedBranches(
+                                                                        selectedBranches.filter((id) => id !== branch.id)
+                                                                    );
+                                                                }
+                                                            }}
+                                                        />
+                                                        <Label htmlFor={`branch-${branch.id}`} className="cursor-pointer">
+                                                            {branch.name}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
 
                             <div>
                                 <div className="flex items-center gap-2">

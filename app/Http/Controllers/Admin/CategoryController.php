@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateCategoryRequest;
 use App\Http\Requests\Admin\UpdateCategoryRequest;
+use App\Models\Branch;
 use App\Models\ProductCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,8 +21,19 @@ class CategoryController extends Controller
      */
     public function index(Request $request): Response
     {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('Super Admin');
+        $branchId = $isSuperAdmin ? null : (int) $user->branch_id;
+
         $query = ProductCategory::withCount('products')
             ->orderBy('name');
+
+        // Filter by branch for non-Super Admin
+        if (!$isSuperAdmin && $branchId) {
+            $query->whereHas('branches', function ($q) use ($branchId) {
+                $q->where('branches.id', $branchId);
+            })->orWhereDoesntHave('branches');
+        }
 
         // Filter by status
         if ($request->has('status')) {
@@ -47,7 +59,13 @@ class CategoryController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Categories/Create');
+        $branches = Branch::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return Inertia::render('Admin/Categories/Create', [
+            'branches' => $branches,
+        ]);
     }
 
     /**
@@ -57,7 +75,16 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
 
-        ProductCategory::create($validated);
+        // Separate branch_ids from category data
+        $branchIds = $validated['branch_ids'] ?? [];
+        unset($validated['branch_ids']);
+
+        $category = ProductCategory::create($validated);
+
+        // Sync branches if branch_ids provided
+        if (!empty($branchIds)) {
+            $category->branches()->sync($branchIds);
+        }
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully');
@@ -68,10 +95,15 @@ class CategoryController extends Controller
      */
     public function edit(int $id): Response
     {
-        $category = ProductCategory::findOrFail($id);
+        $category = ProductCategory::with('branches:id')->findOrFail($id);
+
+        $branches = Branch::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
         return Inertia::render('Admin/Categories/Edit', [
             'category' => $category,
+            'branches' => $branches,
         ]);
     }
 
@@ -83,7 +115,19 @@ class CategoryController extends Controller
         $validated = $request->validated();
 
         $category = ProductCategory::findOrFail($id);
+
+        // Separate branch_ids from category data
+        $branchIds = $validated['branch_ids'] ?? [];
+        unset($validated['branch_ids']);
+
         $category->update($validated);
+
+        // Sync branches if branch_ids provided
+        if (!empty($branchIds)) {
+            $category->branches()->sync($branchIds);
+        } else {
+            $category->branches()->detach();
+        }
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category updated successfully');
