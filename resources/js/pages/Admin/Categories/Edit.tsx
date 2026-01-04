@@ -132,63 +132,6 @@ export default function Edit({ category, branches }: EditProps) {
                                 )}
                             </div>
 
-                            {/* Branch Selection - Super Admin Only */}
-                            {isSuperAdmin && (
-                                <div>
-                                    <h2 className="mb-4 text-lg font-semibold">
-                                        Cabang
-                                    </h2>
-
-                                    <div className="space-y-4">
-                                        {/* Apply to all branches checkbox */}
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="apply_all_branches"
-                                                checked={applyToAllBranches}
-                                                onCheckedChange={(checked) => {
-                                                    setApplyToAllBranches(!!checked);
-                                                    if (checked) {
-                                                        setSelectedBranches([]);
-                                                    }
-                                                }}
-                                            />
-                                            <Label htmlFor="apply_all_branches" className="cursor-pointer">
-                                                Terapkan ke semua cabang
-                                            </Label>
-                                        </div>
-
-                                        {/* Branch selection checkboxes */}
-                                        {!applyToAllBranches && (
-                                            <div className="space-y-2 border rounded-lg p-4">
-                                                <p className="text-sm font-medium mb-2">
-                                                    Pilih cabang (kosongkan jika tidak ada):
-                                                </p>
-                                                {branches.map((branch) => (
-                                                    <div key={branch.id} className="flex items-center space-x-2">
-                                                        <Checkbox
-                                                            id={`branch-${branch.id}`}
-                                                            checked={selectedBranches.includes(branch.id)}
-                                                            onCheckedChange={(checked) => {
-                                                                if (checked) {
-                                                                    setSelectedBranches([...selectedBranches, branch.id]);
-                                                                } else {
-                                                                    setSelectedBranches(
-                                                                        selectedBranches.filter((id) => id !== branch.id)
-                                                                    );
-                                                                }
-                                                            }}
-                                                        />
-                                                        <Label htmlFor={`branch-${branch.id}`} className="cursor-pointer">
-                                                            {branch.name}
-                                                        </Label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
                             <div>
                                 <Label htmlFor="slug">Slug *</Label>
                                 <Input
@@ -206,63 +149,6 @@ export default function Edit({ category, branches }: EditProps) {
                                     URL-friendly identifier (huruf kecil, angka, strip)
                                 </p>
                             </div>
-
-                            {/* Branch Selection - Super Admin Only */}
-                            {isSuperAdmin && (
-                                <div>
-                                    <h2 className="mb-4 text-lg font-semibold">
-                                        Cabang
-                                    </h2>
-
-                                    <div className="space-y-4">
-                                        {/* Apply to all branches checkbox */}
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="apply_all_branches"
-                                                checked={applyToAllBranches}
-                                                onCheckedChange={(checked) => {
-                                                    setApplyToAllBranches(!!checked);
-                                                    if (checked) {
-                                                        setSelectedBranches([]);
-                                                    }
-                                                }}
-                                            />
-                                            <Label htmlFor="apply_all_branches" className="cursor-pointer">
-                                                Terapkan ke semua cabang
-                                            </Label>
-                                        </div>
-
-                                        {/* Branch selection checkboxes */}
-                                        {!applyToAllBranches && (
-                                            <div className="space-y-2 border rounded-lg p-4">
-                                                <p className="text-sm font-medium mb-2">
-                                                    Pilih cabang (kosongkan jika tidak ada):
-                                                </p>
-                                                {branches.map((branch) => (
-                                                    <div key={branch.id} className="flex items-center space-x-2">
-                                                        <Checkbox
-                                                            id={`branch-${branch.id}`}
-                                                            checked={selectedBranches.includes(branch.id)}
-                                                            onCheckedChange={(checked) => {
-                                                                if (checked) {
-                                                                    setSelectedBranches([...selectedBranches, branch.id]);
-                                                                } else {
-                                                                    setSelectedBranches(
-                                                                        selectedBranches.filter((id) => id !== branch.id)
-                                                                    );
-                                                                }
-                                                            }}
-                                                        />
-                                                        <Label htmlFor={`branch-${branch.id}`} className="cursor-pointer">
-                                                            {branch.name}
-                                                        </Label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
 
                             <div>
                                 <Label htmlFor="description">Deskripsi</Label>
