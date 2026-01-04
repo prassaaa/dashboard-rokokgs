@@ -33,6 +33,10 @@ interface Product {
         id: number;
         name: string;
     };
+    branches: Array<{
+        id: number;
+        name: string;
+    }>;
     unit: string;
     cost: number;
     price: number;
@@ -253,6 +257,9 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                         Kategori
                                     </th>
                                     <th className="p-4 text-left text-sm font-semibold">
+                                        Cabang
+                                    </th>
+                                    <th className="p-4 text-left text-sm font-semibold">
                                         Harga Beli
                                     </th>
                                     <th className="p-4 text-left text-sm font-semibold">
@@ -306,6 +313,21 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                                 <Badge variant="secondary">
                                                     {product.product_category.name}
                                                 </Badge>
+                                            </td>
+                                            <td className="p-4">
+                                                {product.branches.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {product.branches.map((branch) => (
+                                                            <Badge key={branch.id} variant="outline" className="text-xs">
+                                                                {branch.name}
+                                                            </Badge>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <Badge variant="secondary" className="text-xs">
+                                                        Semua Cabang
+                                                    </Badge>
+                                                )}
                                             </td>
                                             <td className="p-4">
                                                 <p className="text-sm">

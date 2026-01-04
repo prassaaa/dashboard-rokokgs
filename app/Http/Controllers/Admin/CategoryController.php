@@ -26,6 +26,7 @@ class CategoryController extends Controller
         $branchId = $isSuperAdmin ? null : (int) $user->branch_id;
 
         $query = ProductCategory::withCount('products')
+            ->with('branches:id,name')
             ->orderBy('name');
 
         // Filter by branch for non-Super Admin

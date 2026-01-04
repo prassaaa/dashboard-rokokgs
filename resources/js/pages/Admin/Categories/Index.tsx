@@ -32,6 +32,10 @@ interface Category {
     description: string | null;
     is_active: boolean;
     products_count: number;
+    branches: Array<{
+        id: number;
+        name: string;
+    }>;
 }
 
 interface PaginatedCategories {
@@ -202,7 +206,7 @@ export default function Index({ categories, filters }: IndexProps) {
                                                 {category.description ||
                                                     'Tidak ada deskripsi'}
                                             </p>
-                                            <div className="mt-3 flex items-center gap-2">
+                                            <div className="mt-3 flex flex-wrap items-center gap-2">
                                                 <Badge variant="secondary">
                                                     {category.products_count}{' '}
                                                     produk
@@ -218,6 +222,21 @@ export default function Index({ categories, filters }: IndexProps) {
                                                         ? 'Aktif'
                                                         : 'Tidak Aktif'}
                                                 </Badge>
+                                            </div>
+                                            <div className="mt-2">
+                                                {category.branches.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {category.branches.map((branch) => (
+                                                            <Badge key={branch.id} variant="outline" className="text-xs">
+                                                                {branch.name}
+                                                            </Badge>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <Badge variant="secondary" className="text-xs">
+                                                        Semua Cabang
+                                                    </Badge>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

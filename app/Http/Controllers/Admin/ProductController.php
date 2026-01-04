@@ -26,7 +26,7 @@ class ProductController extends Controller
         $isSuperAdmin = $user->hasRole('Super Admin');
         $branchId = $isSuperAdmin ? null : (int) $user->branch_id;
 
-        $query = Product::with('productCategory:id,name')
+        $query = Product::with(['productCategory:id,name', 'branches:id,name'])
             ->orderByDesc('created_at');
 
         // Filter by branch for non-Super Admin
