@@ -29,6 +29,14 @@ class CategoryController extends Controller
             ->with('branches:id,name')
             ->orderBy('name');
 
+        // Filter by branch for Super Admin (from request)
+        if ($isSuperAdmin && $request->has('branch_id') && $request->input('branch_id') !== 'all') {
+            $filterBranchId = (int) $request->input('branch_id');
+            $query->whereHas('branches', function ($q) use ($filterBranchId) {
+                $q->where('branches.id', $filterBranchId);
+            });
+        }
+
         // Filter by branch for non-Super Admin
         if (!$isSuperAdmin && $branchId) {
             $query->whereHas('branches', function ($q) use ($branchId) {
@@ -49,9 +57,14 @@ class CategoryController extends Controller
 
         $categories = $query->paginate(15);
 
+        $branches = Branch::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         return Inertia::render('Admin/Categories/Index', [
             'categories' => $categories,
-            'filters' => $request->only(['status', 'search']),
+            'branches' => $branches,
+            'filters' => $request->only(['status', 'search', 'branch_id']),
         ]);
     }
 

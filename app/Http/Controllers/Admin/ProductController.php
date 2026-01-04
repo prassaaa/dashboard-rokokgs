@@ -29,6 +29,14 @@ class ProductController extends Controller
         $query = Product::with(['productCategory:id,name', 'branches:id,name'])
             ->orderByDesc('created_at');
 
+        // Filter by branch for Super Admin (from request)
+        if ($isSuperAdmin && $request->has('branch_id') && $request->input('branch_id') !== 'all') {
+            $filterBranchId = (int) $request->input('branch_id');
+            $query->whereHas('branches', function ($q) use ($filterBranchId) {
+                $q->where('branches.id', $filterBranchId);
+            });
+        }
+
         // Filter by branch for non-Super Admin
         if (!$isSuperAdmin && $branchId) {
             $query->whereHas('branches', function ($q) use ($branchId) {
@@ -61,10 +69,15 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $branches = Branch::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
             'categories' => $categories,
-            'filters' => $request->only(['category_id', 'status', 'search']),
+            'branches' => $branches,
+            'filters' => $request->only(['category_id', 'status', 'search', 'branch_id']),
         ]);
     }
 

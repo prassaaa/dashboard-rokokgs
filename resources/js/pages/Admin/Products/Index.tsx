@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Edit, Package, Plus, Search, Trash2 } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 
@@ -50,6 +50,11 @@ interface Category {
     name: string;
 }
 
+interface Branch {
+    id: number;
+    name: string;
+}
+
 interface PaginatedProducts {
     data: Product[];
     current_page: number;
@@ -66,10 +71,12 @@ interface PaginatedProducts {
 interface IndexProps {
     products: PaginatedProducts;
     categories: Category[];
+    branches: Branch[];
     filters: {
         category_id?: string;
         status?: string;
         search?: string;
+        branch_id?: string;
     };
 }
 
@@ -78,7 +85,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manajemen Produk', href: '/admin/products' },
 ];
 
-export default function Index({ products, categories, filters }: IndexProps) {
+export default function Index({ products, categories, branches, filters }: IndexProps) {
+    const { auth } = usePage<{ auth: { user: { roles: string[] } } }>().props;
+    const isSuperAdmin = auth?.user?.roles?.includes('Super Admin');
     const [search, setSearch] = useState(filters.search || '');
     const [deleteDialog, setDeleteDialog] = useState<{
         open: boolean;
@@ -106,6 +115,7 @@ export default function Index({ products, categories, filters }: IndexProps) {
                 search,
                 category_id: filters.category_id,
                 status: filters.status,
+                branch_id: filters.branch_id,
             },
             { preserveState: true },
         );
@@ -241,6 +251,38 @@ export default function Index({ products, categories, filters }: IndexProps) {
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {/* Branch Filter - Super Admin Only */}
+                        {isSuperAdmin && (
+                            <div className="w-full md:w-48">
+                                <label className="mb-2 block text-sm font-medium">
+                                    Cabang
+                                </label>
+                                <Select
+                                    value={filters.branch_id || 'all'}
+                                    onValueChange={(value) =>
+                                        handleFilterChange('branch_id', value)
+                                    }
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Semua Cabang" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">
+                                            Semua Cabang
+                                        </SelectItem>
+                                        {branches.map((branch) => (
+                                            <SelectItem
+                                                key={branch.id}
+                                                value={branch.id.toString()}
+                                            >
+                                                {branch.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
                     </div>
                 </Card>
 
