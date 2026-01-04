@@ -40,7 +40,7 @@ interface StockMovement {
     reference_id: number | null;
     notes: string | null;
     created_at: string;
-    createdBy: User;
+    creator: User;
 }
 
 interface PaginatedMovements {
@@ -247,7 +247,7 @@ export default function Movements({ stock, movements }: MovementsProps) {
                                                                 Oleh:
                                                             </span>{' '}
                                                             {
-                                                                movement.createdBy
+                                                                movement.creator
                                                                     .name
                                                             }
                                                         </p>

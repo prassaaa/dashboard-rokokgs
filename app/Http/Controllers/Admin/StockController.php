@@ -131,7 +131,7 @@ class StockController extends Controller
                 $query->where('from_branch_id', $stock->branch_id)
                     ->orWhere('to_branch_id', $stock->branch_id);
             })
-            ->with('createdBy:id,name')
+            ->with('creator:id,name')
             ->orderByDesc('created_at')
             ->paginate(20);
 
