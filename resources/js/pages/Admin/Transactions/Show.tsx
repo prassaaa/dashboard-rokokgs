@@ -17,7 +17,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
-import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, MapPin, XCircle } from 'lucide-react';
 import { useState } from 'react';
 
 interface Product {
@@ -59,6 +59,8 @@ interface Transaction {
     branch: Branch;
     items: TransactionItem[];
     created_at: string;
+    latitude: string | null;
+    longitude: string | null;
 }
 
 interface ShowProps {
@@ -246,6 +248,28 @@ export default function Show({ transaction }: ShowProps) {
                                     <p className="mt-1">
                                         {transaction.customer_address}
                                     </p>
+                                </div>
+                            )}
+
+                            {transaction.latitude && transaction.longitude && (
+                                <div className="mt-4">
+                                    <p className="text-sm text-muted-foreground">
+                                        Lokasi Transaksi
+                                    </p>
+                                    <div className="mt-1 flex items-center gap-2">
+                                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                                        <span className="text-sm">
+                                            {transaction.latitude}, {transaction.longitude}
+                                        </span>
+                                        <a
+                                            href={`https://www.google.com/maps?q=${transaction.latitude},${transaction.longitude}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="ml-2 text-sm text-primary hover:underline"
+                                        >
+                                            Lihat di Google Maps
+                                        </a>
+                                    </div>
                                 </div>
                             )}
 
