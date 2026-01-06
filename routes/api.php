@@ -17,14 +17,13 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::prefix('v1')->group(function () {
-    // Authentication with rate limiting
     Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login'])
-        ->middleware('throttle:5,1'); // 5 attempts per minute
+        ->middleware('throttle:5,1');
     Route::post('register', [\App\Http\Controllers\Api\AuthController::class, 'register'])
-        ->middleware('throttle:3,1'); // 3 attempts per minute
+        ->middleware('throttle:3,1');
 });
 
-// Protected routes (require authentication)
+// Protected routes
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // Authentication
     Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
@@ -35,14 +34,14 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('products/category/{categoryId}', [\App\Http\Controllers\Api\ProductController::class, 'byCategory']);
     Route::apiResource('products', \App\Http\Controllers\Api\ProductController::class)->only(['index', 'show']);
 
-    // Stocks (plural for RESTful consistency)
+    // Stocks
     Route::get('stocks', [\App\Http\Controllers\Api\StockController::class, 'index']);
     Route::get('stocks/product/{productId}', [\App\Http\Controllers\Api\StockController::class, 'byProduct']);
     Route::get('stocks/low-stock', [\App\Http\Controllers\Api\StockController::class, 'lowStock']);
 
     // Sales Transactions
-    Route::apiResource('transactions', \App\Http\Controllers\Api\TransactionController::class)->only(['index', 'store', 'show']);
     Route::get('transactions/sales/{salesId}', [\App\Http\Controllers\Api\TransactionController::class, 'bySales']);
+    Route::apiResource('transactions', \App\Http\Controllers\Api\TransactionController::class)->only(['index', 'store', 'show']);
 
     // Commissions
     Route::get('commissions', [\App\Http\Controllers\Api\CommissionController::class, 'index']);
