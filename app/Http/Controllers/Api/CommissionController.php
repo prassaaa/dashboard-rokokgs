@@ -32,6 +32,20 @@ class CommissionController extends BaseApiController
      *         @OA\Schema(type="string", enum={"pending","approved","paid"}, example="approved")
      *     ),
      *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="Start date filter (Y-m-d)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date", example="2024-01-01")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="End date filter (Y-m-d)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date", example="2024-12-31")
+     *     ),
+     *     @OA\Parameter(
      *         name="page",
      *         in="query",
      *         description="Page number",
@@ -91,6 +105,8 @@ class CommissionController extends BaseApiController
         }
 
         $status = $request->input('status'); // pending, approved, paid
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
         $query = Commission::where('sales_id', $user->id)
             ->with(['salesTransaction'])
@@ -98,6 +114,14 @@ class CommissionController extends BaseApiController
 
         if ($status) {
             $query->where('status', $status);
+        }
+
+        if ($startDate) {
+            $query->whereDate('created_at', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->whereDate('created_at', '<=', $endDate);
         }
 
         $commissions = $query->paginate(20);

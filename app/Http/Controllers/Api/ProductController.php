@@ -171,12 +171,16 @@ class ProductController extends BaseApiController
      */
     public function show(int $id): JsonResponse
     {
-        $product = $this->productService->getById($id);
+        try {
+            $product = $this->productService->getById($id);
 
-        return $this->successResponse(
-            new ProductResource($product),
-            'Product retrieved successfully'
-        );
+            return $this->successResponse(
+                new ProductResource($product),
+                'Product retrieved successfully'
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->errorResponse('Product not found', 404);
+        }
     }
 
     /**

@@ -32,8 +32,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::put('profile', [\App\Http\Controllers\Api\AuthController::class, 'updateProfile']);
 
     // Products
-    Route::apiResource('products', \App\Http\Controllers\Api\ProductController::class)->only(['index', 'show']);
     Route::get('products/category/{categoryId}', [\App\Http\Controllers\Api\ProductController::class, 'byCategory']);
+    Route::apiResource('products', \App\Http\Controllers\Api\ProductController::class)->only(['index', 'show']);
 
     // Stocks (plural for RESTful consistency)
     Route::get('stocks', [\App\Http\Controllers\Api\StockController::class, 'index']);

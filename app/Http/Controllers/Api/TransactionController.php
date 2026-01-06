@@ -264,7 +264,7 @@ class TransactionController extends BaseApiController
         }
 
         return $this->successResponse(
-            new SalesTransactionResource($transaction->load(['branch', 'sales', 'items.product'])),
+            new SalesTransactionResource($transaction->load(['branch', 'sales', 'area', 'items.product'])),
             'Transaction retrieved successfully'
         );
     }
