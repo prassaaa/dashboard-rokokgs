@@ -17,8 +17,11 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
-import { ArrowLeft, CheckCircle, MapPin, XCircle } from 'lucide-react';
+import { icon } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { ArrowLeft, CheckCircle, ExternalLink, MapPin, XCircle } from 'lucide-react';
 import { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 interface Product {
     id: number;
@@ -84,6 +87,17 @@ const statusLabels: Record<string, string> = {
     completed: 'Selesai',
     cancelled: 'Dibatalkan',
 };
+
+// Custom marker icon for Leaflet
+const markerIcon = icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+});
 
 export default function Show({ transaction }: ShowProps) {
     const [approveDialog, setApproveDialog] = useState(false);
@@ -253,10 +267,10 @@ export default function Show({ transaction }: ShowProps) {
 
                             {transaction.latitude && transaction.longitude && (
                                 <div className="mt-4">
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-muted-foreground mb-2">
                                         Lokasi Transaksi
                                     </p>
-                                    <div className="mt-1 flex items-center gap-2">
+                                    <div className="flex items-center gap-2 mb-3">
                                         <MapPin className="h-4 w-4 text-muted-foreground" />
                                         <span className="text-sm">
                                             {transaction.latitude}, {transaction.longitude}
@@ -265,10 +279,35 @@ export default function Show({ transaction }: ShowProps) {
                                             href={`https://www.google.com/maps?q=${transaction.latitude},${transaction.longitude}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="ml-2 text-sm text-primary hover:underline"
+                                            className="ml-2 inline-flex items-center gap-1 text-sm text-primary hover:underline"
                                         >
-                                            Lihat di Google Maps
+                                            <ExternalLink className="h-3 w-3" />
+                                            Google Maps
                                         </a>
+                                    </div>
+                                    <div className="h-[250px] w-full rounded-lg overflow-hidden border">
+                                        <MapContainer
+                                            center={[parseFloat(transaction.latitude), parseFloat(transaction.longitude)]}
+                                            zoom={15}
+                                            scrollWheelZoom={false}
+                                            style={{ height: '100%', width: '100%' }}
+                                        >
+                                            <TileLayer
+                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            />
+                                            <Marker
+                                                position={[parseFloat(transaction.latitude), parseFloat(transaction.longitude)]}
+                                                icon={markerIcon}
+                                            >
+                                                <Popup>
+                                                    <div className="text-sm">
+                                                        <p className="font-semibold">{transaction.customer_name}</p>
+                                                        <p className="text-muted-foreground">{transaction.customer_address}</p>
+                                                    </div>
+                                                </Popup>
+                                            </Marker>
+                                        </MapContainer>
                                     </div>
                                 </div>
                             )}
