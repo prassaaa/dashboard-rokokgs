@@ -46,7 +46,7 @@ class TransactionController extends BaseApiController
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="customer_name", type="string", example="Toko Maju Jaya"),
      *                     @OA\Property(property="total", type="number", format="float", example=500000),
-     *                     @OA\Property(property="status", type="string", example="completed")
+     *                     @OA\Property(property="status", type="string", example="approved")
      *                 )
      *             )
      *         )

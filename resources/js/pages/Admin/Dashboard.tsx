@@ -37,7 +37,7 @@ interface SalesStats {
     total_transactions: number;
     total_revenue: number;
     average_transaction: number;
-    completed_transactions: number;
+    approved_transactions: number;
 }
 
 interface RecentTransaction {
@@ -100,9 +100,8 @@ function getStatusColor(
         'default' | 'secondary' | 'success' | 'warning' | 'destructive'
     > = {
         pending: 'warning',
-        approved: 'secondary',
-        completed: 'success',
-        rejected: 'destructive',
+        approved: 'success',
+        cancelled: 'destructive',
     };
     return statusMap[status] || 'default';
 }
@@ -185,7 +184,7 @@ export default function AdminDashboard({
                                     )}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                    {salesStats.completed_transactions} selesai
+                                    {salesStats.approved_transactions} disetujui
                                 </p>
                             </div>
                             <div className="rounded-full bg-purple-100 p-3 dark:bg-purple-900">

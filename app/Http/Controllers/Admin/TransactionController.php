@@ -114,7 +114,11 @@ class TransactionController extends Controller
                 ->with('error', 'Only pending transactions can be approved');
         }
 
-        $transaction->update(['status' => 'completed']);
+        $transaction->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+            'approved_by' => auth()->id(),
+        ]);
 
         return redirect()->back()
             ->with('success', 'Transaction approved successfully');

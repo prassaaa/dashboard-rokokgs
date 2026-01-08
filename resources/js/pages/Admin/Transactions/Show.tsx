@@ -56,7 +56,7 @@ interface Transaction {
     total: number;
     discount: number;
     notes: string | null;
-    status: 'pending' | 'completed' | 'cancelled';
+    status: 'pending' | 'approved' | 'cancelled';
     sales: Sales;
     branch: Branch;
     items: TransactionItem[];
@@ -77,13 +77,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const statusColors: Record<string, string> = {
     pending: 'warning',
-    completed: 'default',
+    approved: 'default',
     cancelled: 'destructive',
 };
 
 const statusLabels: Record<string, string> = {
     pending: 'Menunggu',
-    completed: 'Selesai',
+    approved: 'Disetujui',
     cancelled: 'Dibatalkan',
 };
 

@@ -1438,7 +1438,7 @@
                                                     },
                                                     "status": {
                                                         "type": "string",
-                                                        "example": "completed"
+                                                        "example": "approved"
                                                     }
                                                 },
                                                 "type": "object"

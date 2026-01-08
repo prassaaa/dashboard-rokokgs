@@ -44,7 +44,7 @@ interface Transaction {
     customer_name: string;
     total: number;
     discount: number;
-    status: 'pending' | 'completed' | 'cancelled';
+    status: 'pending' | 'approved' | 'cancelled';
     sales: Sales;
     branch: Branch;
     created_at: string;
@@ -84,13 +84,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const statusColors: Record<string, string> = {
     pending: 'warning',
-    completed: 'default',
+    approved: 'default',
     cancelled: 'destructive',
 };
 
 const statusLabels: Record<string, string> = {
     pending: 'Menunggu',
-    completed: 'Selesai',
+    approved: 'Disetujui',
     cancelled: 'Dibatalkan',
 };
 
@@ -304,8 +304,8 @@ export default function Index({
                                     <SelectItem value="pending">
                                         Menunggu
                                     </SelectItem>
-                                    <SelectItem value="completed">
-                                        Selesai
+                                    <SelectItem value="approved">
+                                        Disetujui
                                     </SelectItem>
                                     <SelectItem value="cancelled">
                                         Dibatalkan
