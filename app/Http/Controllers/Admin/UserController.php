@@ -93,7 +93,29 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request): RedirectResponse
     {
+        $currentUser = auth()->user();
+
+        // Check if user has permission to create users
+        if (!$currentUser->can('create-users')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
+
+        // Admin Cabang can only create users for their branch
+        if (!$currentUser->hasRole('Super Admin') && $validated['branch_id'] != $currentUser->branch_id) {
+            abort(403, 'You can only create users for your branch');
+        }
+
+        // Prevent privilege escalation: Admin Cabang cannot create Super Admin or Admin Cabang
+        if (!$currentUser->hasRole('Super Admin') && isset($validated['roles'])) {
+            $allowedRoles = ['Sales']; // Admin Cabang can only create Sales
+            foreach ($validated['roles'] as $role) {
+                if (!in_array($role, $allowedRoles)) {
+                    abort(403, 'You cannot create users with this role');
+                }
+            }
+        }
 
         $dto = new UserDTO(
             name: $validated['name'],
