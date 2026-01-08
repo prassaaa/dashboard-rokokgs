@@ -6,7 +6,6 @@ use App\DataTransferObjects\SalesTransactionDTO;
 use App\Exceptions\BusinessException;
 use App\Exceptions\InsufficientStockException;
 use App\Models\Branch;
-use App\Models\Commission;
 use App\Models\Product;
 use App\Models\SalesTransaction;
 use App\Models\Stock;
@@ -155,7 +154,7 @@ test('cannot create transaction with insufficient stock', function () {
     $this->service->create($dto);
 })->throws(InsufficientStockException::class);
 
-test('can approve transaction and calculate commission', function () {
+test('can approve transaction', function () {
     $transaction = SalesTransaction::factory()->create([
         'status' => 'pending',
         'total' => 250000,
@@ -166,14 +165,6 @@ test('can approve transaction and calculate commission', function () {
     expect($approved)
         ->status->toBe('approved')
         ->approved_at->not->toBeNull();
-
-    // Check commission created (2% of total)
-    $commission = Commission::where('sales_transaction_id', $transaction->id)->first();
-
-    expect($commission)
-        ->not->toBeNull()
-        ->commission_amount->toBe('5000.00') // 2% of 250000
-        ->commission_percentage->toBe('2.00');
 });
 
 test('cannot approve already approved transaction', function () {
@@ -246,33 +237,16 @@ test('can get transactions by sales', function () {
 test('can get sales summary', function () {
     $sales = User::factory()->create();
 
-    $transaction1 = SalesTransaction::factory()->create([
+    SalesTransaction::factory()->create([
         'sales_id' => $sales->id,
         'total' => 100000,
         'status' => 'approved',
     ]);
 
-    $transaction2 = SalesTransaction::factory()->create([
+    SalesTransaction::factory()->create([
         'sales_id' => $sales->id,
         'total' => 150000,
         'status' => 'approved',
-    ]);
-
-    // Create commissions
-    Commission::factory()->create([
-        'sales_transaction_id' => $transaction1->id,
-        'sales_id' => $sales->id,
-        'transaction_amount' => 100000,
-        'commission_amount' => 2000,
-        'commission_percentage' => 2.0,
-    ]);
-
-    Commission::factory()->create([
-        'sales_transaction_id' => $transaction2->id,
-        'sales_id' => $sales->id,
-        'transaction_amount' => 150000,
-        'commission_amount' => 3000,
-        'commission_percentage' => 2.0,
     ]);
 
     $summary = $this->service->getSalesSummary($sales->id);
@@ -280,6 +254,5 @@ test('can get sales summary', function () {
     expect($summary)
         ->total_transactions->toBe(2)
         ->total_sales->toBe(250000.0)
-        ->total_commission->toBe(5000.0)
         ->average_transaction->toBe(125000.0);
 });

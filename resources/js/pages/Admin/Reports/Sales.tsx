@@ -39,7 +39,6 @@ interface Summary {
     total_revenue: number;
     average_transaction: number;
     total_discount: number;
-    total_tax: number;
 }
 
 interface SalesProps {
@@ -244,22 +243,6 @@ export default function Sales({
                             </div>
                             <div className="shrink-0 rounded-full bg-orange-500/10 p-3">
                                 <Percent className="size-6 text-orange-600" />
-                            </div>
-                        </div>
-                    </Card>
-
-                    <Card className="p-4">
-                        <div className="flex items-center justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                                <p className="text-sm text-muted-foreground">
-                                    Total Pajak
-                                </p>
-                                <p className="mt-2 text-lg font-bold xl:text-xl">
-                                    {formatCurrency(summary.total_tax)}
-                                </p>
-                            </div>
-                            <div className="shrink-0 rounded-full bg-purple-500/10 p-3">
-                                <TrendingUp className="size-6 text-purple-600" />
                             </div>
                         </div>
                     </Card>

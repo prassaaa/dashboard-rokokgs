@@ -99,12 +99,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Target::class);
     }
-
-    /**
-     * Get the commissions for the user.
-     */
-    public function commissions(): HasMany
-    {
-        return $this->hasMany(Commission::class, 'sales_id');
-    }
 }

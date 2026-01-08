@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
-use App\Models\Commission;
 use App\Models\Product;
 use App\Models\SalesTransaction;
 use App\Models\Stock;
@@ -43,9 +42,6 @@ class DashboardController extends Controller
         // Low stock alerts
         $lowStockAlerts = $this->getLowStockAlerts($branchId);
 
-        // Pending approvals
-        $pendingApprovals = $this->getPendingApprovals($branchId);
-
         // Sales trend (last 7 days)
         $salesTrend = $this->getSalesTrend($branchId);
 
@@ -54,7 +50,6 @@ class DashboardController extends Controller
             'salesStats' => $salesStats,
             'recentTransactions' => $recentTransactions,
             'lowStockAlerts' => $lowStockAlerts,
-            'pendingApprovals' => $pendingApprovals,
             'salesTrend' => $salesTrend,
         ]);
     }
@@ -157,33 +152,6 @@ class DashboardController extends Controller
             'minimum_stock' => $stock->minimum_stock,
             'branch_name' => $stock->branch->name,
         ])->toArray();
-    }
-
-    /**
-     * Get pending approvals (users, commissions).
-     */
-    private function getPendingApprovals(?int $branchId): array
-    {
-        // Pending user registrations
-        $pendingUsersQuery = User::where('is_active', false);
-        if ($branchId) {
-            $pendingUsersQuery->where('branch_id', $branchId);
-        }
-        $pendingUsers = $pendingUsersQuery->count();
-
-        // Pending commissions
-        $pendingCommissionsQuery = Commission::where('status', 'pending');
-        if ($branchId) {
-            $pendingCommissionsQuery->whereHas('salesTransaction', function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            });
-        }
-        $pendingCommissions = $pendingCommissionsQuery->count();
-
-        return [
-            'pending_users' => $pendingUsers,
-            'pending_commissions' => $pendingCommissions,
-        ];
     }
 
     /**

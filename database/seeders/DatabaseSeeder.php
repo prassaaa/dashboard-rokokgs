@@ -25,7 +25,6 @@ class DatabaseSeeder extends Seeder
             StockMovementSeeder::class,
             TargetSeeder::class,
             SalesTransactionSeeder::class,
-            CommissionSeeder::class,
         ]);
     }
 }

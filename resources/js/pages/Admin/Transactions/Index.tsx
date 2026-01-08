@@ -44,7 +44,6 @@ interface Transaction {
     customer_name: string;
     total: number;
     discount: number;
-    tax: number;
     status: 'pending' | 'completed' | 'cancelled';
     sales: Sales;
     branch: Branch;

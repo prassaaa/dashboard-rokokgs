@@ -11,6 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Drop commissions table
+        Schema::dropIfExists('commissions');
+
+        // Remove tax column from sales_transactions
+        Schema::table('sales_transactions', function (Blueprint $table) {
+            $table->dropColumn('tax');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Re-add tax column to sales_transactions
+        Schema::table('sales_transactions', function (Blueprint $table) {
+            $table->decimal('tax', 15, 2)->default(0)->after('discount');
+        });
+
+        // Re-create commissions table
         Schema::create('commissions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sales_transaction_id')->constrained('sales_transactions')->onDelete('cascade');
@@ -23,13 +43,5 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('commissions');
     }
 };

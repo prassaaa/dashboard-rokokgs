@@ -20,7 +20,6 @@ class SalesTransactionResource extends JsonResource
             'customer_address' => $this->customer_address,
             'subtotal' => (float) $this->subtotal,
             'discount' => (float) $this->discount,
-            'tax' => (float) $this->tax,
             'total' => (float) $this->total,
             'payment_method' => $this->payment_method,
             'status' => $this->status,

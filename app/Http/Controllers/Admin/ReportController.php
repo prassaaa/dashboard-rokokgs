@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
-use App\Models\Commission;
 use App\Models\Product;
 use App\Models\SalesTransaction;
 use App\Models\SalesTransactionItem;
@@ -46,7 +45,6 @@ class ReportController extends Controller
             'total_revenue' => $transactions->sum('total'),
             'average_transaction' => $transactions->avg('total') ?? 0,
             'total_discount' => $transactions->sum('discount'),
-            'total_tax' => $transactions->sum('tax'),
         ];
 
         // Group by date
@@ -138,19 +136,12 @@ class ReportController extends Controller
             ->orderByDesc('total_revenue')
             ->get();
 
-        // Add commission info
-        $salesStats = $salesStats->map(function ($stat) use ($startDate, $endDate) {
-            $commissions = Commission::where('sales_id', $stat->sales_id)
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->get();
-
+        // Map sales stats
+        $salesStats = $salesStats->map(function ($stat) {
             return [
                 'sales' => $stat->sales,
                 'total_transactions' => $stat->total_transactions,
                 'total_revenue' => $stat->total_revenue,
-                'total_commission' => $commissions->sum('commission_amount'),
-                'pending_commission' => $commissions->where('status', 'pending')->sum('commission_amount'),
-                'paid_commission' => $commissions->where('status', 'paid')->sum('commission_amount'),
             ];
         });
 
@@ -160,49 +151,6 @@ class ReportController extends Controller
 
         return Inertia::render('Admin/Reports/SalesPerformance', [
             'salesStats' => $salesStats,
-            'branches' => $branches,
-            'filters' => $request->only(['start_date', 'end_date', 'branch_id']),
-        ]);
-    }
-
-    /**
-     * Display commission report.
-     */
-    public function commissions(Request $request): Response
-    {
-        $user = auth()->user();
-        $isSuperAdmin = $user->hasRole('Super Admin');
-
-        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
-        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
-        $branchId = $request->input('branch_id');
-
-        $query = Commission::whereBetween('created_at', [$startDate, $endDate]);
-
-        if (!$isSuperAdmin) {
-            $query->whereHas('salesTransaction', fn ($q) => $q->where('branch_id', $user->branch_id));
-        } elseif ($branchId) {
-            $query->whereHas('salesTransaction', fn ($q) => $q->where('branch_id', $branchId));
-        }
-
-        $commissions = $query->get();
-
-        $summary = [
-            'total_commissions' => $commissions->sum('commission_amount'),
-            'pending_commissions' => $commissions->where('status', 'pending')->sum('commission_amount'),
-            'approved_commissions' => $commissions->where('status', 'approved')->sum('commission_amount'),
-            'paid_commissions' => $commissions->where('status', 'paid')->sum('commission_amount'),
-            'count_pending' => $commissions->where('status', 'pending')->count(),
-            'count_approved' => $commissions->where('status', 'approved')->count(),
-            'count_paid' => $commissions->where('status', 'paid')->count(),
-        ];
-
-        $branches = $isSuperAdmin
-            ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])
-            : Branch::where('id', $user->branch_id)->get(['id', 'name']);
-
-        return Inertia::render('Admin/Reports/Commissions', [
-            'summary' => $summary,
             'branches' => $branches,
             'filters' => $request->only(['start_date', 'end_date', 'branch_id']),
         ]);

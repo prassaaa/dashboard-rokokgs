@@ -111,7 +111,6 @@ class TransactionController extends BaseApiController
      *             ),
      *             @OA\Property(property="subtotal", type="number", format="float", example=250000),
      *             @OA\Property(property="discount", type="number", format="float", example=0),
-     *             @OA\Property(property="tax", type="number", format="float", example=0),
      *             @OA\Property(property="total", type="number", format="float", example=250000),
      *             @OA\Property(property="payment_method", type="string", example="cash"),
      *             @OA\Property(property="notes", type="string", example="Pengiriman segera")
@@ -165,7 +164,6 @@ class TransactionController extends BaseApiController
             items: $validated['items'],
             subtotal: $validated['subtotal'],
             discount: $validated['discount'] ?? 0,
-            tax: $validated['tax'] ?? 0,
             total: $validated['total'],
             payment_method: $validated['payment_method'],
             notes: $validated['notes'] ?? null,

@@ -12,7 +12,7 @@ import {
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { TrendingUp, DollarSign, Award } from 'lucide-react';
+import { TrendingUp, DollarSign } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 
 interface Sales {
@@ -25,9 +25,6 @@ interface SalesStat {
     sales: Sales;
     total_transactions: number;
     total_revenue: number;
-    total_commission: number;
-    pending_commission: number;
-    paid_commission: number;
 }
 
 interface Branch {
@@ -101,10 +98,6 @@ export default function SalesPerformance({
         (sum, stat) => sum + (Number(stat.total_revenue) || 0),
         0,
     );
-    const totalCommission = salesStats.reduce(
-        (sum, stat) => sum + (Number(stat.total_commission) || 0),
-        0,
-    );
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -115,7 +108,7 @@ export default function SalesPerformance({
                 <div>
                     <h1 className="text-3xl font-bold">Laporan Performa Sales</h1>
                     <p className="text-muted-foreground">
-                        Analisis kinerja dan komisi tim penjualan
+                        Analisis kinerja tim penjualan
                     </p>
                 </div>
 
@@ -187,7 +180,7 @@ export default function SalesPerformance({
                 </Card>
 
                 {/* Summary Cards */}
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2">
                     <Card className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
@@ -219,22 +212,6 @@ export default function SalesPerformance({
                             </div>
                         </div>
                     </Card>
-
-                    <Card className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">
-                                    Total Komisi
-                                </p>
-                                <p className="mt-2 text-2xl font-bold">
-                                    {formatCurrency(totalCommission)}
-                                </p>
-                            </div>
-                            <div className="rounded-full bg-blue-500/10 p-3">
-                                <Award className="size-6 text-blue-600" />
-                            </div>
-                        </div>
-                    </Card>
                 </div>
 
                 {/* Sales Stats Table */}
@@ -258,15 +235,6 @@ export default function SalesPerformance({
                                         </th>
                                         <th className="pb-3 text-right text-sm font-semibold">
                                             Total Penjualan
-                                        </th>
-                                        <th className="pb-3 text-right text-sm font-semibold">
-                                            Komisi Pending
-                                        </th>
-                                        <th className="pb-3 text-right text-sm font-semibold">
-                                            Komisi Dibayar
-                                        </th>
-                                        <th className="pb-3 text-right text-sm font-semibold">
-                                            Total Komisi
                                         </th>
                                     </tr>
                                 </thead>
@@ -295,27 +263,12 @@ export default function SalesPerformance({
                                                         stat.total_revenue,
                                                     )}
                                                 </td>
-                                                <td className="py-3 text-right text-orange-600">
-                                                    {formatCurrency(
-                                                        stat.pending_commission,
-                                                    )}
-                                                </td>
-                                                <td className="py-3 text-right text-green-600">
-                                                    {formatCurrency(
-                                                        stat.paid_commission,
-                                                    )}
-                                                </td>
-                                                <td className="py-3 text-right font-medium">
-                                                    {formatCurrency(
-                                                        stat.total_commission,
-                                                    )}
-                                                </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
                                             <td
-                                                colSpan={7}
+                                                colSpan={4}
                                                 className="py-8 text-center text-muted-foreground"
                                             >
                                                 Tidak ada data performa sales

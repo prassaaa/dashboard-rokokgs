@@ -55,7 +55,6 @@ interface Transaction {
     customer_address: string | null;
     total: number;
     discount: number;
-    tax: number;
     notes: string | null;
     status: 'pending' | 'completed' | 'cancelled';
     sales: Sales;
@@ -338,8 +337,7 @@ export default function Show({ transaction }: ShowProps) {
                                     </span>
                                     <span className="font-medium">
                                         {formatCurrency(
-                                            transaction.total -
-                                                transaction.tax +
+                                            transaction.total +
                                                 transaction.discount,
                                         )}
                                     </span>
@@ -352,16 +350,6 @@ export default function Show({ transaction }: ShowProps) {
                                             {formatCurrency(
                                                 transaction.discount,
                                             )}
-                                        </span>
-                                    </div>
-                                )}
-                                {transaction.tax > 0 && (
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">
-                                            Pajak
-                                        </span>
-                                        <span className="font-medium">
-                                            {formatCurrency(transaction.tax)}
                                         </span>
                                     </div>
                                 )}

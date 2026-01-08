@@ -8,7 +8,6 @@ use App\DataTransferObjects\SalesTransactionDTO;
 use App\Exceptions\BusinessException;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\UnauthorizedActionException;
-use App\Models\Commission;
 use App\Models\Product;
 use App\Models\SalesTransaction;
 use App\Models\SalesTransactionItem;
@@ -115,7 +114,6 @@ class SalesTransactionService extends BaseService
                 'longitude' => $dto->longitude,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
-                'tax' => $dto->tax,
                 'total' => $total,
                 'payment_method' => $dto->payment_method,
                 'status' => $dto->status,
@@ -172,15 +170,12 @@ class SalesTransactionService extends BaseService
             $transaction->approved_by = $approvedBy ?? auth()->id();
             $transaction->save();
 
-            // Calculate and create commission
-            $this->calculateCommission($transaction);
-
             $this->logAction('Sales transaction approved', [
                 'transaction_id' => $id,
                 'transaction_number' => $transaction->transaction_number,
             ]);
 
-            return $transaction->fresh(['commission']);
+            return $transaction->fresh();
         });
     }
 
@@ -276,13 +271,11 @@ class SalesTransactionService extends BaseService
 
         $totalTransactions = $transactions->count();
         $totalSales = (float) $transactions->where('status', 'approved')->sum('total');
-        $totalCommission = (float) Commission::whereIn('sales_transaction_id', $transactions->pluck('id'))->sum('commission_amount');
 
         return [
             'sales_id' => $salesId,
             'total_transactions' => $totalTransactions,
             'total_sales' => $totalSales,
-            'total_commission' => $totalCommission,
             'average_transaction' => $totalTransactions > 0 ? $totalSales / $totalTransactions : 0,
         ];
     }
@@ -310,25 +303,6 @@ class SalesTransactionService extends BaseService
                 );
             }
         }
-    }
-
-    /**
-     * Calculate commission for approved transaction.
-     */
-    private function calculateCommission(SalesTransaction $transaction): Commission
-    {
-        // Commission rate: 2% of total sales
-        $commissionRate = 0.02;
-        $commissionAmount = $transaction->total * $commissionRate;
-
-        return Commission::create([
-            'sales_transaction_id' => $transaction->id,
-            'sales_id' => $transaction->sales_id,
-            'transaction_amount' => $transaction->total,
-            'commission_percentage' => $commissionRate * 100,
-            'commission_amount' => $commissionAmount,
-            'status' => 'pending',
-        ]);
     }
 
     /**

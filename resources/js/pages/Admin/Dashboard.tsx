@@ -59,11 +59,6 @@ interface LowStockAlert {
     branch_name: string;
 }
 
-interface PendingApprovals {
-    pending_users: number;
-    pending_commissions: number;
-}
-
 interface SalesTrendItem {
     date: string;
     transactions: number;
@@ -75,7 +70,6 @@ interface DashboardProps {
     salesStats: SalesStats;
     recentTransactions: RecentTransaction[];
     lowStockAlerts: LowStockAlert[];
-    pendingApprovals: PendingApprovals;
     salesTrend: SalesTrendItem[];
 }
 
@@ -118,7 +112,6 @@ export default function AdminDashboard({
     salesStats,
     recentTransactions,
     lowStockAlerts,
-    pendingApprovals,
     salesTrend,
 }: DashboardProps) {
     // Format chart data
@@ -220,66 +213,6 @@ export default function AdminDashboard({
                         </div>
                     </Card>
                 </div>
-
-                {/* Pending Approvals Alert */}
-                {(pendingApprovals.pending_users > 0 ||
-                    pendingApprovals.pending_commissions > 0) && (
-                    <Card className="border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-950">
-                        <div className="flex items-start gap-3">
-                            <AlertCircle className="size-5 text-yellow-600 dark:text-yellow-400" />
-                            <div className="flex-1">
-                                <h3 className="font-semibold text-yellow-800 dark:text-yellow-200">
-                                    Menunggu Persetujuan
-                                </h3>
-                                <div className="mt-2 space-y-1 text-sm text-yellow-700 dark:text-yellow-300">
-                                    {pendingApprovals.pending_users > 0 && (
-                                        <p>
-                                            • {pendingApprovals.pending_users}{' '}
-                                            registrasi pengguna baru
-                                        </p>
-                                    )}
-                                    {pendingApprovals.pending_commissions >
-                                        0 && (
-                                        <p>
-                                            •{' '}
-                                            {
-                                                pendingApprovals.pending_commissions
-                                            }{' '}
-                                            komisi menunggu persetujuan
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="mt-3 flex gap-2">
-                                    {pendingApprovals.pending_users > 0 && (
-                                        <Button
-                                            asChild
-                                            size="sm"
-                                            variant="outline"
-                                            className="border-yellow-600 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-400 dark:text-yellow-300 dark:hover:bg-yellow-900"
-                                        >
-                                            <Link href="/admin/users">
-                                                Lihat Pengguna
-                                            </Link>
-                                        </Button>
-                                    )}
-                                    {pendingApprovals.pending_commissions >
-                                        0 && (
-                                        <Button
-                                            asChild
-                                            size="sm"
-                                            variant="outline"
-                                            className="border-yellow-600 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-400 dark:text-yellow-300 dark:hover:bg-yellow-900"
-                                        >
-                                            <Link href="/admin/commissions">
-                                                Lihat Komisi
-                                            </Link>
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-                )}
 
                 {/* Sales Trend Chart */}
                 <Card className="p-6">

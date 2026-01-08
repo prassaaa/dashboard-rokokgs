@@ -20,7 +20,6 @@ import {
     Package,
     Warehouse,
     Receipt,
-    DollarSign,
     TrendingUp,
     Award,
     MapPin,
@@ -96,12 +95,6 @@ const transactionNavItems: NavItem[] = [
         icon: Target,
         permission: 'view-targets',
     },
-    {
-        title: 'Komisi',
-        href: '/admin/commissions',
-        icon: DollarSign,
-        permission: 'view-commissions',
-    },
 ];
 
 // Laporan
@@ -122,12 +115,6 @@ const reportsNavItems: NavItem[] = [
         title: 'Performa Sales',
         href: '/admin/reports/sales-performance',
         icon: Award,
-        permission: 'view-reports',
-    },
-    {
-        title: 'Komisi',
-        href: '/admin/reports/commissions',
-        icon: DollarSign,
         permission: 'view-reports',
     },
 ];

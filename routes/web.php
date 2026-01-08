@@ -54,18 +54,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('transactions/{transaction}/approve', [\App\Http\Controllers\Admin\TransactionController::class, 'approve'])->name('transactions.approve');
     Route::post('transactions/{transaction}/reject', [\App\Http\Controllers\Admin\TransactionController::class, 'reject'])->name('transactions.reject');
 
-    // Commission Management
-    Route::get('commissions', [\App\Http\Controllers\Admin\CommissionController::class, 'index'])->name('commissions.index');
-    Route::post('commissions/{commission}/approve', [\App\Http\Controllers\Admin\CommissionController::class, 'approve'])->name('commissions.approve');
-    Route::post('commissions/{commission}/pay', [\App\Http\Controllers\Admin\CommissionController::class, 'markAsPaid'])->name('commissions.pay');
-    Route::post('commissions/batch-approve', [\App\Http\Controllers\Admin\CommissionController::class, 'batchApprove'])->name('commissions.batch-approve');
-    Route::post('commissions/batch-pay', [\App\Http\Controllers\Admin\CommissionController::class, 'batchPay'])->name('commissions.batch-pay');
-
     // Reports & Analytics
     Route::get('reports/sales', [\App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
     Route::get('reports/products', [\App\Http\Controllers\Admin\ReportController::class, 'products'])->name('reports.products');
     Route::get('reports/sales-performance', [\App\Http\Controllers\Admin\ReportController::class, 'salesPerformance'])->name('reports.sales-performance');
-    Route::get('reports/commissions', [\App\Http\Controllers\Admin\ReportController::class, 'commissions'])->name('reports.commissions');
 });
 
 require __DIR__.'/settings.php';
