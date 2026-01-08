@@ -430,7 +430,7 @@ export default function Show({ transaction }: ShowProps) {
                         <DialogTitle>Setujui Transaksi</DialogTitle>
                         <DialogDescription>
                             Apakah Anda yakin ingin menyetujui transaksi ini?
-                            Status transaksi akan diubah menjadi "Selesai".
+                            Status transaksi akan diubah menjadi "Disetujui".
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
