@@ -106,6 +106,15 @@ function getStatusColor(
     return statusMap[status] || 'default';
 }
 
+function getStatusLabel(status: string): string {
+    const statusMap: Record<string, string> = {
+        pending: 'Menunggu',
+        approved: 'Disetujui',
+        cancelled: 'Dibatalkan',
+    };
+    return statusMap[status] || status;
+}
+
 export default function AdminDashboard({
     stats,
     salesStats,
@@ -344,7 +353,7 @@ export default function AdminDashboard({
                                                 )}
                                                 className="mt-1"
                                             >
-                                                {transaction.status}
+                                                {getStatusLabel(transaction.status)}
                                             </Badge>
                                         </div>
                                     </div>

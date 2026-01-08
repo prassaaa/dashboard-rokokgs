@@ -34,7 +34,7 @@ interface User {
 
 interface StockMovement {
     id: number;
-    type: 'in' | 'out';
+    type: 'in' | 'out' | 'transfer' | 'adjustment' | 'sale' | 'return';
     quantity: number;
     reference_id: number | null;
     notes: string | null;
@@ -67,16 +67,40 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Movements({ stock, movements }: MovementsProps) {
-    const getMovementTypeLabel = (type: 'in' | 'out') => {
-        return type === 'in' ? 'Masuk' : 'Keluar';
+    const getMovementTypeLabel = (type: StockMovement['type']) => {
+        const labels: Record<StockMovement['type'], string> = {
+            in: 'Masuk',
+            out: 'Keluar',
+            transfer: 'Transfer',
+            adjustment: 'Penyesuaian',
+            sale: 'Penjualan',
+            return: 'Retur',
+        };
+        return labels[type];
     };
 
-    const getMovementTypeColor = (type: 'in' | 'out') => {
-        return type === 'in' ? 'text-green-600' : 'text-red-600';
+    const getMovementTypeColor = (type: StockMovement['type']) => {
+        const colors: Record<StockMovement['type'], string> = {
+            in: 'text-green-600',
+            out: 'text-red-600',
+            transfer: 'text-blue-600',
+            adjustment: 'text-yellow-600',
+            sale: 'text-red-600',
+            return: 'text-green-600',
+        };
+        return colors[type];
     };
 
-    const getMovementTypeBadge = (type: 'in' | 'out') => {
-        return type === 'in' ? 'default' : 'destructive';
+    const getMovementTypeBadge = (type: StockMovement['type']) => {
+        const badges: Record<StockMovement['type'], 'default' | 'destructive' | 'secondary' | 'outline'> = {
+            in: 'default',
+            out: 'destructive',
+            transfer: 'secondary',
+            adjustment: 'outline',
+            sale: 'destructive',
+            return: 'default',
+        };
+        return badges[type];
     };
 
     return (
@@ -176,9 +200,13 @@ export default function Movements({ stock, movements }: MovementsProps) {
                                         {/* Timeline Dot */}
                                         <div
                                             className={`absolute -left-[9px] top-0 h-4 w-4 rounded-full border-2 ${
-                                                movement.type === 'in'
+                                                ['in', 'return'].includes(movement.type)
                                                     ? 'border-green-500 bg-green-500'
-                                                    : 'border-red-500 bg-red-500'
+                                                    : ['out', 'sale'].includes(movement.type)
+                                                    ? 'border-red-500 bg-red-500'
+                                                    : movement.type === 'transfer'
+                                                    ? 'border-blue-500 bg-blue-500'
+                                                    : 'border-yellow-500 bg-yellow-500'
                                             }`}
                                         />
 
@@ -187,8 +215,7 @@ export default function Movements({ stock, movements }: MovementsProps) {
                                             <div className="flex items-start justify-between gap-4">
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2">
-                                                        {movement.type ===
-                                                        'in' ? (
+                                                        {['in', 'return'].includes(movement.type) ? (
                                                             <ArrowDown className="h-4 w-4 text-green-600" />
                                                         ) : (
                                                             <ArrowUp className="h-4 w-4 text-red-600" />
@@ -207,7 +234,7 @@ export default function Movements({ stock, movements }: MovementsProps) {
                                                             )}
                                                         >
                                                             {
-                                                                movement.type === 'in' ? '+' : '-'
+                                                                ['in', 'return'].includes(movement.type) ? '+' : '-'
                                                             }
                                                             {movement.quantity}
                                                         </Badge>
