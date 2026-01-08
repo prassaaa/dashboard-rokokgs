@@ -155,7 +155,31 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, int $id): RedirectResponse
     {
+        $currentUser = auth()->user();
+
+        // Check if user has permission to edit users
+        if (!$currentUser->can('edit-users')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
+
+        $userToUpdate = User::findOrFail($id);
+
+        // Admin Cabang can only edit users in their branch
+        if (!$currentUser->hasRole('Super Admin') && $userToUpdate->branch_id !== $currentUser->branch_id) {
+            abort(403, 'You can only edit users in your branch');
+        }
+
+        // Prevent privilege escalation: Admin Cabang cannot assign Super Admin role
+        if (!$currentUser->hasRole('Super Admin') && isset($validated['roles'])) {
+            $allowedRoles = ['Sales']; // Admin Cabang can only assign Sales role
+            foreach ($validated['roles'] as $role) {
+                if (!in_array($role, $allowedRoles)) {
+                    abort(403, 'You cannot assign this role');
+                }
+            }
+        }
 
         $dto = new UserDTO(
             name: $validated['name'],
@@ -204,7 +228,19 @@ class UserController extends Controller
      */
     public function approve(int $id): RedirectResponse
     {
+        $currentUser = auth()->user();
+
+        // Check if user has permission to create/edit users
+        if (!$currentUser->can('create-users') && !$currentUser->can('edit-users')) {
+            abort(403, 'Unauthorized');
+        }
+
         $user = User::findOrFail($id);
+
+        // Admin Cabang can only approve users in their branch
+        if (!$currentUser->hasRole('Super Admin') && $user->branch_id !== $currentUser->branch_id) {
+            abort(403, 'You can only approve users in your branch');
+        }
 
         $dto = new UserDTO(
             name: $user->name,
@@ -225,12 +261,25 @@ class UserController extends Controller
      */
     public function assignAreas(Request $request, int $id): RedirectResponse
     {
+        $currentUser = auth()->user();
+
+        // Check if user has permission to assign sales areas
+        if (!$currentUser->can('assign-sales-area')) {
+            abort(403, 'Unauthorized');
+        }
+
         $request->validate([
             'areas' => 'required|array',
             'areas.*' => 'exists:areas,id',
         ]);
 
         $user = User::findOrFail($id);
+
+        // Admin Cabang can only assign areas to users in their branch
+        if (!$currentUser->hasRole('Super Admin') && $user->branch_id !== $currentUser->branch_id) {
+            abort(403, 'You can only assign areas to users in your branch');
+        }
+
         $user->areas()->sync($request->input('areas'));
 
         return redirect()->back()
