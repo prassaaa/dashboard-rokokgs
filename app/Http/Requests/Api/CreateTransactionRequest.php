@@ -29,7 +29,6 @@ class CreateTransactionRequest extends FormRequest
             'items.*.discount' => ['nullable', 'numeric', 'min:0'],
             'subtotal' => ['required', 'numeric', 'min:0'],
             'discount' => ['nullable', 'numeric', 'min:0'],
-            'tax' => ['nullable', 'numeric', 'min:0'],
             'total' => ['required', 'numeric', 'min:0'],
             'payment_method' => ['required', 'string', 'in:cash,transfer,credit'],
             'notes' => ['nullable', 'string', 'max:1000'],

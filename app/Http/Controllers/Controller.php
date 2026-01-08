@@ -53,11 +53,6 @@ namespace App\Http\Controllers;
  * )
  *
  * @OA\Tag(
- *     name="Commissions",
- *     description="API Endpoints untuk commission management (Sales only)"
- * )
- *
- * @OA\Tag(
  *     name="Areas",
  *     description="API Endpoints untuk area management"
  * )

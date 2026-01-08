@@ -108,7 +108,6 @@ test('sales can create transaction with valid data', function () {
         ],
         'subtotal' => 250000,
         'discount' => 10000,
-        'tax' => 0,
         'total' => 240000,
         'payment_method' => 'cash',
         'notes' => 'Test transaction',
@@ -163,7 +162,6 @@ test('cannot create transaction with insufficient stock', function () {
         ],
         'subtotal' => 20000000,
         'discount' => 0,
-        'tax' => 0,
         'total' => 20000000,
         'payment_method' => 'cash',
     ];

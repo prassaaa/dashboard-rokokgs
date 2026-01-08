@@ -68,11 +68,6 @@ class RolePermissionSeeder extends Seeder
             'edit-targets',
             'delete-targets',
 
-            // Commission Management
-            'view-commissions',
-            'approve-commissions',
-            'pay-commissions',
-
             // Reports
             'view-reports',
             'export-reports',
@@ -126,10 +121,6 @@ class RolePermissionSeeder extends Seeder
             'create-targets',
             'edit-targets',
 
-            // Commission view and approval
-            'view-commissions',
-            'approve-commissions',
-
             // Reports for their branch
             'view-reports',
             'export-reports',
@@ -150,9 +141,6 @@ class RolePermissionSeeder extends Seeder
 
             // View their own targets
             'view-targets',
-
-            // View their own commissions
-            'view-commissions',
 
             // View basic reports
             'view-reports',

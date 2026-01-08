@@ -59,8 +59,8 @@ test('can create sales transaction', function () {
         customer_name: 'Test Customer',
         customer_phone: '081234567890',
         customer_address: 'Test Address',
-        latitude: '-6.200000',
-        longitude: '106.816666',
+        latitude: -6.200000,
+        longitude: 106.816666,
         items: [
             [
                 'product_id' => $this->product->id,
@@ -100,8 +100,8 @@ test('transaction generates unique transaction number', function () {
         customer_name: 'Test Customer',
         customer_phone: '081234567890',
         customer_address: 'Test Address',
-        latitude: '-6.200000',
-        longitude: '106.816666',
+        latitude: -6.200000,
+        longitude: 106.816666,
         items: [
             [
                 'product_id' => $this->product->id,
@@ -134,8 +134,8 @@ test('cannot create transaction with insufficient stock', function () {
         customer_name: 'Test Customer',
         customer_phone: '081234567890',
         customer_address: 'Test Address',
-        latitude: '-6.200000',
-        longitude: '106.816666',
+        latitude: -6.200000,
+        longitude: 106.816666,
         items: [
             [
                 'product_id' => $this->product->id,
@@ -182,8 +182,8 @@ test('can cancel transaction and restore stock', function () {
         customer_name: 'Test Customer',
         customer_phone: '081234567890',
         customer_address: 'Test Address',
-        latitude: '-6.200000',
-        longitude: '106.816666',
+        latitude: -6.200000,
+        longitude: 106.816666,
         items: [
             [
                 'product_id' => $this->product->id,

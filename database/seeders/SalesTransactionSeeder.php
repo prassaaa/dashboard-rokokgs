@@ -67,7 +67,6 @@ class SalesTransactionSeeder extends Seeder
                     'customer_address' => 'Jl. ' . Str::random(10) . ' No. ' . rand(1, 100),
                     'subtotal' => 0,
                     'discount' => rand(0, 1) ? rand(1, 5) * 5000 : 0,
-                    'tax' => 0,
                     'total' => 0,
                     'payment_method' => ['cash', 'transfer', 'credit'][array_rand(['cash', 'transfer', 'credit'])],
                     'status' => $status,
@@ -109,13 +108,11 @@ class SalesTransactionSeeder extends Seeder
                     }
                 }
 
-                // Calculate tax (11%)
-                $tax = round($subtotal * 0.11);
-                $total = $subtotal - $transaction->discount + $tax;
+                // Calculate total
+                $total = $subtotal - $transaction->discount;
 
                 $transaction->update([
                     'subtotal' => $subtotal,
-                    'tax' => $tax,
                     'total' => $total,
                 ]);
             }
