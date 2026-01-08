@@ -107,7 +107,19 @@ class TransactionController extends Controller
      */
     public function approve(int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to approve transactions
+        if (!$user->can('approve-sales-transactions')) {
+            abort(403, 'Unauthorized');
+        }
+
         $transaction = SalesTransaction::findOrFail($id);
+
+        // Admin Cabang can only approve transactions in their branch
+        if (!$user->hasRole('Super Admin') && $transaction->branch_id !== $user->branch_id) {
+            abort(403, 'You can only approve transactions in your branch');
+        }
 
         if ($transaction->status !== 'pending') {
             return redirect()->back()
@@ -133,7 +145,19 @@ class TransactionController extends Controller
             'rejection_reason' => ['required', 'string', 'max:255'],
         ]);
 
+        $user = auth()->user();
+
+        // Check if user has permission to approve transactions
+        if (!$user->can('approve-sales-transactions')) {
+            abort(403, 'Unauthorized');
+        }
+
         $transaction = SalesTransaction::findOrFail($id);
+
+        // Admin Cabang can only reject transactions in their branch
+        if (!$user->hasRole('Super Admin') && $transaction->branch_id !== $user->branch_id) {
+            abort(403, 'You can only reject transactions in your branch');
+        }
 
         if ($transaction->status !== 'pending') {
             return redirect()->back()
