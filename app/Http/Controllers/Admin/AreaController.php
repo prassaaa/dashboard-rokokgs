@@ -87,7 +87,19 @@ class AreaController extends Controller
      */
     public function store(CreateAreaRequest $request): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to create areas
+        if (!$user->can('create-areas')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
+
+        // Admin Cabang can only create areas for their branch
+        if (!$user->hasRole('Super Admin') && $validated['branch_id'] != $user->branch_id) {
+            abort(403, 'You can only create areas for your branch');
+        }
 
         Area::create($validated);
 
@@ -125,9 +137,27 @@ class AreaController extends Controller
      */
     public function update(UpdateAreaRequest $request, int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to edit areas
+        if (!$user->can('edit-areas')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
 
         $area = Area::findOrFail($id);
+
+        // Admin Cabang can only edit areas in their branch
+        if (!$user->hasRole('Super Admin') && $area->branch_id !== $user->branch_id) {
+            abort(403, 'You can only edit areas in your branch');
+        }
+
+        // Prevent changing branch_id for non-super-admin
+        if (!$user->hasRole('Super Admin') && isset($validated['branch_id'])) {
+            unset($validated['branch_id']);
+        }
+
         $area->update($validated);
 
         return redirect()->route('admin.areas.index')

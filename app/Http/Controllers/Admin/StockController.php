@@ -82,8 +82,20 @@ class StockController extends Controller
      */
     public function processAdjustment(AdjustStockRequest $request, int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to edit stocks
+        if (!$user->can('edit-stocks')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
         $stock = Stock::findOrFail($id);
+
+        // Admin Cabang can only adjust stocks in their branch
+        if (!$user->hasRole('Super Admin') && $stock->branch_id !== $user->branch_id) {
+            abort(403, 'You can only adjust stocks in your branch');
+        }
 
         DB::transaction(function () use ($stock, $validated) {
             $oldQuantity = $stock->quantity;
@@ -168,12 +180,24 @@ class StockController extends Controller
      */
     public function storeInitial(Request $request): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to create stocks
+        if (!$user->can('create-stocks')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
             'branch_id' => ['required', 'exists:branches,id'],
             'quantity' => ['required', 'integer', 'min:0'],
             'minimum_stock' => ['required', 'integer', 'min:0'],
         ]);
+
+        // Admin Cabang can only create stocks for their branch
+        if (!$user->hasRole('Super Admin') && $validated['branch_id'] != $user->branch_id) {
+            abort(403, 'You can only create stocks for your branch');
+        }
 
         // Check if stock already exists
         $existingStock = Stock::where('product_id', $validated['product_id'])

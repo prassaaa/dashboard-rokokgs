@@ -111,7 +111,19 @@ class TargetController extends Controller
      */
     public function store(CreateTargetRequest $request): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to create targets
+        if (!$user->can('create-targets')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
+
+        // Admin Cabang can only create targets for their branch
+        if (!$user->hasRole('Super Admin') && $validated['branch_id'] != $user->branch_id) {
+            abort(403, 'You can only create targets for your branch');
+        }
 
         // Check for existing target with same criteria
         $existing = Target::where('user_id', $validated['user_id'])
@@ -171,9 +183,27 @@ class TargetController extends Controller
      */
     public function update(UpdateTargetRequest $request, int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to edit targets
+        if (!$user->can('edit-targets')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
 
         $target = Target::findOrFail($id);
+
+        // Admin Cabang can only edit targets in their branch
+        if (!$user->hasRole('Super Admin') && $target->branch_id !== $user->branch_id) {
+            abort(403, 'You can only edit targets in your branch');
+        }
+
+        // Prevent changing branch_id for non-super-admin
+        if (!$user->hasRole('Super Admin') && isset($validated['branch_id'])) {
+            unset($validated['branch_id']);
+        }
+
         $target->update($validated);
 
         return redirect()->route('admin.targets.index')

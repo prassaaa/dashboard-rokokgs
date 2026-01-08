@@ -87,6 +87,13 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to create products (categories are part of product management)
+        if (!$user->can('create-products')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
 
         // Separate branch_ids from category data
@@ -126,6 +133,13 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to edit products (categories are part of product management)
+        if (!$user->can('edit-products')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
 
         $category = ProductCategory::findOrFail($id);
@@ -152,6 +166,13 @@ class CategoryController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to delete products (categories are part of product management)
+        if (!$user->can('delete-products')) {
+            abort(403, 'Unauthorized');
+        }
+
         $category = ProductCategory::findOrFail($id);
 
         // Check if category has products

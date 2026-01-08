@@ -63,6 +63,9 @@ class BranchController extends Controller
      */
     public function store(CreateBranchRequest $request): RedirectResponse
     {
+        // Only Super Admin can create branches
+        abort_unless(auth()->user()->hasRole('Super Admin'), 403);
+
         $validated = $request->validated();
 
         Branch::create($validated);
@@ -90,6 +93,9 @@ class BranchController extends Controller
      */
     public function update(UpdateBranchRequest $request, int $id): RedirectResponse
     {
+        // Only Super Admin can update branches
+        abort_unless(auth()->user()->hasRole('Super Admin'), 403);
+
         $validated = $request->validated();
 
         $branch = Branch::findOrFail($id);

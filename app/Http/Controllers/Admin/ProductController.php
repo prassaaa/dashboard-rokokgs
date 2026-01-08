@@ -106,6 +106,13 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to create products
+        if (!$user->can('create-products')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
 
         // Handle image upload if exists
@@ -169,6 +176,13 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to edit products
+        if (!$user->can('edit-products')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validated();
 
         $product = Product::findOrFail($id);
@@ -239,6 +253,13 @@ class ProductController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
+        $user = auth()->user();
+
+        // Check if user has permission to delete products
+        if (!$user->can('delete-products')) {
+            abort(403, 'Unauthorized');
+        }
+
         $product = Product::findOrFail($id);
 
         // Check if product has stock
