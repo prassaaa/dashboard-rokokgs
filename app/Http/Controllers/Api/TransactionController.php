@@ -63,13 +63,13 @@ class TransactionController extends BaseApiController
     public function index(Request $request): JsonResponse
     {
         $user = auth()->user();
-        $branchId = $user->branch_id;
+        $branchId = $user->branch_id ? (int) $user->branch_id : null;
 
         // Sales can only see their own transactions
         if ($user->hasRole('Sales')) {
             $transactions = $this->transactionService->getPaginated(
                 branchId: $branchId,
-                salesId: $user->id
+                salesId: (int) $user->id
             );
         } else {
             // Admin/Manager can see all transactions in their branch
@@ -169,8 +169,8 @@ class TransactionController extends BaseApiController
         }, $validated['items']);
 
         $dto = new SalesTransactionDTO(
-            branch_id: $user->branch_id,
-            sales_id: $user->id,
+            branch_id: (int) $user->branch_id,
+            sales_id: (int) $user->id,
             customer_name: $validated['customer_name'],
             customer_phone: $validated['customer_phone'] ?? null,
             customer_address: $validated['customer_address'] ?? null,
@@ -336,7 +336,7 @@ class TransactionController extends BaseApiController
         $user = auth()->user();
 
         // Sales can only view their own transactions
-        if ($user->hasRole('Sales') && $salesId !== $user->id) {
+        if ($user->hasRole('Sales') && $salesId !== (int) $user->id) {
             return $this->errorResponse('Unauthorized', 403);
         }
 
