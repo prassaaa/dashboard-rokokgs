@@ -63,6 +63,7 @@ interface Transaction {
     created_at: string;
     latitude: string | null;
     longitude: string | null;
+    proof_photo: string | null;
 }
 
 interface ShowProps {
@@ -308,6 +309,29 @@ export default function Show({ transaction }: ShowProps) {
                                             </Marker>
                                         </MapContainer>
                                     </div>
+                                </div>
+                            )}
+
+                            {transaction.proof_photo && (
+                                <div className="mt-4">
+                                    <p className="text-sm text-muted-foreground mb-2">
+                                        Foto Bukti Transaksi
+                                    </p>
+                                    <a
+                                        href={transaction.proof_photo}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-block"
+                                    >
+                                        <img
+                                            src={transaction.proof_photo}
+                                            alt="Bukti Transaksi"
+                                            className="h-auto w-64 rounded-lg border object-cover shadow-sm hover:shadow-md transition-shadow"
+                                        />
+                                    </a>
+                                    <p className="mt-2 text-xs text-muted-foreground">
+                                        Klik gambar untuk melihat ukuran penuh
+                                    </p>
                                 </div>
                             )}
 

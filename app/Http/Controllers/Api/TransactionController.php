@@ -153,6 +153,12 @@ class TransactionController extends BaseApiController
         $validated = $request->validated();
         $user = auth()->user();
 
+        // Handle proof photo upload
+        $proofPhotoPath = null;
+        if ($request->hasFile('proof_photo')) {
+            $proofPhotoPath = $request->file('proof_photo')->store('transactions/proof-photos', 'public');
+        }
+
         $dto = new SalesTransactionDTO(
             branch_id: $user->branch_id,
             sales_id: $user->id,
@@ -168,6 +174,7 @@ class TransactionController extends BaseApiController
             payment_method: $validated['payment_method'],
             notes: $validated['notes'] ?? null,
             area_id: $validated['area_id'] ?? null,
+            proof_photo: $proofPhotoPath,
         );
 
         try {

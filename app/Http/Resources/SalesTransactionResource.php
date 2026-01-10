@@ -26,6 +26,7 @@ class SalesTransactionResource extends JsonResource
             'notes' => $this->notes,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
+            'proof_photo' => $this->proof_photo ? asset('storage/' . $this->proof_photo) : null,
             'branch' => $this->whenLoaded('branch', function () {
                 return [
                     'id' => $this->branch->id,

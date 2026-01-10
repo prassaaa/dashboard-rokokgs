@@ -112,6 +112,7 @@ class SalesTransactionService extends BaseService
                 'customer_address' => $dto->customer_address,
                 'latitude' => $dto->latitude,
                 'longitude' => $dto->longitude,
+                'proof_photo' => $dto->proof_photo,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
                 'total' => $total,

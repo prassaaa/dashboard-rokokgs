@@ -23,6 +23,7 @@ readonly class SalesTransactionDTO extends BaseDTO
         public ?string $notes = null,
         public ?float $latitude = null,
         public ?float $longitude = null,
+        public ?string $proof_photo = null,
     ) {
     }
 }

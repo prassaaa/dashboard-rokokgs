@@ -32,6 +32,7 @@ class SalesTransaction extends Model
         'notes',
         'latitude',
         'longitude',
+        'proof_photo',
         'approved_at',
         'approved_by',
     ];
