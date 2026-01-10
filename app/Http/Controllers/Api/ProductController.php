@@ -90,9 +90,9 @@ class ProductController extends BaseApiController
     public function index(Request $request): JsonResponse
     {
         $search = $request->input('search');
-        $categoryId = $request->input('category_id');
+        $categoryId = $request->input('category_id') ? (int) $request->input('category_id') : null;
         $isActive = $request->boolean('is_active', true);
-        $branchId = auth()->user()->branch_id;
+        $branchId = auth()->user()->branch_id ? (int) auth()->user()->branch_id : null;
 
         if ($search) {
             $products = $this->productService->search($search, $branchId);
@@ -174,7 +174,7 @@ class ProductController extends BaseApiController
     public function show(int $id): JsonResponse
     {
         try {
-            $branchId = auth()->user()->branch_id;
+            $branchId = auth()->user()->branch_id ? (int) auth()->user()->branch_id : null;
             $product = $this->productService->getById($id, $branchId);
 
             return $this->successResponse(
@@ -229,7 +229,7 @@ class ProductController extends BaseApiController
      */
     public function byCategory(int $categoryId): JsonResponse
     {
-        $branchId = auth()->user()->branch_id;
+        $branchId = auth()->user()->branch_id ? (int) auth()->user()->branch_id : null;
         $products = $this->productService->getByCategory($categoryId, $branchId);
 
         return $this->successResponse(
