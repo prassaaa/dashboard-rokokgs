@@ -124,8 +124,8 @@ class DashboardController extends Controller
             'customer_name' => $transaction->customer_name,
             'total' => $transaction->total,
             'status' => $transaction->status,
-            'sales_name' => $transaction->sales->name,
-            'branch_name' => $transaction->branch->name,
+            'sales_name' => $transaction->sales?->name ?? 'N/A',
+            'branch_name' => $transaction->branch?->name ?? 'N/A',
             'created_at' => $transaction->created_at->format('Y-m-d H:i'),
         ])->toArray();
     }
@@ -146,11 +146,11 @@ class DashboardController extends Controller
 
         return $query->get()->map(fn ($stock) => [
             'id' => $stock->id,
-            'product_name' => $stock->product->name,
-            'product_code' => $stock->product->code,
+            'product_name' => $stock->product?->name ?? 'N/A',
+            'product_code' => $stock->product?->code ?? 'N/A',
             'quantity' => $stock->quantity,
             'minimum_stock' => $stock->minimum_stock,
-            'branch_name' => $stock->branch->name,
+            'branch_name' => $stock->branch?->name ?? 'N/A',
         ])->toArray();
     }
 
