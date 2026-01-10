@@ -33,8 +33,8 @@ interface TransactionItem {
     id: number;
     product: Product;
     quantity: number;
-    price: number;
-    subtotal: number;
+    price: number | string;
+    subtotal: number | string;
 }
 
 interface Sales {
@@ -53,8 +53,8 @@ interface Transaction {
     customer_name: string;
     customer_phone: string | null;
     customer_address: string | null;
-    total: number;
-    discount: number;
+    total: number | string;
+    discount: number | string | null;
     notes: string | null;
     status: 'pending' | 'approved' | 'cancelled';
     sales: Sales;
@@ -361,18 +361,18 @@ export default function Show({ transaction }: ShowProps) {
                                     </span>
                                     <span className="font-medium">
                                         {formatCurrency(
-                                            transaction.total +
-                                                transaction.discount,
+                                            Number(transaction.total || 0) +
+                                                Number(transaction.discount || 0),
                                         )}
                                     </span>
                                 </div>
-                                {transaction.discount > 0 && (
+                                {Number(transaction.discount || 0) > 0 && (
                                     <div className="flex justify-between text-destructive">
                                         <span>Diskon</span>
                                         <span>
                                             -{' '}
                                             {formatCurrency(
-                                                transaction.discount,
+                                                Number(transaction.discount || 0),
                                             )}
                                         </span>
                                     </div>
@@ -383,7 +383,7 @@ export default function Show({ transaction }: ShowProps) {
                                             Total
                                         </span>
                                         <span className="text-lg font-bold">
-                                            {formatCurrency(transaction.total)}
+                                            {formatCurrency(Number(transaction.total || 0))}
                                         </span>
                                     </div>
                                 </div>
@@ -433,10 +433,10 @@ export default function Show({ transaction }: ShowProps) {
                                                 {item.quantity}
                                             </td>
                                             <td className="py-3 text-right">
-                                                {formatCurrency(item.price)}
+                                                {formatCurrency(Number(item.price || 0))}
                                             </td>
                                             <td className="py-3 text-right font-medium">
-                                                {formatCurrency(item.subtotal)}
+                                                {formatCurrency(Number(item.subtotal || 0))}
                                             </td>
                                         </tr>
                                     ))}
