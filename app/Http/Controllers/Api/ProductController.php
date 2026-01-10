@@ -174,7 +174,8 @@ class ProductController extends BaseApiController
     public function show(int $id): JsonResponse
     {
         try {
-            $product = $this->productService->getById($id);
+            $branchId = auth()->user()->branch_id;
+            $product = $this->productService->getById($id, $branchId);
 
             return $this->successResponse(
                 new ProductResource($product),

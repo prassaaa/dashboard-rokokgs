@@ -67,9 +67,17 @@ class ProductService extends BaseService
     /**
      * Get product by ID.
      */
-    public function getById(int $id): Product
+    public function getById(int $id, ?int $branchId = null): Product
     {
-        return Product::with(['productCategory', 'stocks.branch'])->findOrFail($id);
+        $product = Product::with(['productCategory', 'stocks.branch'])->findOrFail($id);
+
+        // Add stock quantity for branch if specified
+        if ($branchId !== null) {
+            $stock = $product->stocks->where('branch_id', $branchId)->first();
+            $product->stock_quantity = $stock?->quantity ?? 0;
+        }
+
+        return $product;
     }
 
     /**
