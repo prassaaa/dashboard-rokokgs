@@ -61,6 +61,13 @@ class TransactionController extends Controller
 
         $transactions = $query->paginate(20);
 
+        // Transform transactions to handle null relationships
+        $transactions->through(function ($transaction) {
+            $transaction->sales = $transaction->sales ?? (object) ['id' => null, 'name' => 'N/A'];
+            $transaction->branch = $transaction->branch ?? (object) ['id' => null, 'name' => 'N/A'];
+            return $transaction;
+        });
+
         // Get filter options
         $branches = $isSuperAdmin
             ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])
@@ -95,6 +102,14 @@ class TransactionController extends Controller
         // Admin Cabang can only see their branch transactions
         if (!$user->hasRole('Super Admin') && $transaction->branch_id !== $user->branch_id) {
             abort(403, 'Unauthorized');
+        }
+
+        // Handle null relationships
+        if (!$transaction->sales) {
+            $transaction->sales = (object) ['id' => null, 'name' => 'N/A', 'email' => 'N/A'];
+        }
+        if (!$transaction->branch) {
+            $transaction->branch = (object) ['id' => null, 'name' => 'N/A'];
         }
 
         // Convert proof_photo to full URL

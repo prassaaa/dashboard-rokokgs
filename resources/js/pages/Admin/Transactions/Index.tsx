@@ -390,10 +390,10 @@ export default function Index({
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                {transaction.sales.name}
+                                                {transaction.sales?.name ?? 'N/A'}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {transaction.branch.name}
+                                                {transaction.branch?.name ?? 'N/A'}
                                             </td>
                                             <td className="px-6 py-4 text-right font-medium">
                                                 {formatCurrency(

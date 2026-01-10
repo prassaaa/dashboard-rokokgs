@@ -226,10 +226,10 @@ export default function Show({ transaction }: ShowProps) {
                                         Sales
                                     </p>
                                     <p className="mt-1 font-medium">
-                                        {transaction.sales.name}
+                                        {transaction.sales?.name ?? 'N/A'}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        {transaction.sales.email}
+                                        {transaction.sales?.email ?? 'N/A'}
                                     </p>
                                 </div>
                                 <div>
@@ -237,7 +237,7 @@ export default function Show({ transaction }: ShowProps) {
                                         Cabang
                                     </p>
                                     <p className="mt-1 font-medium">
-                                        {transaction.branch.name}
+                                        {transaction.branch?.name ?? 'N/A'}
                                     </p>
                                 </div>
                                 <div>
