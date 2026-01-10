@@ -255,16 +255,10 @@ export default function Products({
                                                     <td className="py-3">
                                                         <div>
                                                             <p className="font-medium">
-                                                                {
-                                                                    stat.product
-                                                                        .name
-                                                                }
+                                                                {stat.product?.name ?? 'N/A'}
                                                             </p>
                                                             <code className="text-xs text-muted-foreground">
-                                                                {
-                                                                    stat.product
-                                                                        .code
-                                                                }
+                                                                {stat.product?.code ?? 'N/A'}
                                                             </code>
                                                         </div>
                                                     </td>

@@ -248,10 +248,10 @@ export default function SalesPerformance({
                                                 <td className="py-3">
                                                     <div>
                                                         <p className="font-medium">
-                                                            {stat.sales.name}
+                                                            {stat.sales?.name ?? 'N/A'}
                                                         </p>
                                                         <p className="text-xs text-muted-foreground">
-                                                            {stat.sales.email}
+                                                            {stat.sales?.email ?? 'N/A'}
                                                         </p>
                                                     </div>
                                                 </td>

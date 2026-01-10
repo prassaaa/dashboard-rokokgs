@@ -98,6 +98,15 @@ class ReportController extends Controller
             ->limit(20)
             ->get();
 
+        // Transform to handle null products
+        $productStats = $productStats->map(function ($stat) {
+            return [
+                'product' => $stat->product ?? (object) ['id' => null, 'name' => 'N/A', 'code' => 'N/A'],
+                'total_quantity' => $stat->total_quantity,
+                'total_revenue' => $stat->total_revenue,
+            ];
+        });
+
         $branches = $isSuperAdmin
             ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])
             : Branch::where('id', $user->branch_id)->get(['id', 'name']);
@@ -139,7 +148,7 @@ class ReportController extends Controller
         // Map sales stats
         $salesStats = $salesStats->map(function ($stat) {
             return [
-                'sales' => $stat->sales,
+                'sales' => $stat->sales ?? (object) ['id' => null, 'name' => 'N/A', 'email' => 'N/A'],
                 'total_transactions' => $stat->total_transactions,
                 'total_revenue' => $stat->total_revenue,
             ];
