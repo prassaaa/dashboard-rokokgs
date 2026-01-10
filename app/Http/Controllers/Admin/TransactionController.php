@@ -97,6 +97,9 @@ class TransactionController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        // Convert proof_photo to full URL
+        $transaction->proof_photo = $transaction->proof_photo ? asset('storage/' . $transaction->proof_photo) : null;
+
         return Inertia::render('Admin/Transactions/Show', [
             'transaction' => $transaction,
         ]);
