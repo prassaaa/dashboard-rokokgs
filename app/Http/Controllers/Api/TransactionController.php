@@ -273,7 +273,7 @@ class TransactionController extends BaseApiController
         $user = auth()->user();
 
         // Sales can only view their own transactions
-        if ($user->hasRole('Sales') && $transaction->sales_id !== $user->id) {
+        if ($user->hasRole('Sales') && (int) $transaction->sales_id !== (int) $user->id) {
             return $this->errorResponse('Unauthorized', 403);
         }
 
