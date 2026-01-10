@@ -159,6 +159,15 @@ class TransactionController extends BaseApiController
             $proofPhotoPath = $request->file('proof_photo')->store('transactions/proof-photos', 'public');
         }
 
+        // Cast items values to proper types (multipart sends strings)
+        $items = array_map(function ($item) {
+            return [
+                'product_id' => (int) $item['product_id'],
+                'quantity' => (int) $item['quantity'],
+                'price' => (float) $item['price'],
+            ];
+        }, $validated['items']);
+
         $dto = new SalesTransactionDTO(
             branch_id: $user->branch_id,
             sales_id: $user->id,
@@ -167,13 +176,13 @@ class TransactionController extends BaseApiController
             customer_address: $validated['customer_address'] ?? null,
             latitude: isset($validated['latitude']) ? (float) $validated['latitude'] : null,
             longitude: isset($validated['longitude']) ? (float) $validated['longitude'] : null,
-            items: $validated['items'],
-            subtotal: $validated['subtotal'],
-            discount: $validated['discount'] ?? 0,
-            total: $validated['total'],
+            items: $items,
+            subtotal: (float) $validated['subtotal'],
+            discount: (float) ($validated['discount'] ?? 0),
+            total: (float) $validated['total'],
             payment_method: $validated['payment_method'],
             notes: $validated['notes'] ?? null,
-            area_id: $validated['area_id'] ?? null,
+            area_id: isset($validated['area_id']) ? (int) $validated['area_id'] : null,
             proof_photo: $proofPhotoPath,
         );
 
