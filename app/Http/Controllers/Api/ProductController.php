@@ -92,9 +92,10 @@ class ProductController extends BaseApiController
         $search = $request->input('search');
         $categoryId = $request->input('category_id');
         $isActive = $request->boolean('is_active', true);
+        $branchId = auth()->user()->branch_id;
 
         if ($search) {
-            $products = $this->productService->search($search);
+            $products = $this->productService->search($search, $branchId);
 
             return $this->successResponse(
                 ProductResource::collection($products),
@@ -105,7 +106,8 @@ class ProductController extends BaseApiController
         $products = $this->productService->getPaginated(
             perPage: 15,
             categoryId: $categoryId,
-            activeOnly: $isActive
+            activeOnly: $isActive,
+            branchId: $branchId
         );
 
         return $this->paginatedResponse(
@@ -226,7 +228,8 @@ class ProductController extends BaseApiController
      */
     public function byCategory(int $categoryId): JsonResponse
     {
-        $products = $this->productService->getByCategory($categoryId);
+        $branchId = auth()->user()->branch_id;
+        $products = $this->productService->getByCategory($categoryId, $branchId);
 
         return $this->successResponse(
             ProductResource::collection($products),

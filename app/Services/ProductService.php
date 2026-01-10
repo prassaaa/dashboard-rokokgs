@@ -8,6 +8,7 @@ use App\DataTransferObjects\ProductDTO;
 use App\Exceptions\DuplicateException;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\Stock;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,7 +20,8 @@ class ProductService extends BaseService
     public function getPaginated(
         int $perPage = 15,
         ?int $categoryId = null,
-        bool $activeOnly = false
+        bool $activeOnly = false,
+        ?int $branchId = null
     ): LengthAwarePaginator {
         $query = Product::with('productCategory');
 
@@ -31,7 +33,21 @@ class ProductService extends BaseService
             $query->where('is_active', true);
         }
 
-        return $query->orderBy('name')->paginate($perPage);
+        $paginator = $query->orderBy('name')->paginate($perPage);
+
+        // Add stock quantity for branch if specified
+        if ($branchId !== null) {
+            $stocks = Stock::where('branch_id', $branchId)
+                ->get()
+                ->keyBy('product_id');
+
+            $paginator->getCollection()->transform(function ($product) use ($stocks) {
+                $product->stock_quantity = $stocks->get($product->id)?->quantity ?? 0;
+                return $product;
+            });
+        }
+
+        return $paginator;
     }
 
     /**
@@ -59,9 +75,9 @@ class ProductService extends BaseService
     /**
      * Search products.
      */
-    public function search(string $keyword): Collection
+    public function search(string $keyword, ?int $branchId = null): Collection
     {
-        return Product::with('productCategory')
+        $products = Product::with('productCategory')
             ->where(function ($query) use ($keyword) {
                 $query->where('name', 'like', "%{$keyword}%")
                     ->orWhere('code', 'like', "%{$keyword}%")
@@ -70,6 +86,20 @@ class ProductService extends BaseService
             ->where('is_active', true)
             ->limit(20)
             ->get();
+
+        // Add stock quantity for branch if specified
+        if ($branchId !== null) {
+            $stocks = Stock::where('branch_id', $branchId)
+                ->get()
+                ->keyBy('product_id');
+
+            $products->transform(function ($product) use ($stocks) {
+                $product->stock_quantity = $stocks->get($product->id)?->quantity ?? 0;
+                return $product;
+            });
+        }
+
+        return $products;
     }
 
     /**
@@ -185,12 +215,26 @@ class ProductService extends BaseService
     /**
      * Get products by category.
      */
-    public function getByCategory(int $categoryId): Collection
+    public function getByCategory(int $categoryId, ?int $branchId = null): Collection
     {
-        return Product::where('product_category_id', $categoryId)
+        $products = Product::where('product_category_id', $categoryId)
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
+
+        // Add stock quantity for branch if specified
+        if ($branchId !== null) {
+            $stocks = Stock::where('branch_id', $branchId)
+                ->get()
+                ->keyBy('product_id');
+
+            $products->transform(function ($product) use ($stocks) {
+                $product->stock_quantity = $stocks->get($product->id)?->quantity ?? 0;
+                return $product;
+            });
+        }
+
+        return $products;
     }
 
     /**
