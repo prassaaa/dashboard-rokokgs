@@ -30,118 +30,118 @@ class UserSeeder extends Seeder
         $superAdmin = User::create([
             'branch_id' => $pusat->id,
             'name' => 'Super Admin',
-            'email' => 'admin@rokokgs.com',
+            'email' => 'admin@gunungsarialami.com',
             'phone' => '081234567890',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $superAdmin->assignRole('Super Admin');
-        $this->command->line("  ✓ Super Admin: admin@rokokgs.com");
+        $this->command->line("  ✓ Super Admin: admin@gunungsarialami.com");
 
         // Create Admin Cabang Jakarta
         $adminJakarta = User::create([
             'branch_id' => $jakarta->id,
             'name' => 'Admin Jakarta',
-            'email' => 'admin.jakarta@rokokgs.com',
+            'email' => 'admin.jakarta@gunungsarialami.com',
             'phone' => '081234567891',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $adminJakarta->assignRole('Admin Cabang');
-        $this->command->line("  ✓ Admin Cabang: admin.jakarta@rokokgs.com");
+        $this->command->line("  ✓ Admin Cabang: admin.jakarta@gunungsarialami.com");
 
         // Create Admin Cabang Bandung
         $adminBandung = User::create([
             'branch_id' => $bandung->id,
             'name' => 'Admin Bandung',
-            'email' => 'admin.bandung@rokokgs.com',
+            'email' => 'admin.bandung@gunungsarialami.com',
             'phone' => '081234567892',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $adminBandung->assignRole('Admin Cabang');
-        $this->command->line("  ✓ Admin Cabang: admin.bandung@rokokgs.com");
+        $this->command->line("  ✓ Admin Cabang: admin.bandung@gunungsarialami.com");
 
         // Create Admin Cabang Surabaya
         $adminSurabaya = User::create([
             'branch_id' => $surabaya->id,
             'name' => 'Admin Surabaya',
-            'email' => 'admin.surabaya@rokokgs.com',
+            'email' => 'admin.surabaya@gunungsarialami.com',
             'phone' => '081234567893',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $adminSurabaya->assignRole('Admin Cabang');
-        $this->command->line("  ✓ Admin Cabang: admin.surabaya@rokokgs.com");
+        $this->command->line("  ✓ Admin Cabang: admin.surabaya@gunungsarialami.com");
 
         // Create Sales for Jakarta
         $sales1 = User::create([
             'branch_id' => $jakarta->id,
             'name' => 'Budi Santoso',
-            'email' => 'budi.sales@rokokgs.com',
+            'email' => 'budi.sales@gunungsarialami.com',
             'phone' => '081234567894',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $sales1->assignRole('Sales');
-        $this->command->line("  ✓ Sales (JKT): budi.sales@rokokgs.com");
+        $this->command->line("  ✓ Sales (JKT): budi.sales@gunungsarialami.com");
 
         $sales2 = User::create([
             'branch_id' => $jakarta->id,
             'name' => 'Andi Wijaya',
-            'email' => 'andi.sales@rokokgs.com',
+            'email' => 'andi.sales@gunungsarialami.com',
             'phone' => '081234567895',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $sales2->assignRole('Sales');
-        $this->command->line("  ✓ Sales (JKT): andi.sales@rokokgs.com");
+        $this->command->line("  ✓ Sales (JKT): andi.sales@gunungsarialami.com");
 
         // Create Sales for Bandung
         $sales3 = User::create([
             'branch_id' => $bandung->id,
             'name' => 'Dedi Firmansyah',
-            'email' => 'dedi.sales@rokokgs.com',
+            'email' => 'dedi.sales@gunungsarialami.com',
             'phone' => '081234567896',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $sales3->assignRole('Sales');
-        $this->command->line("  ✓ Sales (BDG): dedi.sales@rokokgs.com");
+        $this->command->line("  ✓ Sales (BDG): dedi.sales@gunungsarialami.com");
 
         $sales4 = User::create([
             'branch_id' => $bandung->id,
             'name' => 'Eka Pratama',
-            'email' => 'eka.sales@rokokgs.com',
+            'email' => 'eka.sales@gunungsarialami.com',
             'phone' => '081234567897',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $sales4->assignRole('Sales');
-        $this->command->line("  ✓ Sales (BDG): eka.sales@rokokgs.com");
+        $this->command->line("  ✓ Sales (BDG): eka.sales@gunungsarialami.com");
 
         // Create Sales for Surabaya
         $sales5 = User::create([
             'branch_id' => $surabaya->id,
             'name' => 'Fajar Nugroho',
-            'email' => 'fajar.sales@rokokgs.com',
+            'email' => 'fajar.sales@gunungsarialami.com',
             'phone' => '081234567898',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $sales5->assignRole('Sales');
-        $this->command->line("  ✓ Sales (SBY): fajar.sales@rokokgs.com");
+        $this->command->line("  ✓ Sales (SBY): fajar.sales@gunungsarialami.com");
 
         $sales6 = User::create([
             'branch_id' => $surabaya->id,
             'name' => 'Gita Permata',
-            'email' => 'gita.sales@rokokgs.com',
+            'email' => 'gita.sales@gunungsarialami.com',
             'phone' => '081234567899',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
         $sales6->assignRole('Sales');
-        $this->command->line("  ✓ Sales (SBY): gita.sales@rokokgs.com");
+        $this->command->line("  ✓ Sales (SBY): gita.sales@gunungsarialami.com");
 
         $this->command->info('');
         $this->command->info('🔑 Default Password: password');

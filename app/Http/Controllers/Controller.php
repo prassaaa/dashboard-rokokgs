@@ -10,7 +10,7 @@ namespace App\Http\Controllers;
  *     version="1.0.0",
  *     description="RESTful API untuk Sistem Management Penjualan Rokok Gas - Dashboard Web dan Mobile App",
  *     @OA\Contact(
- *         email="admin@rokokgs.com"
+ *         email="admin@gunungsarialami.com"
  *     )
  * )
  *

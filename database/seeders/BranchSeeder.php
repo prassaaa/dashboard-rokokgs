@@ -22,7 +22,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Jakarta',
                 'province' => 'DKI Jakarta',
                 'phone' => '021-12345678',
-                'email' => 'pusat@rokokgs.com',
+                'email' => 'pusat@gunungsarialami.com',
                 'is_active' => true,
             ],
             [
@@ -32,7 +32,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Jakarta Timur',
                 'province' => 'DKI Jakarta',
                 'phone' => '021-87654321',
-                'email' => 'jakarta-timur@rokokgs.com',
+                'email' => 'jakarta-timur@gunungsarialami.com',
                 'is_active' => true,
             ],
             [
@@ -42,7 +42,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Bandung',
                 'province' => 'Jawa Barat',
                 'phone' => '022-12345678',
-                'email' => 'bandung@rokokgs.com',
+                'email' => 'bandung@gunungsarialami.com',
                 'is_active' => true,
             ],
             [
@@ -52,7 +52,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Surabaya',
                 'province' => 'Jawa Timur',
                 'phone' => '031-12345678',
-                'email' => 'surabaya@rokokgs.com',
+                'email' => 'surabaya@gunungsarialami.com',
                 'is_active' => true,
             ],
             [
@@ -62,7 +62,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Semarang',
                 'province' => 'Jawa Tengah',
                 'phone' => '024-12345678',
-                'email' => 'semarang@rokokgs.com',
+                'email' => 'semarang@gunungsarialami.com',
                 'is_active' => true,
             ],
         ];
