@@ -100,8 +100,8 @@ class TransactionController extends Controller
         ])->findOrFail($id);
 
         // Admin Cabang can only see their branch transactions
-        if (!$user->hasRole('Super Admin') && $transaction->branch_id !== $user->branch_id) {
-            abort(403, 'Unauthorized');
+        if (!$user->hasRole('Super Admin') && (int) $transaction->branch_id !== (int) $user->branch_id) {
+            abort(403, 'You can only approve transactions in your branch');
         }
 
         // Handle null relationships
