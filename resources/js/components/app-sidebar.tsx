@@ -24,6 +24,7 @@ import {
     Award,
     MapPin,
     Target,
+    UserCheck,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -87,6 +88,12 @@ const transactionNavItems: NavItem[] = [
         title: 'Transaksi',
         href: '/admin/transactions',
         icon: Receipt,
+        permission: 'view-sales-transactions',
+    },
+    {
+        title: 'Kunjungan',
+        href: '/admin/visits',
+        icon: UserCheck,
         permission: 'view-sales-transactions',
     },
     {

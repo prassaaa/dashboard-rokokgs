@@ -24,6 +24,7 @@
         "barryvdh/laravel-ide-helper": "^3.6",
         "darkaonline/l5-swagger": "^9.0",
         "fakerphp/faker": "^1.23",
+        "jn-jairo/laravel-ngrok": "^3.0",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",

@@ -55,6 +55,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('transactions/{transaction}/approve', [\App\Http\Controllers\Admin\TransactionController::class, 'approve'])->name('transactions.approve');
     Route::post('transactions/{transaction}/reject', [\App\Http\Controllers\Admin\TransactionController::class, 'reject'])->name('transactions.reject');
 
+    // Visit Management
+    Route::get('visits', [\App\Http\Controllers\Admin\VisitController::class, 'index'])->name('visits.index');
+    Route::get('visits/locations', [\App\Http\Controllers\Admin\VisitController::class, 'locations'])->name('visits.locations');
+    Route::get('visits/{visit}', [\App\Http\Controllers\Admin\VisitController::class, 'show'])->name('visits.show');
+    Route::post('visits/{visit}/approve', [\App\Http\Controllers\Admin\VisitController::class, 'approve'])->name('visits.approve');
+    Route::post('visits/{visit}/reject', [\App\Http\Controllers\Admin\VisitController::class, 'reject'])->name('visits.reject');
+
     // Reports & Analytics
     Route::get('reports/sales', [\App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
     Route::get('reports/products', [\App\Http\Controllers\Admin\ReportController::class, 'products'])->name('reports.products');

@@ -43,6 +43,11 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('transactions/sales/{salesId}', [\App\Http\Controllers\Api\TransactionController::class, 'bySales']);
     Route::apiResource('transactions', \App\Http\Controllers\Api\TransactionController::class)->only(['index', 'store', 'show']);
 
+    // Visits
+    Route::get('visits/statistics', [\App\Http\Controllers\Api\VisitController::class, 'statistics']);
+    Route::get('visits/sales/{salesId}', [\App\Http\Controllers\Api\VisitController::class, 'bySales']);
+    Route::apiResource('visits', \App\Http\Controllers\Api\VisitController::class)->only(['index', 'store', 'show']);
+
     // Areas
     Route::get('areas', [\App\Http\Controllers\Api\AreaController::class, 'index']);
     Route::get('areas/{id}', [\App\Http\Controllers\Api\AreaController::class, 'show']);
