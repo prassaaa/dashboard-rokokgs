@@ -97,7 +97,7 @@ class AreaController extends Controller
         $validated = $request->validated();
 
         // Admin Cabang can only create areas for their branch
-        if (!$user->hasRole('Super Admin') && $validated['branch_id'] != $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $validated['branch_id'] !== (int) $user->branch_id) {
             abort(403, 'You can only create areas for your branch');
         }
 
@@ -118,7 +118,7 @@ class AreaController extends Controller
         $area = Area::with('branch')->findOrFail($id);
 
         // Admin Cabang can only edit areas in their branch
-        if (!$isSuperAdmin && $area->branch_id !== $user->branch_id) {
+        if (!$isSuperAdmin && (int) $area->branch_id !== (int) $user->branch_id) {
             abort(403, 'Unauthorized');
         }
 
@@ -149,7 +149,7 @@ class AreaController extends Controller
         $area = Area::findOrFail($id);
 
         // Admin Cabang can only edit areas in their branch
-        if (!$user->hasRole('Super Admin') && $area->branch_id !== $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $area->branch_id !== (int) $user->branch_id) {
             abort(403, 'You can only edit areas in your branch');
         }
 
@@ -173,7 +173,7 @@ class AreaController extends Controller
         $area = Area::findOrFail($id);
 
         // Admin Cabang can only delete areas in their branch
-        if (!$user->hasRole('Super Admin') && $area->branch_id !== $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $area->branch_id !== (int) $user->branch_id) {
             abort(403, 'Unauthorized');
         }
 

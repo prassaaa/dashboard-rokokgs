@@ -93,7 +93,7 @@ class StockController extends Controller
         $stock = Stock::findOrFail($id);
 
         // Admin Cabang can only adjust stocks in their branch
-        if (!$user->hasRole('Super Admin') && $stock->branch_id !== $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $stock->branch_id !== (int) $user->branch_id) {
             abort(403, 'You can only adjust stocks in your branch');
         }
 
@@ -195,7 +195,7 @@ class StockController extends Controller
         ]);
 
         // Admin Cabang can only create stocks for their branch
-        if (!$user->hasRole('Super Admin') && $validated['branch_id'] != $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $validated['branch_id'] !== (int) $user->branch_id) {
             abort(403, 'You can only create stocks for your branch');
         }
 

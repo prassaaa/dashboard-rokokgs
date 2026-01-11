@@ -121,7 +121,7 @@ class TargetController extends Controller
         $validated = $request->validated();
 
         // Admin Cabang can only create targets for their branch
-        if (!$user->hasRole('Super Admin') && $validated['branch_id'] != $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $validated['branch_id'] !== (int) $user->branch_id) {
             abort(403, 'You can only create targets for your branch');
         }
 
@@ -158,7 +158,7 @@ class TargetController extends Controller
         $target = Target::with(['branch', 'user'])->findOrFail($id);
 
         // Admin Cabang can only edit targets in their branch
-        if (!$isSuperAdmin && $target->branch_id !== $user->branch_id) {
+        if (!$isSuperAdmin && (int) $target->branch_id !== (int) $user->branch_id) {
             abort(403, 'Unauthorized');
         }
 
@@ -195,7 +195,7 @@ class TargetController extends Controller
         $target = Target::findOrFail($id);
 
         // Admin Cabang can only edit targets in their branch
-        if (!$user->hasRole('Super Admin') && $target->branch_id !== $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $target->branch_id !== (int) $user->branch_id) {
             abort(403, 'You can only edit targets in your branch');
         }
 
@@ -219,7 +219,7 @@ class TargetController extends Controller
         $target = Target::findOrFail($id);
 
         // Admin Cabang can only delete targets in their branch
-        if (!$user->hasRole('Super Admin') && $target->branch_id !== $user->branch_id) {
+        if (!$user->hasRole('Super Admin') && (int) $target->branch_id !== (int) $user->branch_id) {
             abort(403, 'Unauthorized');
         }
 
