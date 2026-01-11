@@ -38,8 +38,14 @@ class Visit extends Model
     protected function casts(): array
     {
         return [
+            'branch_id' => 'integer',
+            'sales_id' => 'integer',
+            'area_id' => 'integer',
+            'approved_by' => 'integer',
             'visit_date' => 'date',
             'approved_at' => 'datetime',
+            'latitude' => 'float',
+            'longitude' => 'float',
         ];
     }
 

@@ -237,11 +237,11 @@ class VisitController extends BaseApiController
         $visit = $this->visitService->getById($id);
 
         // Check if user can view this visit
-        if ($user->hasRole('Sales') && $visit->sales_id !== $user->id) {
+        if ($user->hasRole('Sales') && (int) $visit->sales_id !== (int) $user->id) {
             return $this->errorResponse('You can only view your own visits', 403);
         }
 
-        if (!$user->hasRole(['Super Admin', 'Sales']) && $visit->branch_id !== $user->branch_id) {
+        if (!$user->hasRole(['Super Admin', 'Sales']) && (int) $visit->branch_id !== (int) $user->branch_id) {
             return $this->errorResponse('You can only view visits in your branch', 403);
         }
 
@@ -278,7 +278,7 @@ class VisitController extends BaseApiController
         $user = auth()->user();
 
         // Sales can only see their own visits
-        if ($user->hasRole('Sales') && $user->id !== $salesId) {
+        if ($user->hasRole('Sales') && (int) $user->id !== $salesId) {
             return $this->errorResponse('You can only view your own visits', 403);
         }
 
