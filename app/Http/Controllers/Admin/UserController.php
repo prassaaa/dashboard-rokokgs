@@ -103,7 +103,7 @@ class UserController extends Controller
         $validated = $request->validated();
 
         // Admin Cabang can only create users for their branch
-        if (!$currentUser->hasRole('Super Admin') && $validated['branch_id'] != $currentUser->branch_id) {
+        if (!$currentUser->hasRole('Super Admin') && (int) $validated['branch_id'] !== (int) $currentUser->branch_id) {
             abort(403, 'You can only create users for your branch');
         }
 
@@ -145,7 +145,7 @@ class UserController extends Controller
         $user = User::with(['branch', 'roles', 'areas'])->findOrFail($id);
 
         // Admin Cabang can only edit users in their branch
-        if (!$isSuperAdmin && $user->branch_id !== $currentUser->branch_id) {
+        if (!$isSuperAdmin && (int) $user->branch_id !== (int) $currentUser->branch_id) {
             abort(403, 'Unauthorized');
         }
 
@@ -189,7 +189,7 @@ class UserController extends Controller
         $userToUpdate = User::findOrFail($id);
 
         // Admin Cabang can only edit users in their branch
-        if (!$currentUser->hasRole('Super Admin') && $userToUpdate->branch_id !== $currentUser->branch_id) {
+        if (!$currentUser->hasRole('Super Admin') && (int) $userToUpdate->branch_id !== (int) $currentUser->branch_id) {
             abort(403, 'You can only edit users in your branch');
         }
 
@@ -235,7 +235,7 @@ class UserController extends Controller
         }
 
         // Admin Cabang can only delete users in their branch
-        if (!$currentUser->hasRole('Super Admin') && $userToDelete->branch_id !== $currentUser->branch_id) {
+        if (!$currentUser->hasRole('Super Admin') && (int) $userToDelete->branch_id !== (int) $currentUser->branch_id) {
             abort(403, 'Unauthorized');
         }
 
@@ -260,7 +260,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         // Admin Cabang can only approve users in their branch
-        if (!$currentUser->hasRole('Super Admin') && $user->branch_id !== $currentUser->branch_id) {
+        if (!$currentUser->hasRole('Super Admin') && (int) $user->branch_id !== (int) $currentUser->branch_id) {
             abort(403, 'You can only approve users in your branch');
         }
 
@@ -298,7 +298,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         // Admin Cabang can only assign areas to users in their branch
-        if (!$currentUser->hasRole('Super Admin') && $user->branch_id !== $currentUser->branch_id) {
+        if (!$currentUser->hasRole('Super Admin') && (int) $user->branch_id !== (int) $currentUser->branch_id) {
             abort(403, 'You can only assign areas to users in your branch');
         }
 

@@ -65,6 +65,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'is_active' => 'boolean',
+            'branch_id' => 'integer',
         ];
     }
 
