@@ -190,4 +190,85 @@ class TransactionController extends Controller
         return redirect()->back()
             ->with('success', 'Transaction rejected successfully');
     }
+
+    /**
+     * Display transaction locations map.
+     */
+    public function locations(Request $request): Response
+    {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('Super Admin');
+
+        $query = SalesTransaction::with(['sales:id,name', 'branch:id,name'])
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->orderByDesc('created_at');
+
+        // Admin Cabang can only see their branch transactions
+        if (!$isSuperAdmin) {
+            $query->where('branch_id', $user->branch_id);
+        }
+
+        // Filter by branch
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->input('branch_id'));
+        }
+
+        // Filter by sales
+        if ($request->filled('sales_id')) {
+            $query->where('sales_id', $request->input('sales_id'));
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Filter by date range
+        if ($request->filled('start_date')) {
+            $query->whereDate('transaction_date', '>=', $request->input('start_date'));
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('transaction_date', '<=', $request->input('end_date'));
+        }
+
+        $transactions = $query->get()->map(function ($transaction) {
+            return [
+                'id' => $transaction->id,
+                'customer_name' => $transaction->customer_name,
+                'customer_address' => $transaction->customer_address,
+                'total' => (float) $transaction->total,
+                'status' => $transaction->status,
+                'latitude' => (float) $transaction->latitude,
+                'longitude' => (float) $transaction->longitude,
+                'transaction_date' => $transaction->transaction_date?->toDateString(),
+                'created_at' => $transaction->created_at?->toISOString(),
+                'sales' => $transaction->sales ? [
+                    'id' => $transaction->sales->id,
+                    'name' => $transaction->sales->name,
+                ] : null,
+                'branch' => $transaction->branch ? [
+                    'id' => $transaction->branch->id,
+                    'name' => $transaction->branch->name,
+                ] : null,
+            ];
+        });
+
+        // Get filter options
+        $branches = $isSuperAdmin
+            ? Branch::where('is_active', true)->orderBy('name')->get(['id', 'name'])
+            : Branch::where('id', $user->branch_id)->get(['id', 'name']);
+
+        $salesUsers = User::role('Sales')
+            ->when(!$isSuperAdmin, fn ($q) => $q->where('branch_id', $user->branch_id))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return Inertia::render('Admin/Transactions/Locations', [
+            'transactions' => $transactions,
+            'branches' => $branches,
+            'salesUsers' => $salesUsers,
+            'filters' => $request->only(['branch_id', 'sales_id', 'status', 'start_date', 'end_date']),
+        ]);
+    }
 }

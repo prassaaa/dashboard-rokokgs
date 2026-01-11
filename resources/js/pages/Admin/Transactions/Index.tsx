@@ -26,7 +26,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
-import { CheckCircle, Eye, Receipt, Search, XCircle } from 'lucide-react';
+import { CheckCircle, Eye, MapPin, Receipt, Search, XCircle } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 
 interface Branch {
@@ -199,6 +199,12 @@ export default function Index({
                             Monitor dan kelola transaksi penjualan
                         </p>
                     </div>
+                    <Button variant="outline" asChild>
+                        <Link href="/admin/transactions/locations">
+                            <MapPin className="mr-2 h-4 w-4" />
+                            Lihat Peta Lokasi
+                        </Link>
+                    </Button>
                 </div>
 
                 {/* Filters */}
