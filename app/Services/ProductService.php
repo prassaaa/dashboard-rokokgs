@@ -33,6 +33,15 @@ class ProductService extends BaseService
             $query->where('is_active', true);
         }
 
+        // Filter by branch - show products assigned to this branch or products without any branch assignment
+        if ($branchId !== null) {
+            $query->where(function ($q) use ($branchId) {
+                $q->whereHas('branches', function ($subQuery) use ($branchId) {
+                    $subQuery->where('branches.id', $branchId);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+
         $paginator = $query->orderBy('name')->paginate($perPage);
 
         // Add stock quantity for branch if specified
@@ -69,7 +78,18 @@ class ProductService extends BaseService
      */
     public function getById(int $id, ?int $branchId = null): Product
     {
-        $product = Product::with(['productCategory', 'stocks.branch'])->findOrFail($id);
+        $query = Product::with(['productCategory', 'stocks.branch']);
+
+        // Filter by branch - only allow access to products assigned to this branch or products without any branch assignment
+        if ($branchId !== null) {
+            $query->where(function ($q) use ($branchId) {
+                $q->whereHas('branches', function ($subQuery) use ($branchId) {
+                    $subQuery->where('branches.id', $branchId);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+
+        $product = $query->findOrFail($id);
 
         // Add stock quantity for branch if specified
         if ($branchId !== null) {
@@ -85,15 +105,24 @@ class ProductService extends BaseService
      */
     public function search(string $keyword, ?int $branchId = null): Collection
     {
-        $products = Product::with('productCategory')
-            ->where(function ($query) use ($keyword) {
-                $query->where('name', 'like', "%{$keyword}%")
+        $query = Product::with('productCategory')
+            ->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%")
                     ->orWhere('code', 'like', "%{$keyword}%")
                     ->orWhere('barcode', 'like', "%{$keyword}%");
             })
-            ->where('is_active', true)
-            ->limit(20)
-            ->get();
+            ->where('is_active', true);
+
+        // Filter by branch - show products assigned to this branch or products without any branch assignment
+        if ($branchId !== null) {
+            $query->where(function ($q) use ($branchId) {
+                $q->whereHas('branches', function ($subQuery) use ($branchId) {
+                    $subQuery->where('branches.id', $branchId);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+
+        $products = $query->limit(20)->get();
 
         // Add stock quantity for branch if specified
         if ($branchId !== null) {
@@ -225,10 +254,19 @@ class ProductService extends BaseService
      */
     public function getByCategory(int $categoryId, ?int $branchId = null): Collection
     {
-        $products = Product::where('product_category_id', $categoryId)
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->get();
+        $query = Product::where('product_category_id', $categoryId)
+            ->where('is_active', true);
+
+        // Filter by branch - show products assigned to this branch or products without any branch assignment
+        if ($branchId !== null) {
+            $query->where(function ($q) use ($branchId) {
+                $q->whereHas('branches', function ($subQuery) use ($branchId) {
+                    $subQuery->where('branches.id', $branchId);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+
+        $products = $query->orderBy('name')->get();
 
         // Add stock quantity for branch if specified
         if ($branchId !== null) {
