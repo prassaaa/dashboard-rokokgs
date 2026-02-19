@@ -90,6 +90,13 @@ class AuthController extends BaseApiController
             return $this->errorResponse('Account is inactive', 403);
         }
 
+        // Check if user's branch is active
+        if ($user->branch_id && $user->branch && !$user->branch->is_active) {
+            Auth::logout();
+
+            return $this->errorResponse('Cabang Anda telah dinonaktifkan. Silakan hubungi Admin.', 403);
+        }
+
         // Create token
         $token = $user->createToken('api-token')->plainTextToken;
 

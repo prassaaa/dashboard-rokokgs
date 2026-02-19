@@ -131,4 +131,20 @@ class BranchController extends Controller
         return redirect()->route('admin.branches.index')
             ->with('success', 'Branch deleted successfully');
     }
+
+    /**
+     * Toggle branch active status.
+     */
+    public function toggleStatus(int $branch): RedirectResponse
+    {
+        abort_unless(auth()->user()->hasRole('Super Admin'), 403);
+
+        $branch = Branch::findOrFail($branch);
+        $branch->update(['is_active' => !$branch->is_active]);
+
+        $status = $branch->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+        return redirect()->route('admin.branches.index')
+            ->with('success', "Cabang {$branch->name} berhasil {$status}");
+    }
 }

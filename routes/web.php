@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Branch Management (Super Admin Only)
     Route::resource('branches', \App\Http\Controllers\Admin\BranchController::class);
+    Route::post('branches/{branch}/toggle-status', [\App\Http\Controllers\Admin\BranchController::class, 'toggleStatus'])->name('branches.toggle-status');
 
     // Area Management
     Route::resource('areas', \App\Http\Controllers\Admin\AreaController::class);

@@ -24,7 +24,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
-import { Building2, Edit, Plus, Search, Trash2 } from 'lucide-react';
+import { Building2, Edit, Plus, Power, Search, Trash2 } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 
 interface Branch {
@@ -78,6 +78,17 @@ export default function Index({ branches, filters }: IndexProps) {
         branchId: null,
         branchName: '',
     });
+    const [toggleDialog, setToggleDialog] = useState<{
+        open: boolean;
+        branchId: number | null;
+        branchName: string;
+        isActive: boolean;
+    }>({
+        open: false,
+        branchId: null,
+        branchName: '',
+        isActive: false,
+    });
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
@@ -107,6 +118,19 @@ export default function Index({ branches, filters }: IndexProps) {
                 toast.success('Cabang berhasil dihapus');
             },
             onError: () => toast.error('Gagal menghapus cabang'),
+        });
+    };
+
+    const handleToggleStatus = () => {
+        if (!toggleDialog.branchId) return;
+
+        router.post(`/admin/branches/${toggleDialog.branchId}/toggle-status`, {}, {
+            onSuccess: () => {
+                const status = toggleDialog.isActive ? 'dinonaktifkan' : 'diaktifkan';
+                setToggleDialog({ open: false, branchId: null, branchName: '', isActive: false });
+                toast.success(`Cabang berhasil ${status}`);
+            },
+            onError: () => toast.error('Gagal mengubah status cabang'),
         });
     };
 
@@ -298,6 +322,35 @@ export default function Index({ branches, filters }: IndexProps) {
                                                             </Link>
                                                         </Button>
                                                     </Can>
+                                                    <Can permission="edit-branches">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() =>
+                                                                setToggleDialog({
+                                                                    open: true,
+                                                                    branchId:
+                                                                        branch.id,
+                                                                    branchName:
+                                                                        branch.name,
+                                                                    isActive:
+                                                                        branch.is_active,
+                                                                })
+                                                            }
+                                                            className={
+                                                                branch.is_active
+                                                                    ? 'text-orange-600 hover:bg-orange-600 hover:text-white'
+                                                                    : 'text-green-600 hover:bg-green-600 hover:text-white'
+                                                            }
+                                                            title={
+                                                                branch.is_active
+                                                                    ? 'Nonaktifkan cabang'
+                                                                    : 'Aktifkan cabang'
+                                                            }
+                                                        >
+                                                            <Power className="size-4" />
+                                                        </Button>
+                                                    </Can>
                                                     <Can permission="delete-branches">
                                                         <Button
                                                             size="sm"
@@ -397,6 +450,73 @@ export default function Index({ branches, filters }: IndexProps) {
                                 onClick={handleDelete}
                             >
                                 Hapus
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+                {/* Toggle Status Confirmation Dialog */}
+                <Dialog
+                    open={toggleDialog.open}
+                    onOpenChange={(open) =>
+                        setToggleDialog({ ...toggleDialog, open })
+                    }
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>
+                                {toggleDialog.isActive
+                                    ? 'Nonaktifkan Cabang'
+                                    : 'Aktifkan Cabang'}
+                            </DialogTitle>
+                            <DialogDescription>
+                                {toggleDialog.isActive ? (
+                                    <>
+                                        Apakah Anda yakin ingin menonaktifkan
+                                        cabang{' '}
+                                        <strong>
+                                            {toggleDialog.branchName}
+                                        </strong>
+                                        ? Semua user di cabang ini tidak akan
+                                        bisa login.
+                                    </>
+                                ) : (
+                                    <>
+                                        Apakah Anda yakin ingin mengaktifkan
+                                        kembali cabang{' '}
+                                        <strong>
+                                            {toggleDialog.branchName}
+                                        </strong>
+                                        ?
+                                    </>
+                                )}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() =>
+                                    setToggleDialog({
+                                        open: false,
+                                        branchId: null,
+                                        branchName: '',
+                                        isActive: false,
+                                    })
+                                }
+                            >
+                                Batal
+                            </Button>
+                            <Button
+                                variant={
+                                    toggleDialog.isActive
+                                        ? 'destructive'
+                                        : 'default'
+                                }
+                                onClick={handleToggleStatus}
+                            >
+                                {toggleDialog.isActive
+                                    ? 'Nonaktifkan'
+                                    : 'Aktifkan'}
                             </Button>
                         </DialogFooter>
                     </DialogContent>

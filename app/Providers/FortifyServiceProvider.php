@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -40,6 +42,28 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
+
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                return null;
+            }
+
+            if (! $user->is_active) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    Fortify::username() => ['Akun Anda telah dinonaktifkan. Silakan hubungi Admin.'],
+                ]);
+            }
+
+            if ($user->branch_id && $user->branch && ! $user->branch->is_active) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    Fortify::username() => ['Cabang Anda telah dinonaktifkan. Silakan hubungi Admin.'],
+                ]);
+            }
+
+            return $user;
+        });
     }
 
     /**
